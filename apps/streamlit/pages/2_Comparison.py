@@ -1,0 +1,86 @@
+from __future__ import annotations
+
+import pandas as pd
+import plotly.graph_objects as go
+import streamlit as st
+
+from wsis.core.weights import score_weights_from_state
+from wsis.services.api_client import ApiCityClient
+
+
+st.set_page_config(page_title="WSIS | Comparison", layout="wide")
+
+
+@st.cache_resource
+def get_client() -> ApiCityClient:
+    return ApiCityClient()
+
+
+client = get_client()
+active_weights = score_weights_from_state(st.session_state)
+city_summaries, source = client.list_cities(active_weights)
+
+default_slugs = [city.slug for city in city_summaries[:2]]
+selected_slugs = st.multiselect(
+    "Cities to compare",
+    [city.slug for city in city_summaries],
+    default=default_slugs,
+    format_func=lambda slug: next(
+        f"{city.name}, {city.state_code}" for city in city_summaries if city.slug == slug
+    ),
+)
+
+st.title("City comparison")
+st.caption(f"Comparison source: {source}. Select two to four cities.")
+
+if len(selected_slugs) < 2:
+    st.warning("Select at least two cities to build a comparison.")
+    st.stop()
+
+details, detail_source = client.compare_cities(selected_slugs, active_weights)
+st.caption(f"Detail source: {detail_source}.")
+
+radar = go.Figure()
+categories = list(details[0].summary.score_breakdown.as_dict().keys())
+
+for detail in details:
+    values = list(detail.summary.score_breakdown.as_dict().values())
+    radar.add_trace(
+        go.Scatterpolar(
+            r=values + [values[0]],
+            theta=categories + [categories[0]],
+            fill="toself",
+            name=f"{detail.summary.name}, {detail.summary.state_code}",
+        )
+    )
+
+radar.update_layout(
+    polar={"radialaxis": {"visible": True, "range": [0, 10]}},
+    showlegend=True,
+    height=540,
+)
+
+st.plotly_chart(radar, use_container_width=True)
+
+comparison_frame = pd.DataFrame(
+    [
+        {
+            "City": f"{detail.summary.name}, {detail.summary.state_code}",
+            "Overall score": detail.summary.overall_score,
+            "Median rent": detail.metrics.median_rent,
+            "Median home price": detail.metrics.median_home_price,
+            "Median income": detail.metrics.median_income,
+            "Job growth %": detail.metrics.job_growth_pct,
+            "Unemployment %": detail.metrics.unemployment_pct,
+        }
+        for detail in details
+    ]
+)
+
+st.subheader("Cost and market snapshot")
+st.dataframe(comparison_frame, use_container_width=True, hide_index=True)
+
+st.info(
+    "TODO: add side-by-side neighborhood lenses, watchlist actions, and saved weight presets "
+    "after the persistence layer is introduced."
+)

@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "wsis"
+version = "0.1.0"
+description = "Where Should I Start: city discovery and relocation scoring prototype"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "fastapi>=0.115,<1.0",
+  "httpx>=0.28,<1.0",
+  "pandas>=2.2,<3.0",
+  "plotly>=6.0,<7.0",
+  "pydantic>=2.7,<3.0",
+  "pytest>=8.3,<9.0",
+  "requests>=2.32,<3.0",
+  "streamlit>=1.44,<2.0",
+  "uvicorn[standard]>=0.34,<1.0",
+]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

@@ -1,0 +1,123 @@
+Metadata-Version: 2.4
+Name: wsis
+Version: 0.1.0
+Summary: Where Should I Start: city discovery and relocation scoring prototype
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi<1.0,>=0.115
+Requires-Dist: httpx<1.0,>=0.28
+Requires-Dist: pandas<3.0,>=2.2
+Requires-Dist: plotly<7.0,>=6.0
+Requires-Dist: pydantic<3.0,>=2.7
+Requires-Dist: pytest<9.0,>=8.3
+Requires-Dist: requests<3.0,>=2.32
+Requires-Dist: streamlit<2.0,>=1.44
+Requires-Dist: uvicorn[standard]<1.0,>=0.34
+
+# WSIS
+
+WSIS (Where Should I Start) is a map-first relocation discovery product for young adults and early-career professionals in the United States. This milestone delivers a local-first vertical slice with a FastAPI backend, a Streamlit frontend, a transparent scoring model, and mock city data that can be replaced by real pipelines later.
+
+## What is included
+
+- FastAPI service scaffold with health, city list, city detail, and comparison endpoints
+- Streamlit app with a discovery map, city profile view, and comparison view
+- Shared typed domain models, config module, scoring engine, and service layer
+- Mock dataset loader backed by `data/mock/cities.csv`
+- Placeholder Reddit sentiment service interface with deterministic mock output
+
+## Project structure
+
+```text
+apps/
+  api/main.py
+  streamlit/Home.py
+  streamlit/pages/
+data/
+  mock/cities.csv
+src/
+  wsis/
+    api/
+    core/
+    data/
+    domain/
+    scoring/
+    services/
+tests/
+```
+
+## Local setup
+
+1. Create a virtual environment.
+2. Install the package in editable mode.
+3. Copy `.env.example` to `.env` if you want local overrides.
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+## Run the backend
+
+```bash
+uvicorn apps.api.main:app --reload
+```
+
+Backend URLs:
+
+- API root: `http://localhost:8000/`
+- Health: `http://localhost:8000/health`
+- OpenAPI docs: `http://localhost:8000/docs`
+
+## Run the frontend
+
+In a second terminal:
+
+```bash
+source .venv/bin/activate
+streamlit run apps/streamlit/Home.py
+```
+
+Frontend URL:
+
+- Streamlit app: `http://localhost:8501/`
+
+The frontend prefers the FastAPI backend when it is available at `WSIS_API_BASE_URL`. If the backend is offline, it falls back to the shared local service so the prototype still runs.
+
+## Current scoring model
+
+Default weights from the product docs:
+
+- Affordability: 0.40
+- Job market: 0.25
+- Safety: 0.15
+- Climate: 0.10
+- Social sentiment: 0.10
+
+The current engine uses mock city metrics and min-max normalization inside the local dataset. That keeps the model transparent while leaving clear replacement points for production data sources.
+
+## Deferred integrations
+
+- Real city ingest and normalization pipelines from Census, BLS, crime, climate, and housing sources
+- GeoPandas-based choropleth polygons once the canonical city geometry pipeline is ready
+- Real Reddit harvesting, entity resolution, summarization, and moderation logic
+- Postgres or Supabase persistence
+- AWS containerization and deployment assets
+
+## Validation
+
+Recommended local checks:
+
+```bash
+python3 -m compileall src apps tests
+python3 -m pytest
+```
+
+## Notes for the next milestone
+
+- Replace the mock CSV with normalized source tables keyed by stable geography IDs
+- Add a repository module for Postgres-backed city reads
+- Introduce batch jobs for scoring refresh and Reddit panel refresh
+- Add deployment assets for Lambda container images and ECR
+

@@ -1,0 +1,21 @@
+wsis/
+│
+├── app/
+│   └── streamlit_app.py
+│
+├── backend/
+│   ├── api
+│   ├── scoring
+│   └── reddit_pipeline
+│
+├── data/
+│   ├── raw
+│   └── processed
+│
+├── notebooks/
+├── infrastructure/
+├── tests/
+│
+├── requirements.txt
+├── Dockerfile
+└── README.md

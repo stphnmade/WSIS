@@ -1,0 +1,12 @@
+slug,name,state,state_code,region,headline,population,latitude,longitude,median_rent,median_home_price,median_income,job_growth_pct,unemployment_pct,safety_score_raw,climate_score_raw,social_sentiment_raw,known_for
+austin-tx,Austin,Texas,TX,South,"Fast-growing job hub with high housing pressure and strong social energy.",979882,30.2672,-97.7431,1750,525000,92000,4.8,3.4,66,78,0.42,"tech hiring, live music, warm weather"
+raleigh-nc,Raleigh,North Carolina,NC,South,"Balanced cost profile with strong career upside and stable quality-of-life fundamentals.",476587,35.7796,-78.6382,1490,430000,85000,4.2,3.1,75,74,0.36,"research triangle jobs, green space, calmer pace"
+pittsburgh-pa,Pittsburgh,Pennsylvania,PA,Northeast,"Lower housing costs and strong eds-and-meds economy with mixed climate tradeoffs.",302971,40.4406,-79.9959,1260,255000,69000,2.6,4.0,72,58,0.18,"healthcare jobs, universities, legacy neighborhoods"
+denver-co,Denver,Colorado,CO,West,"Outdoor lifestyle leader with good wages, fast growth, and expensive housing.",715522,39.7392,-104.9903,1820,610000,96000,4.0,3.2,68,81,0.28,"mountain access, sunshine, active lifestyle"
+minneapolis-mn,Minneapolis,Minnesota,MN,Midwest,"Strong incomes and urban amenities with colder winters and solid safety fundamentals.",429954,44.9778,-93.2650,1510,360000,83000,3.1,3.0,73,49,0.22,"lakes, healthcare, bikeability"
+chicago-il,Chicago,Illinois,IL,Midwest,"Big-city career depth and transit access with uneven safety and higher monthly costs.",2746388,41.8781,-87.6298,1680,345000,78000,2.8,4.6,55,61,0.05,"career breadth, transit, nightlife"
+charlotte-nc,Charlotte,North Carolina,NC,South,"Banking-led job market with moderate costs and growing relocation appeal.",911311,35.2271,-80.8431,1540,405000,80000,4.1,3.5,64,72,0.24,"finance jobs, newer housing, southern growth"
+madison-wi,Madison,Wisconsin,WI,Midwest,"College-town energy, strong social fabric, and reasonable costs for early-career movers.",280305,43.0731,-89.4012,1440,389000,79000,3.4,2.7,80,55,0.40,"university town, civic life, bike culture"
+tampa-fl,Tampa,Florida,FL,South,"Sunbelt affordability story with warm weather and mixed resilience questions.",403364,27.9506,-82.4572,1640,410000,73000,3.7,3.3,60,84,0.16,"waterfront lifestyle, warm climate, rapid in-migration"
+seattle-wa,Seattle,Washington,WA,West,"High-income tech market with elite career upside and a steep cost burden.",755078,47.6062,-122.3321,2100,815000,115000,3.9,3.6,70,57,0.21,"tech salaries, access to nature, cloudy seasons"
+

@@ -1,0 +1,2 @@
+"""WSIS shared application package."""
+
