@@ -1,0 +1,12 @@
+county_fips,climate_score_raw,source_name,source_vintage,source_geography
+48453,78,noaa_climate_sample,2024,county
+37183,74,noaa_climate_sample,2024,county
+42003,58,noaa_climate_sample,2024,county
+08031,81,noaa_climate_sample,2024,county
+27053,49,noaa_climate_sample,2024,county
+17031,61,noaa_climate_sample,2024,county
+37119,72,noaa_climate_sample,2024,county
+55025,55,noaa_climate_sample,2024,county
+12057,84,noaa_climate_sample,2024,county
+53033,57,noaa_climate_sample,2024,county
+

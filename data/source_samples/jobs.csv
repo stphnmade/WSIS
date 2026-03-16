@@ -1,0 +1,12 @@
+county_fips,job_growth_pct,unemployment_pct,source_name,source_vintage,source_geography
+48453,4.8,3.4,bls_jobs_sample,2024,county
+37183,4.2,3.1,bls_jobs_sample,2024,county
+42003,2.6,4.0,bls_jobs_sample,2024,county
+08031,4.0,3.2,bls_jobs_sample,2024,county
+27053,3.1,3.0,bls_jobs_sample,2024,county
+17031,2.8,4.6,bls_jobs_sample,2024,county
+37119,4.1,3.5,bls_jobs_sample,2024,county
+55025,3.4,2.7,bls_jobs_sample,2024,county
+12057,3.7,3.3,bls_jobs_sample,2024,county
+53033,3.9,3.6,bls_jobs_sample,2024,county
+

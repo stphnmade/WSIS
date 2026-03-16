@@ -1,4 +1,4 @@
-from wsis.data.mock_loader import load_mock_cities
+from wsis.data.repositories.normalized import load_canonical_cities
 from wsis.domain.models import ScoreWeights
 from wsis.scoring.engine import build_score_breakdown
 
@@ -24,7 +24,7 @@ def test_score_weights_are_normalized() -> None:
 
 
 def test_breakdown_scores_stay_within_expected_bounds() -> None:
-    cities = list(load_mock_cities())
+    cities = [record.to_city_metrics() for record in load_canonical_cities()]
     breakdown = build_score_breakdown(cities[0], cities, ScoreWeights())
 
     assert 0 <= breakdown.affordability <= 10

@@ -1,0 +1,12 @@
+county_fips,median_rent,median_home_price,median_income,source_name,source_vintage,source_geography
+48453,1750,525000,92000,acs_housing_sample,2024,county
+37183,1490,430000,85000,acs_housing_sample,2024,county
+42003,1260,255000,69000,acs_housing_sample,2024,county
+08031,1820,610000,96000,acs_housing_sample,2024,county
+27053,1510,360000,83000,acs_housing_sample,2024,county
+17031,1680,345000,78000,acs_housing_sample,2024,county
+37119,1540,405000,80000,acs_housing_sample,2024,county
+55025,1440,389000,79000,acs_housing_sample,2024,county
+12057,1640,410000,73000,acs_housing_sample,2024,county
+53033,2100,815000,115000,acs_housing_sample,2024,county
+

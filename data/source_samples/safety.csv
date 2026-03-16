@@ -1,0 +1,12 @@
+county_fips,safety_score_raw,source_name,source_vintage,source_geography
+48453,66,fbi_crime_sample,2024,county
+37183,75,fbi_crime_sample,2024,county
+42003,72,fbi_crime_sample,2024,county
+08031,68,fbi_crime_sample,2024,county
+27053,73,fbi_crime_sample,2024,county
+17031,55,fbi_crime_sample,2024,county
+37119,64,fbi_crime_sample,2024,county
+55025,80,fbi_crime_sample,2024,county
+12057,60,fbi_crime_sample,2024,county
+53033,70,fbi_crime_sample,2024,county
+

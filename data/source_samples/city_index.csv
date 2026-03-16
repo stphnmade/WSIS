@@ -1,0 +1,12 @@
+city_slug,name,state,state_code,region,county_fips,county_name,headline,population,latitude,longitude,known_for
+austin-tx,Austin,Texas,TX,South,48453,Travis,"Fast-growing job hub with high housing pressure and strong social energy.",979882,30.2672,-97.7431,"tech hiring, live music, warm weather"
+raleigh-nc,Raleigh,North Carolina,NC,South,37183,Wake,"Balanced cost profile with strong career upside and stable quality-of-life fundamentals.",476587,35.7796,-78.6382,"research triangle jobs, green space, calmer pace"
+pittsburgh-pa,Pittsburgh,Pennsylvania,PA,Northeast,42003,Allegheny,"Lower housing costs and strong eds-and-meds economy with mixed climate tradeoffs.",302971,40.4406,-79.9959,"healthcare jobs, universities, legacy neighborhoods"
+denver-co,Denver,Colorado,CO,West,08031,Denver,"Outdoor lifestyle leader with good wages, fast growth, and expensive housing.",715522,39.7392,-104.9903,"mountain access, sunshine, active lifestyle"
+minneapolis-mn,Minneapolis,Minnesota,MN,Midwest,27053,Hennepin,"Strong incomes and urban amenities with colder winters and solid safety fundamentals.",429954,44.9778,-93.2650,"lakes, healthcare, bikeability"
+chicago-il,Chicago,Illinois,IL,Midwest,17031,Cook,"Big-city career depth and transit access with uneven safety and higher monthly costs.",2746388,41.8781,-87.6298,"career breadth, transit, nightlife"
+charlotte-nc,Charlotte,North Carolina,NC,South,37119,Mecklenburg,"Banking-led job market with moderate costs and growing relocation appeal.",911311,35.2271,-80.8431,"finance jobs, newer housing, southern growth"
+madison-wi,Madison,Wisconsin,WI,Midwest,55025,Dane,"College-town energy, strong social fabric, and reasonable costs for early-career movers.",280305,43.0731,-89.4012,"university town, civic life, bike culture"
+tampa-fl,Tampa,Florida,FL,South,12057,Hillsborough,"Sunbelt affordability story with warm weather and mixed resilience questions.",403364,27.9506,-82.4572,"waterfront lifestyle, warm climate, rapid in-migration"
+seattle-wa,Seattle,Washington,WA,West,53033,King,"High-income tech market with elite career upside and a steep cost burden.",755078,47.6062,-122.3321,"tech salaries, access to nature, cloudy seasons"
+

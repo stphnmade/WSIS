@@ -2,7 +2,8 @@ from __future__ import annotations
 
 from functools import lru_cache
 
-from wsis.data.mock_loader import load_mock_cities
+from wsis.data.repositories.base import CityRepository
+from wsis.data.repositories.factory import get_city_repository
 from wsis.domain.models import CityDetail, CityMetrics, CitySummary, ScoreWeights
 from wsis.scoring.engine import build_city_summary
 from wsis.services.reddit import PlaceholderRedditSentimentService, RedditSentimentService
@@ -13,11 +14,16 @@ class CityNotFoundError(ValueError):
 
 
 class CityService:
-    def __init__(self, reddit_service: RedditSentimentService | None = None) -> None:
+    def __init__(
+        self,
+        repository: CityRepository | None = None,
+        reddit_service: RedditSentimentService | None = None,
+    ) -> None:
+        self._repository = repository or get_city_repository()
         self._reddit_service = reddit_service or PlaceholderRedditSentimentService()
 
     def _cities(self) -> list[CityMetrics]:
-        return list(load_mock_cities())
+        return list(self._repository.list_city_metrics())
 
     def list_cities(self, weights: ScoreWeights | None = None) -> list[CitySummary]:
         active_weights = weights or ScoreWeights()
@@ -36,7 +42,7 @@ class CityService:
             f"Median rent is ${city.median_rent:,.0f} per month.",
             f"Median home price is ${city.median_home_price:,.0f}.",
             f"Job growth is {city.job_growth_pct:.1f}% with unemployment at {city.unemployment_pct:.1f}%.",
-            "TODO: replace mock highlights with source-backed narratives and neighborhood-level context.",
+            "TODO: replace generic highlights with source-backed narratives and neighborhood-level context.",
         ]
 
         return CityDetail(
@@ -57,4 +63,3 @@ class CityService:
 @lru_cache(maxsize=1)
 def get_city_service() -> CityService:
     return CityService()
-

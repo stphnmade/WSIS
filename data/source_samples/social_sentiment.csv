@@ -1,0 +1,12 @@
+city_slug,county_fips,social_sentiment_raw,source_name,source_vintage,source_geography
+austin-tx,48453,0.42,reddit_placeholder_seed,2024,city_anchor_county
+raleigh-nc,37183,0.36,reddit_placeholder_seed,2024,city_anchor_county
+pittsburgh-pa,42003,0.18,reddit_placeholder_seed,2024,city_anchor_county
+denver-co,08031,0.28,reddit_placeholder_seed,2024,city_anchor_county
+minneapolis-mn,27053,0.22,reddit_placeholder_seed,2024,city_anchor_county
+chicago-il,17031,0.05,reddit_placeholder_seed,2024,city_anchor_county
+charlotte-nc,37119,0.24,reddit_placeholder_seed,2024,city_anchor_county
+madison-wi,55025,0.40,reddit_placeholder_seed,2024,city_anchor_county
+tampa-fl,12057,0.16,reddit_placeholder_seed,2024,city_anchor_county
+seattle-wa,53033,0.21,reddit_placeholder_seed,2024,city_anchor_county
+
