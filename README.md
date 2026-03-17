@@ -1,14 +1,14 @@
 # WSIS
 
-WSIS (Where Should I Start) is a map-first relocation discovery product for young adults and early-career professionals in the United States. This milestone delivers a local-first vertical slice with a FastAPI backend, a Streamlit frontend, a transparent scoring model, and a normalized city dataset built from source-shaped sample slices.
+WSIS (Where Should I Start) is a map-first relocation discovery product for young adults and early-career professionals in the United States. This milestone delivers a local-first vertical slice with a FastAPI backend, a Streamlit frontend, a transparent scoring model, and a modular ingestion pipeline that produces a canonical `city_profiles` dataset from public-source-shaped raw files.
 
 ## What is included
 
 - FastAPI service scaffold with health, city list, city detail, and comparison endpoints
 - Streamlit app with a discovery map, city profile view, and comparison view
 - Shared typed domain models, config module, scoring engine, and service layer
-- Canonical city dataset built from source adapters under `data/source_samples/`
-- Repository abstraction so the app can switch between normalized and mock data cleanly
+- Canonical `city_profiles` dataset built from raw source adapters under `data/raw/`
+- Repository abstraction so the app can switch between processed and mock data cleanly
 - Placeholder Reddit sentiment service interface with deterministic mock output
 
 ## Project structure
@@ -19,16 +19,16 @@ apps/
   streamlit/Home.py
   streamlit/pages/
 data/
-  normalized/city_dataset.csv
-  source_samples/
+  raw/
+  processed/city_profiles.parquet
 src/
   wsis/
     api/
     core/
     data/
+      ingestion/
       pipeline/
       repositories/
-      sources/
     domain/
     scoring/
     services/
@@ -47,7 +47,7 @@ source .venv/bin/activate
 pip install -e .
 ```
 
-By default the app uses the normalized repository backend defined in `.env.example`.
+By default the app uses the processed `city_profiles` repository backend defined in `.env.example`.
 
 ## Run the backend
 
@@ -86,28 +86,29 @@ Canonical MVP geography:
 
 This keeps the product city-first while using a stable join key across county-shaped source data.
 
-Source sample files:
+Raw input files:
 
-- `data/source_samples/city_index.csv`
-- `data/source_samples/cost_of_living.csv`
-- `data/source_samples/jobs.csv`
-- `data/source_samples/safety.csv`
-- `data/source_samples/climate.csv`
-- `data/source_samples/social_sentiment.csv`
+- `data/raw/simplemaps/us_cities.csv`
+- `data/raw/census/acs_city_metrics.csv`
+- `data/raw/bls/county_unemployment.csv`
+- `data/raw/fbi/county_crime.csv`
+- `data/raw/noaa/county_climate.csv`
+- `data/raw/reddit/city_sentiment.csv`
 
-Normalized output:
+Processed output:
 
-- `data/normalized/city_dataset.csv`
+- `data/processed/city_profiles.parquet`
 
-Rebuild the normalized dataset locally:
+Build the processed dataset locally:
 
 ```bash
-python -m wsis.data.pipeline.normalize
+python -m wsis.data.pipeline.city_profiles
 ```
 
 Reference documentation:
 
 - `DATA_NORMALIZATION.md`
+- `CITY_PROFILES_SCHEMA.md`
 
 ## Current scoring model
 
@@ -119,12 +120,12 @@ Default weights from the product docs:
 - Climate: 0.10
 - Social sentiment: 0.10
 
-The current engine reads repository-backed city metrics from the normalized dataset and still applies transparent min-max normalization within the active city cohort.
+The current engine reads repository-backed city metrics from `city_profiles.parquet` and still applies transparent min-max normalization within the active city cohort.
 
 ## Deferred integrations
 
-- Real city ingest and normalization pipelines from Census, BLS, crime, climate, and housing sources
-- Real external downloads and richer transforms behind the current sample source adapters
+- Real public-source downloads and refreshable ingestion jobs
+- Stronger source-specific transforms, QA checks, and provenance metadata
 - GeoPandas-based choropleth polygons once the canonical city geometry pipeline is ready
 - Real Reddit harvesting, entity resolution, summarization, and moderation logic
 - Postgres or Supabase persistence
@@ -141,7 +142,7 @@ python3 -m pytest
 
 ## Notes for the next milestone
 
-- Replace the sample slices with real source downloads and refreshable normalization jobs
+- Replace the sample raw slices with real public-source downloads and refreshable ingestion jobs
 - Add a Postgres-backed repository behind the existing city repository interface
 - Introduce batch jobs for scoring refresh and Reddit panel refresh
 - Add deployment assets for Lambda container images and ECR

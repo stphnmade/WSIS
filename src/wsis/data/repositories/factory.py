@@ -15,4 +15,3 @@ def get_city_repository() -> CityRepository:
         return MockCityRepository()
 
     return NormalizedCityRepository()
-

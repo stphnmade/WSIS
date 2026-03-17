@@ -6,24 +6,23 @@ from pathlib import Path
 import pandas as pd
 
 from wsis.core.config import get_settings
-from wsis.data.models import CanonicalCityRecord
-from wsis.data.pipeline.normalize import build_normalized_city_dataset
+from wsis.data.models import CityProfileRecord
+from wsis.data.pipeline.city_profiles import build_city_profiles_dataset
 from wsis.data.repositories.base import CityRepository
 from wsis.domain.models import CityMetrics
 
 
 @lru_cache(maxsize=1)
-def load_canonical_cities() -> tuple[CanonicalCityRecord, ...]:
+def load_city_profiles() -> tuple[CityProfileRecord, ...]:
     settings = get_settings()
-    data_path = Path(settings.normalized_city_data_path)
+    data_path = Path(settings.processed_city_profiles_path)
     if not data_path.exists():
-        return build_normalized_city_dataset()
+        return build_city_profiles_dataset()
 
-    frame = pd.read_csv(data_path, dtype={"county_fips": str})
-    return tuple(CanonicalCityRecord.model_validate(record) for record in frame.to_dict("records"))
+    frame = pd.read_parquet(data_path)
+    return tuple(CityProfileRecord.model_validate(record) for record in frame.to_dict("records"))
 
 
 class NormalizedCityRepository(CityRepository):
     def list_city_metrics(self) -> tuple[CityMetrics, ...]:
-        return tuple(record.to_city_metrics() for record in load_canonical_cities())
-
+        return tuple(record.to_city_metrics() for record in load_city_profiles())

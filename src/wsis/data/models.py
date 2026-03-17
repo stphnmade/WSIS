@@ -5,90 +5,49 @@ from pydantic import BaseModel, Field
 from wsis.domain.models import CityMetrics
 
 
-class SourceSliceMetadata(BaseModel):
-    source_name: str
-    source_vintage: int
-    source_geography: str
-
-
-class CityIndexRecord(BaseModel):
+class CityProfileRecord(BaseModel):
     city_slug: str
-    name: str
-    state: str
+    city_name: str
+    city_name_normalized: str
+    city_state_key: str
     state_code: str
-    region: str
+    state_name: str
     county_fips: str = Field(min_length=5, max_length=5)
     county_name: str
-    headline: str
-    population: int
-    latitude: float
-    longitude: float
-    known_for: str
-
-
-class CostOfLivingRecord(SourceSliceMetadata):
-    county_fips: str = Field(min_length=5, max_length=5)
-    median_rent: float
-    median_home_price: float
-    median_income: float
-
-
-class JobsRecord(SourceSliceMetadata):
-    county_fips: str = Field(min_length=5, max_length=5)
-    job_growth_pct: float
-    unemployment_pct: float
-
-
-class SafetyRecord(SourceSliceMetadata):
-    county_fips: str = Field(min_length=5, max_length=5)
-    safety_score_raw: float = Field(ge=0, le=100)
-
-
-class ClimateRecord(SourceSliceMetadata):
-    county_fips: str = Field(min_length=5, max_length=5)
-    climate_score_raw: float = Field(ge=0, le=100)
-
-
-class SocialSentimentRecord(SourceSliceMetadata):
-    city_slug: str
-    county_fips: str = Field(min_length=5, max_length=5)
-    social_sentiment_raw: float = Field(ge=-1, le=1)
-
-
-class CanonicalCityRecord(BaseModel):
-    """MVP canonical record: one city anchored to one county FIPS join key."""
-
-    city_slug: str
-    county_fips: str = Field(min_length=5, max_length=5)
-    county_name: str
-    name: str
-    state: str
-    state_code: str
     region: str
-    headline: str
-    population: int
     latitude: float
     longitude: float
-    known_for: str
+    population: int
+    median_income: float
     median_rent: float
     median_home_price: float
-    median_income: float
-    job_growth_pct: float
     unemployment_pct: float
+    job_growth_pct: float
+    violent_crime_per_100k: float
     safety_score_raw: float = Field(ge=0, le=100)
+    avg_temp_f: float
+    sunny_days: float
     climate_score_raw: float = Field(ge=0, le=100)
     social_sentiment_raw: float = Field(ge=-1, le=1)
-    cost_source_name: str
-    jobs_source_name: str
-    safety_source_name: str
-    climate_source_name: str
-    social_source_name: str
+    affordability_norm: float = Field(ge=0, le=1)
+    job_market_norm: float = Field(ge=0, le=1)
+    safety_norm: float = Field(ge=0, le=1)
+    climate_norm: float = Field(ge=0, le=1)
+    social_norm: float = Field(ge=0, le=1)
+    has_simplemaps_data: bool
+    has_census_data: bool
+    has_bls_data: bool
+    has_fbi_data: bool
+    has_noaa_data: bool
+    has_reddit_data: bool
+    headline: str
+    known_for: str
 
     def to_city_metrics(self) -> CityMetrics:
         return CityMetrics(
             slug=self.city_slug,
-            name=self.name,
-            state=self.state,
+            name=self.city_name,
+            state=self.state_name,
             state_code=self.state_code,
             region=self.region,
             headline=self.headline,

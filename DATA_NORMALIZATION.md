@@ -24,27 +24,26 @@ This means:
 
 ## Source Mapping
 
-- `data/source_samples/city_index.csv`
-  - Defines the city dimension and anchor county mapping.
-- `data/source_samples/cost_of_living.csv`
-  - County-level affordability inputs.
-- `data/source_samples/jobs.csv`
-  - County-level jobs inputs.
-- `data/source_samples/safety.csv`
-  - County-level safety inputs.
-- `data/source_samples/climate.csv`
-  - County-level climate inputs.
-- `data/source_samples/social_sentiment.csv`
-  - City-level placeholder social input aligned to the city anchor county.
+- `data/raw/simplemaps/us_cities.csv`
+  - Defines the canonical city dimension and anchor county mapping.
+- `data/raw/census/acs_city_metrics.csv`
+  - City-level ACS inputs for income and rent.
+- `data/raw/bls/county_unemployment.csv`
+  - County-level labor-market input.
+- `data/raw/fbi/county_crime.csv`
+  - County-level crime input.
+- `data/raw/noaa/county_climate.csv`
+  - County-level climate input.
+- `data/raw/reddit/city_sentiment.csv`
+  - City-level social sentiment placeholder input.
 
-## Normalized Output
+## Processed Output
 
-- `data/normalized/city_dataset.csv`
-  - Repository-ready normalized city dataset used by the app by default.
+- `data/processed/city_profiles.parquet`
+  - Repository-ready processed dataset used by the app by default.
 
 ## TODOs
 
-- Replace sample slices with real public-source downloads and normalization logic.
+- Replace the sample raw slices with real public-source downloads and refresh logic.
 - Add multi-county metro handling where city-only anchoring is too lossy.
 - Add source freshness metadata and refresh jobs.
-

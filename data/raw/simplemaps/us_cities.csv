@@ -1,0 +1,12 @@
+city,state_id,state_name,county_fips,county_name,lat,lng,population
+Austin,TX,Texas,48453,Travis,30.2672,-97.7431,979882
+Raleigh,NC,North Carolina,37183,Wake,35.7796,-78.6382,476587
+Pittsburgh,PA,Pennsylvania,42003,Allegheny,40.4406,-79.9959,302971
+Denver,CO,Colorado,08031,Denver,39.7392,-104.9903,715522
+Minneapolis,MN,Minnesota,27053,Hennepin,44.9778,-93.2650,429954
+Chicago,IL,Illinois,17031,Cook,41.8781,-87.6298,2746388
+Charlotte,NC,North Carolina,37119,Mecklenburg,35.2271,-80.8431,911311
+Madison,WI,Wisconsin,55025,Dane,43.0731,-89.4012,280305
+Tampa,FL,Florida,12057,Hillsborough,27.9506,-82.4572,403364
+Seattle,WA,Washington,53033,King,47.6062,-122.3321,755078
+

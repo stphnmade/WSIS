@@ -1,0 +1,12 @@
+city,state_id,county_fips,social_sentiment_raw
+Austin,TX,48453,0.42
+Raleigh,NC,37183,0.36
+Pittsburgh,PA,42003,0.18
+Denver,CO,08031,0.28
+Minneapolis,MN,27053,0.22
+Chicago,IL,17031,0.05
+Charlotte,NC,37119,0.24
+Madison,WI,55025,0.40
+Tampa,FL,12057,0.16
+Seattle,WA,53033,0.21
+

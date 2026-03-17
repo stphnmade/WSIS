@@ -1,0 +1,12 @@
+city,state_id,county_fips,median_income,median_rent
+Austin,TX,48453,92000,1750
+Raleigh,NC,37183,85000,1490
+Pittsburgh,PA,42003,69000,1260
+Denver,CO,08031,96000,1820
+Minneapolis,MN,27053,83000,1510
+Chicago,IL,17031,78000,1680
+Charlotte,NC,37119,80000,1540
+Madison,WI,55025,79000,1440
+Tampa,FL,12057,73000,1640
+Seattle,WA,53033,115000,2100
+
