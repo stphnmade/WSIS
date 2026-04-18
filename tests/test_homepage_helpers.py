@@ -8,11 +8,15 @@ from wsis.domain.models import (
     ScoreWeights,
 )
 from wsis.ui.homepage import (
+    active_filter_descriptions,
+    apply_consumer_filters,
     badge_labels,
     city_reason_snippet,
     comparison_preview_rows,
+    quick_stats,
     ranking_explanation,
     social_excerpt,
+    standout_attribute,
     social_themes,
 )
 
@@ -123,6 +127,32 @@ def test_city_reason_snippet_and_comparison_rows() -> None:
     reason = city_reason_snippet(detail, ScoreWeights())
     rows = comparison_preview_rows([detail])
 
-    assert "Austin is staying competitive" in reason
+    assert "Austin is surfacing" in reason
     assert rows[0]["City"] == "Austin, TX"
     assert rows[0]["Median rent"] == "$1,750"
+
+
+def test_standout_attribute_and_quick_stats_are_readable() -> None:
+    detail = _detail()
+
+    assert standout_attribute(detail) in {"Affordable", "Strong Jobs", "Lower Unemployment"}
+    stats = quick_stats(detail)
+    assert stats[0] == ("Median rent", "$1,750")
+    assert stats[3] == ("Sentiment", "7.1")
+
+
+def test_apply_consumer_filters_uses_region_and_human_filters() -> None:
+    detail = _detail()
+
+    filtered = apply_consumer_filters([detail], "South", ["Warm Weather", "High Earning Potential"])
+    assert filtered == [detail]
+
+    excluded = apply_consumer_filters([detail], "Midwest", [])
+    assert excluded == []
+
+
+def test_active_filter_descriptions_marks_placeholder_filters() -> None:
+    descriptions = active_filter_descriptions(["Tech Focus", "Affordable"])
+
+    assert "Placeholder logic for now." in descriptions[0]
+    assert "Placeholder logic for now." not in descriptions[1]

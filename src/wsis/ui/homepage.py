@@ -29,6 +29,56 @@ THEME_PATTERNS = (
     ("outdoor access", ("outdoor", "nature", "mountain", "lake", "waterfront", "park")),
 )
 
+# These are intentionally lightweight heuristic filters until WSIS models sector, civic,
+# and ideology-specific datasets explicitly.
+CONSUMER_FILTERS = (
+    {
+        "key": "warm_weather",
+        "label": "Warm Weather",
+        "description": "Favor cities with stronger climate comfort or warmer temperature signals.",
+        "placeholder": False,
+    },
+    {
+        "key": "affordable",
+        "label": "Affordable",
+        "description": "Favor cities with lower rent burden or stronger affordability scores.",
+        "placeholder": False,
+    },
+    {
+        "key": "high_earning_potential",
+        "label": "High Earning Potential",
+        "description": "Favor stronger incomes and job-market upside.",
+        "placeholder": False,
+    },
+    {
+        "key": "tech_focus",
+        "label": "Tech Focus",
+        "description": "Heuristic filter favoring cities with tech-oriented income and job signals.",
+        "placeholder": True,
+    },
+    {
+        "key": "agriculture_industry_focus",
+        "label": "Agriculture/Industry Focus",
+        "description": "Heuristic filter favoring lower-cost Midwestern or Southern labor markets.",
+        "placeholder": True,
+    },
+    {
+        "key": "republican_leaning",
+        "label": "Republican-Leaning",
+        "description": "Placeholder civic signal based on broad state-level assumptions.",
+        "placeholder": True,
+    },
+    {
+        "key": "democratic_leaning",
+        "label": "Democratic-Leaning",
+        "description": "Placeholder civic signal based on broad state-level assumptions.",
+        "placeholder": True,
+    },
+)
+
+REPUBLICAN_PLACEHOLDER_STATES = {"TX", "FL", "NC"}
+DEMOCRATIC_PLACEHOLDER_STATES = {"WA", "IL", "MN", "CO", "PA", "WI"}
+
 
 def strongest_dimensions(summary: CitySummary) -> list[tuple[str, float]]:
     return sorted(summary.score_breakdown.as_dict().items(), key=lambda item: item[1], reverse=True)
@@ -60,8 +110,8 @@ def city_reason_snippet(detail: CityDetail, weights: ScoreWeights) -> str:
     )[:2]
     lead_weight_labels = " and ".join(WEIGHT_PRODUCT_LABELS[name] for name, _ in lead_weights)
     return (
-        f"{detail.summary.name} is staying competitive because it combines {dimension_labels} "
-        f"under a ranking model currently tilted toward {lead_weight_labels}."
+        f"{detail.summary.name} is surfacing because it combines {dimension_labels} "
+        f"under a ranking mix currently tilted toward {lead_weight_labels}."
     )
 
 
@@ -69,7 +119,7 @@ def badge_labels(detail: CityDetail) -> list[str]:
     breakdown = detail.summary.score_breakdown
     badges: list[str] = []
 
-    if breakdown.affordability >= 7 or (detail.metrics.median_rent * 12 / detail.metrics.median_income) <= 0.25:
+    if breakdown.affordability >= 7 or rent_burden(detail) <= 0.25:
         badges.append("Affordable")
     if breakdown.job_market >= 7:
         badges.append("Strong Jobs")
@@ -147,3 +197,77 @@ def comparison_preview_rows(details: list[CityDetail]) -> list[dict[str, object]
         }
         for detail in details
     ]
+
+
+def rent_burden(detail: CityDetail) -> float:
+    return (detail.metrics.median_rent * 12) / detail.metrics.median_income
+
+
+def standout_attribute(detail: CityDetail) -> str:
+    badges = badge_labels(detail)
+    if badges:
+        return badges[0]
+    label, score = strongest_dimensions(detail.summary)[0]
+    return f"{label} {score}/10"
+
+
+def quick_stats(detail: CityDetail) -> list[tuple[str, str]]:
+    return [
+        ("Median rent", f"${detail.metrics.median_rent:,.0f}"),
+        ("Median income", f"${detail.metrics.median_income:,.0f}"),
+        ("Unemployment", f"{detail.metrics.unemployment_pct:.1f}%"),
+        ("Sentiment", f"{detail.reddit_panel.sentiment_score:.1f}"),
+    ]
+
+
+def consumer_filter_labels() -> list[str]:
+    return [option["label"] for option in CONSUMER_FILTERS]
+
+
+def filter_option_by_label(label: str) -> dict[str, object]:
+    return next(option for option in CONSUMER_FILTERS if option["label"] == label)
+
+
+def active_filter_descriptions(selected_filters: list[str]) -> list[str]:
+    descriptions: list[str] = []
+    for label in selected_filters:
+        option = filter_option_by_label(label)
+        description = str(option["description"])
+        if bool(option["placeholder"]):
+            description += " Placeholder logic for now."
+        descriptions.append(description)
+    return descriptions
+
+
+def filter_matches(detail: CityDetail, filter_key: str) -> bool:
+    if filter_key == "warm_weather":
+        return detail.summary.score_breakdown.climate >= 7 or (detail.metrics.avg_temp_f or 0) >= 65
+    if filter_key == "affordable":
+        return detail.summary.score_breakdown.affordability >= 7 or rent_burden(detail) <= 0.25
+    if filter_key == "high_earning_potential":
+        return detail.metrics.median_income >= 85000 or detail.summary.score_breakdown.job_market >= 7
+    if filter_key == "tech_focus":
+        return detail.metrics.median_income >= 90000 and detail.summary.score_breakdown.job_market >= 7
+    if filter_key == "agriculture_industry_focus":
+        return detail.summary.region in {"Midwest", "South"} and detail.metrics.median_home_price <= 450000
+    if filter_key == "republican_leaning":
+        return detail.summary.state_code in REPUBLICAN_PLACEHOLDER_STATES
+    if filter_key == "democratic_leaning":
+        return detail.summary.state_code in DEMOCRATIC_PLACEHOLDER_STATES
+    return True
+
+
+def apply_consumer_filters(
+    details: list[CityDetail],
+    selected_region: str,
+    selected_filters: list[str],
+) -> list[CityDetail]:
+    filtered = [
+        detail
+        for detail in details
+        if selected_region == "All" or detail.summary.region == selected_region
+    ]
+    for label in selected_filters:
+        option = filter_option_by_label(label)
+        filtered = [detail for detail in filtered if filter_matches(detail, str(option["key"]))]
+    return filtered

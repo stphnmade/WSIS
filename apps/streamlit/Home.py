@@ -8,16 +8,22 @@ import streamlit as st
 
 from wsis.core.config import get_settings
 from wsis.core.weights import WEIGHT_STATE_KEYS, default_score_weights, score_weights_from_state
-from wsis.domain.models import CityDetail, CitySummary, ScoreWeights
+from wsis.domain.models import CityDetail, ScoreWeights
 from wsis.services.api_client import ApiCityClient
 from wsis.ui.homepage import (
+    active_filter_descriptions,
+    apply_consumer_filters,
     badge_labels,
     city_reason_snippet,
     comparison_preview_rows,
+    consumer_filter_labels,
+    filter_option_by_label,
+    quick_stats,
     ranking_explanation,
     social_excerpt,
     social_preview_title,
     social_themes,
+    standout_attribute,
     strongest_dimensions,
 )
 
@@ -62,19 +68,19 @@ def inject_styles() -> None:
             background: linear-gradient(135deg, #f4efe6 0%, #e6efe9 55%, #d8e6ea 100%);
             border: 1px solid rgba(104, 89, 70, 0.18);
             border-radius: 24px;
-            padding: 1.5rem 1.6rem;
-            margin-bottom: 0.4rem;
+            padding: 1.2rem 1.3rem;
+            margin-bottom: 0.65rem;
         }
         .wsis-hero h1 {
-            font-size: 2.55rem;
-            line-height: 1.05;
-            margin: 0.25rem 0 0.8rem 0;
+            font-size: 2.35rem;
+            line-height: 1.02;
+            margin: 0.2rem 0 0.55rem 0;
             color: #1f2b28;
         }
         .wsis-hero p {
-            font-size: 1rem;
+            font-size: 0.98rem;
             color: #31403c;
-            margin-bottom: 0.4rem;
+            margin-bottom: 0.3rem;
         }
         .wsis-chip-row {
             display: flex;
@@ -84,18 +90,18 @@ def inject_styles() -> None:
         }
         .wsis-chip {
             display: inline-block;
-            padding: 0.28rem 0.65rem;
+            padding: 0.26rem 0.62rem;
             border-radius: 999px;
             background: #f3f0ea;
             border: 1px solid rgba(70, 66, 57, 0.12);
             color: #3a3d38;
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             font-weight: 600;
         }
         .wsis-note {
             border-left: 3px solid #b98652;
-            padding-left: 0.8rem;
-            margin-top: 0.7rem;
+            padding-left: 0.75rem;
+            margin-top: 0.55rem;
             color: #4b514b;
         }
         .wsis-placeholder {
@@ -103,7 +109,7 @@ def inject_styles() -> None:
             border-radius: 18px;
             padding: 1rem;
             background: rgba(244, 241, 235, 0.6);
-            min-height: 165px;
+            min-height: 150px;
         }
         .wsis-placeholder h4 {
             margin: 0 0 0.45rem 0;
@@ -118,7 +124,40 @@ def inject_styles() -> None:
             color: #6b726d;
         }
         .wsis-section-space {
-            padding-top: 0.25rem;
+            padding-top: 0.15rem;
+        }
+        .wsis-map-shell {
+            border: 1px solid rgba(90, 101, 100, 0.18);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(250,248,243,0.92) 0%, rgba(245,248,246,0.9) 100%);
+            padding: 0.85rem;
+        }
+        .wsis-tray {
+            border: 1px solid rgba(84, 96, 97, 0.2);
+            border-radius: 18px;
+            background: rgba(255,255,255,0.7);
+            padding: 0.8rem;
+        }
+        .wsis-tray-compact {
+            border: 1px solid rgba(84, 96, 97, 0.18);
+            border-radius: 16px;
+            background: rgba(248, 247, 242, 0.94);
+            padding: 0.7rem 0.8rem;
+            margin-top: 0.55rem;
+        }
+        .wsis-state-bar {
+            border: 1px solid rgba(84, 96, 97, 0.14);
+            border-radius: 16px;
+            background: rgba(255, 255, 255, 0.72);
+            padding: 0.75rem 0.85rem;
+            margin-bottom: 0.7rem;
+        }
+        .wsis-selected-callout {
+            border: 1px solid rgba(185, 134, 82, 0.28);
+            background: linear-gradient(135deg, rgba(249, 243, 232, 0.95) 0%, rgba(247, 250, 248, 0.9) 100%);
+            border-radius: 16px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
         }
         </style>
         """,
@@ -133,7 +172,9 @@ def initialize_state() -> None:
         st.session_state.setdefault(state_key, int(default_values[weight_name]))
     st.session_state.setdefault("home_region", "All")
     st.session_state.setdefault("home_compare_slugs", [])
+    st.session_state.setdefault("home_selected_filters", [])
     st.session_state.setdefault("selected_city_slug", "")
+    st.session_state.setdefault("home_compare_notice", "")
 
 
 def current_weights() -> ScoreWeights:
@@ -175,106 +216,9 @@ def open_profile(slug: str) -> None:
     st.switch_page("pages/1_City_Profile.py")
 
 
-def build_weights_section() -> ScoreWeights:
-    render_section_header(
-        "Score controls",
-        "Tune your fit",
-        "Set what matters most. WSIS normalizes these weights before scoring, so you can treat them as a preference mix rather than fixed math.",
-    )
-    with st.container(border=True):
-        first_row = st.columns(3)
-        second_row = st.columns(2)
-        slider_columns = [
-            (first_row[0], "affordability"),
-            (first_row[1], "job_market"),
-            (first_row[2], "safety"),
-            (second_row[0], "climate"),
-            (second_row[1], "social_sentiment"),
-        ]
-        for column, weight_name in slider_columns:
-            with column:
-                st.slider(
-                    WEIGHT_LABELS[weight_name],
-                    min_value=0,
-                    max_value=100,
-                    step=5,
-                    key=WEIGHT_STATE_KEYS[weight_name],
-                    help=WEIGHT_HELP[weight_name],
-                )
-
-        weights = current_weights()
-        ordered_weights = sorted(
-            weights.normalized().model_dump().items(),
-            key=lambda item: item[1],
-            reverse=True,
-        )
-        summary_columns = st.columns(3)
-        summary_columns[0].metric("Lead priority", WEIGHT_LABELS[ordered_weights[0][0]])
-        summary_columns[1].metric("Second priority", WEIGHT_LABELS[ordered_weights[1][0]])
-        summary_columns[2].metric(
-            "Current mix",
-            " / ".join(
-                f"{WEIGHT_LABELS[name]} {int(round(value * 100))}%"
-                for name, value in ordered_weights[:3]
-            ),
-        )
-        st.write(ranking_explanation(weights))
-        return weights
-
-
-def build_map(cities: list[CitySummary]):
-    settings = get_settings()
-    frame = pd.DataFrame(
-        [
-            {
-                "slug": city.slug,
-                "city": city.name,
-                "state": city.state_code,
-                "score": city.overall_score,
-                "latitude": city.latitude,
-                "longitude": city.longitude,
-                "headline": city.headline,
-            }
-            for city in cities
-        ]
-    )
-
-    if settings.mapbox_token:
-        px.set_mapbox_access_token(settings.mapbox_token)
-        figure = px.scatter_mapbox(
-            frame,
-            lat="latitude",
-            lon="longitude",
-            color="score",
-            size="score",
-            hover_name="city",
-            hover_data={"state": True, "headline": True, "latitude": False, "longitude": False},
-            color_continuous_scale="YlGnBu",
-            zoom=2.9,
-            height=560,
-            mapbox_style="carto-positron",
-        )
-    else:
-        figure = px.scatter_geo(
-            frame,
-            lat="latitude",
-            lon="longitude",
-            color="score",
-            size="score",
-            hover_name="city",
-            hover_data={"state": True, "headline": True},
-            color_continuous_scale="YlGnBu",
-            scope="usa",
-            projection="albers usa",
-            height=560,
-        )
-
-    figure.update_layout(
-        margin={"l": 0, "r": 0, "t": 0, "b": 0},
-        coloraxis_colorbar={"title": "WSIS score"},
-    )
-    figure.update_traces(marker={"opacity": 0.88, "line": {"color": "white", "width": 1}})
-    return figure
+def open_comparison() -> None:
+    st.session_state["comparison_selected_slugs"] = st.session_state["home_compare_slugs"]
+    st.switch_page("pages/2_Comparison.py")
 
 
 def fetch_city_details(
@@ -292,22 +236,12 @@ def fetch_city_details(
     return details, source
 
 
-def sync_compare_selection(filtered_cities: list[CitySummary]) -> list[str]:
-    available_slugs = [city.slug for city in filtered_cities]
-    selected = [slug for slug in st.session_state["home_compare_slugs"] if slug in available_slugs]
-    target_default = min(2, len(available_slugs))
-    for slug in available_slugs:
-        if len(selected) >= target_default:
-            break
-        if slug not in selected:
-            selected.append(slug)
-    st.session_state["home_compare_slugs"] = selected[:3]
-    return st.session_state["home_compare_slugs"]
+def current_compare_selection(available_slugs: set[str]) -> list[str]:
+    return [slug for slug in st.session_state["home_compare_slugs"] if slug in available_slugs][:3]
 
 
-def toggle_compare_city(slug: str, filtered_cities: list[CitySummary]) -> None:
-    available_slugs = {city.slug for city in filtered_cities}
-    selected = [item for item in st.session_state["home_compare_slugs"] if item in available_slugs]
+def toggle_compare_city(slug: str, available_slugs: set[str]) -> None:
+    selected = current_compare_selection(available_slugs)
     if slug in selected:
         selected.remove(slug)
     elif len(selected) < 3:
@@ -317,28 +251,329 @@ def toggle_compare_city(slug: str, filtered_cities: list[CitySummary]) -> None:
     st.session_state["home_compare_slugs"] = selected
 
 
-def render_top_match_card(detail: CityDetail, rank: int, filtered_cities: list[CitySummary]) -> None:
-    compare_slugs = st.session_state["home_compare_slugs"]
-    compare_label = "Remove from compare" if detail.summary.slug in compare_slugs else "Compare"
+def update_selected_city(slug: str) -> None:
+    st.session_state["selected_city_slug"] = slug
+
+
+def clear_selected_city() -> None:
+    st.session_state["selected_city_slug"] = ""
+
+
+def reset_discovery_tray() -> None:
+    clear_selected_city()
+    st.session_state["home_region"] = "All"
+    st.session_state["home_selected_filters"] = []
+
+
+def clear_compare_selection() -> None:
+    st.session_state["home_compare_slugs"] = []
+
+
+def build_map(details: list[CityDetail], selected_slug: str | None):
+    settings = get_settings()
+    frame = pd.DataFrame(
+        [
+            {
+                "slug": detail.summary.slug,
+                "city": detail.summary.name,
+                "state": detail.summary.state,
+                "score": detail.summary.overall_score,
+                "latitude": detail.summary.latitude,
+                "longitude": detail.summary.longitude,
+                "standout": standout_attribute(detail),
+            }
+            for detail in details
+        ]
+    )
+
+    if settings.mapbox_token:
+        px.set_mapbox_access_token(settings.mapbox_token)
+        figure = px.scatter_mapbox(
+            frame,
+            lat="latitude",
+            lon="longitude",
+            color="score",
+            size="score",
+            hover_name="city",
+            hover_data={
+                "state": True,
+                "score": True,
+                "standout": True,
+                "latitude": False,
+                "longitude": False,
+            },
+            custom_data=["slug"],
+            color_continuous_scale="YlGnBu",
+            zoom=2.9,
+            height=620,
+            mapbox_style="carto-positron",
+        )
+    else:
+        figure = px.scatter_geo(
+            frame,
+            lat="latitude",
+            lon="longitude",
+            color="score",
+            size="score",
+            hover_name="city",
+            hover_data={
+                "state": True,
+                "score": True,
+                "standout": True,
+            },
+            custom_data=["slug"],
+            color_continuous_scale="YlGnBu",
+            scope="usa",
+            projection="albers usa",
+            height=620,
+        )
+
+    selected_points = frame.index[frame["slug"] == selected_slug].tolist() if selected_slug else []
+    figure.update_layout(
+        margin={"l": 0, "r": 0, "t": 0, "b": 0},
+        coloraxis_colorbar={"title": "WSIS score"},
+        clickmode="event+select",
+    )
+    figure.update_traces(
+        marker={"opacity": 0.88, "line": {"color": "white", "width": 1.2}},
+        selectedpoints=selected_points or None,
+        selected={"marker": {"opacity": 1.0, "size": 24, "color": "#0f766e"}},
+        unselected={"marker": {"opacity": 0.42}},
+    )
+    return figure
+
+
+def render_map_state_bar(detail: CityDetail | None, compare_details: list[CityDetail], visible_count: int) -> None:
+    st.markdown('<div class="wsis-state-bar">', unsafe_allow_html=True)
+    columns = st.columns([1.5, 1.2, 0.8, 0.8])
+    with columns[0]:
+        st.caption("Inspection state")
+        if detail is None:
+            st.write("Discovery mode")
+            st.caption("Click a city to inspect it in the side panel.")
+        else:
+            st.write(f"Inspecting {detail.summary.name}, {detail.summary.state_code}")
+            st.caption("This city is highlighted on the map and expanded in the side panel.")
+    with columns[1]:
+        st.caption("In play")
+        chips = [f"{visible_count} cities visible"]
+        if compare_details:
+            chips.append(f"{len(compare_details)} in compare tray")
+        render_badges(chips)
+    with columns[2]:
+        st.caption("Selection")
+        if st.button("Clear selection", key="map_clear_selection", width="stretch", disabled=detail is None):
+            clear_selected_city()
+            st.rerun()
+    with columns[3]:
+        st.caption("Reset")
+        if st.button("Reset discovery", key="map_reset_discovery", width="stretch"):
+            reset_discovery_tray()
+            st.rerun()
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def render_filter_tray() -> None:
+    st.markdown('<div class="wsis-tray-compact">', unsafe_allow_html=True)
+    tray_columns = st.columns([1.2, 1.4, 0.9])
+    with tray_columns[0]:
+        st.caption("Filter tray")
+        st.selectbox("Region", ["All", "South", "West", "Midwest", "Northeast"], key="home_region")
+    with tray_columns[1]:
+        st.caption("Active quick filters")
+        if st.session_state["home_selected_filters"]:
+            render_badges(st.session_state["home_selected_filters"])
+        else:
+            st.caption("No quick filters active yet.")
+    with tray_columns[2]:
+        st.caption("Controls")
+        with st.popover("Adjust filters"):
+            st.multiselect(
+                "Quick filters",
+                consumer_filter_labels(),
+                key="home_selected_filters",
+            )
+            st.caption("Human-readable filters first. Some civic and sector filters are heuristic placeholders for now.")
+            first_row = st.columns(3)
+            second_row = st.columns(2)
+            slider_columns = [
+                (first_row[0], "affordability"),
+                (first_row[1], "job_market"),
+                (first_row[2], "safety"),
+                (second_row[0], "climate"),
+                (second_row[1], "social_sentiment"),
+            ]
+            for column, weight_name in slider_columns:
+                with column:
+                    st.slider(
+                        WEIGHT_LABELS[weight_name],
+                        min_value=0,
+                        max_value=100,
+                        step=5,
+                        key=WEIGHT_STATE_KEYS[weight_name],
+                        help=WEIGHT_HELP[weight_name],
+                    )
+    if st.session_state["home_selected_filters"]:
+        st.caption(" | ".join(active_filter_descriptions(st.session_state["home_selected_filters"])))
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def render_side_panel_intro(weights: ScoreWeights, visible_count: int, total_count: int) -> None:
+    st.markdown("### Explore the map")
+    st.caption("Hover for a quick read. Click a city to turn this panel into an inspection view.")
+    render_badges([f"{visible_count} visible", f"{total_count} tracked"])
+    st.write("Use the filter tray only when you want to steer the map. Use compare only when two or three options start to feel real.")
+    st.caption(ranking_explanation(weights))
+    st.info("Inspection tabs and deep-dive actions appear here after selection.")
+
+
+def render_selected_compare_links(compare_details: list[CityDetail]) -> None:
+    if not compare_details:
+        return
+    st.caption("Selected for compare")
+    render_badges([f"{detail.summary.name}, {detail.summary.state_code}" for detail in compare_details])
+
+
+def render_side_panel(detail: CityDetail | None, weights: ScoreWeights, compare_details: list[CityDetail], available_slugs: set[str]) -> None:
+    with st.container(border=True):
+        if detail is None:
+            render_side_panel_intro(weights, len(available_slugs), len(available_slugs))
+            return
+
+        st.markdown(
+            f"""
+            <div class="wsis-selected-callout">
+              <div class="wsis-eyebrow">Now Inspecting</div>
+              <h3 style="margin:0.2rem 0 0 0;">{html.escape(detail.summary.name)}, {html.escape(detail.summary.state_code)}</h3>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        render_badges(badge_labels(detail))
+        st.metric("WSIS score", detail.summary.overall_score)
+        stat_columns = st.columns(2)
+        for column, (label, value) in zip(stat_columns * 2, quick_stats(detail)):
+            column.metric(label, value)
+
+        action_columns = st.columns(2)
+        with action_columns[0]:
+            if st.button("View City Profile", key=f"panel_profile_{detail.summary.slug}", width="stretch"):
+                open_profile(detail.summary.slug)
+        with action_columns[1]:
+            compare_label = (
+                "Remove from Compare" if detail.summary.slug in current_compare_selection(available_slugs) else "Add to Compare"
+            )
+            if st.button(compare_label, key=f"panel_compare_{detail.summary.slug}", width="stretch"):
+                toggle_compare_city(detail.summary.slug, available_slugs)
+                st.rerun()
+        action_footer = st.columns(2)
+        with action_footer[0]:
+            if st.button("Clear Inspection", key=f"panel_clear_{detail.summary.slug}", width="stretch"):
+                clear_selected_city()
+                st.rerun()
+        with action_footer[1]:
+            if st.button("Save coming soon", key=f"panel_save_{detail.summary.slug}", width="stretch", disabled=True):
+                pass
+
+        tabs = st.tabs(["Overview", "Social"])
+        with tabs[0]:
+            st.write(detail.summary.headline)
+            st.caption(city_reason_snippet(detail, weights))
+            st.caption("Inspect here first, then either open the full profile or keep the city in compare.")
+            for highlight in detail.highlights[:3]:
+                st.write(f"- {highlight}")
+        with tabs[1]:
+            st.metric("Sentiment score", detail.reddit_panel.sentiment_score)
+            render_badges(social_themes(detail))
+            st.write(detail.reddit_panel.summary)
+            st.markdown(f"**{social_preview_title(detail)}**")
+            st.write(social_excerpt(detail))
+
+        render_selected_compare_links(compare_details)
+        if len(compare_details) >= 2 and st.button("Launch Comparison", width="stretch"):
+            open_comparison()
+
+
+def render_compare_tray(compare_details: list[CityDetail], weights: ScoreWeights, available_slugs: set[str]) -> None:
+    if len(compare_details) < 2:
+        return
+    st.markdown('<div class="wsis-tray">', unsafe_allow_html=True)
+    st.markdown("### Compare tray")
+    st.caption("Decision support for two to three cities while the side panel keeps the active city in focus.")
+    top_actions = st.columns([1, 1])
+    with top_actions[0]:
+        if st.button("Open full comparison", key="tray_open_comparison", width="stretch"):
+            open_comparison()
+    with top_actions[1]:
+        if st.button("Clear compare tray", key="tray_clear_compare", width="stretch"):
+            clear_compare_selection()
+            st.rerun()
+
+    compare_columns = st.columns(len(compare_details))
+    active_slug = st.session_state.get("selected_city_slug", "")
+    for column, detail in zip(compare_columns, compare_details):
+        with column:
+            with st.container(border=True):
+                st.caption("Comparison candidate")
+                st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
+                status_labels = []
+                if detail.summary.slug == active_slug:
+                    status_labels.append("Active inspection")
+                status_labels.extend(badge_labels(detail)[:2])
+                render_badges(status_labels)
+                st.metric("Score", detail.summary.overall_score)
+                for label, value in quick_stats(detail)[:3]:
+                    st.caption(f"{label}: {value}")
+                st.caption(city_reason_snippet(detail, weights))
+                action_columns = st.columns(2)
+                with action_columns[0]:
+                    if st.button("Inspect", key=f"tray_inspect_{detail.summary.slug}", width="stretch"):
+                        update_selected_city(detail.summary.slug)
+                        st.rerun()
+                with action_columns[1]:
+                    if st.button("Remove", key=f"tray_remove_{detail.summary.slug}", width="stretch"):
+                        toggle_compare_city(detail.summary.slug, available_slugs)
+                        st.rerun()
+
+    compare_frame = pd.DataFrame(comparison_preview_rows(compare_details))
+    st.dataframe(compare_frame, width="stretch", hide_index=True)
+    st.caption(ranking_explanation(weights))
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def render_top_match_card(detail: CityDetail, rank: int, available_slugs: set[str]) -> None:
+    compare_slugs = current_compare_selection(available_slugs)
+    compare_label = "Remove from Compare" if detail.summary.slug in compare_slugs else "Compare"
+    is_selected = st.session_state.get("selected_city_slug", "") == detail.summary.slug
 
     with st.container(border=True):
         st.caption(f"Top match #{rank}")
         st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
+        status_labels = []
+        if is_selected:
+            status_labels.append("Active inspection")
+        if detail.summary.slug in compare_slugs:
+            status_labels.append("In compare tray")
+        if status_labels:
+            render_badges(status_labels)
+        st.metric("Score", detail.summary.overall_score)
         render_badges(badge_labels(detail))
         st.write(detail.summary.headline)
-        metric_columns = st.columns(3)
-        metric_columns[0].metric("Overall", detail.summary.overall_score)
-        metric_columns[1].metric("Rent", f"${detail.metrics.median_rent:,.0f}")
-        metric_columns[2].metric("Sentiment", detail.reddit_panel.sentiment_score)
         st.caption(city_reason_snippet(detail, current_weights()))
+        st.caption("Inspect here first, then move deeper into the profile or compare tray.")
 
-        action_columns = st.columns(2)
+        action_columns = st.columns(3)
         with action_columns[0]:
-            if st.button("View details", key=f"view_{detail.summary.slug}", use_container_width=True):
-                open_profile(detail.summary.slug)
+            inspect_label = "Inspecting" if is_selected else "Inspect"
+            if st.button(inspect_label, key=f"card_detail_{detail.summary.slug}", width="stretch", disabled=is_selected):
+                update_selected_city(detail.summary.slug)
+                st.rerun()
         with action_columns[1]:
-            if st.button(compare_label, key=f"compare_{detail.summary.slug}", use_container_width=True):
-                toggle_compare_city(detail.summary.slug, filtered_cities)
+            if st.button("Profile", key=f"card_profile_{detail.summary.slug}", width="stretch"):
+                open_profile(detail.summary.slug)
+        with action_columns[2]:
+            if st.button(compare_label, key=f"card_compare_{detail.summary.slug}", width="stretch"):
+                toggle_compare_city(detail.summary.slug, available_slugs)
                 st.rerun()
 
 
@@ -347,206 +582,141 @@ initialize_state()
 
 client = get_client()
 weights = current_weights()
-cities, source = client.list_cities(weights)
+city_summaries, source = client.list_cities(weights)
+all_details, _ = fetch_city_details(client, [city.slug for city in city_summaries], weights)
 
-regions = ["All"] + sorted({city.region for city in cities})
-if st.session_state["home_region"] not in regions:
-    st.session_state["home_region"] = "All"
-selected_region = st.session_state["home_region"]
-filtered_cities = [
-    city for city in cities if selected_region == "All" or city.region == selected_region
-]
+filtered_details = apply_consumer_filters(
+    all_details,
+    st.session_state["home_region"],
+    st.session_state["home_selected_filters"],
+)
 
-if not filtered_cities:
-    st.warning("No cities match the active region filter. Reset the filter to continue.")
+if not filtered_details:
+    st.markdown(
+        """
+        <div class="wsis-hero">
+          <div class="wsis-eyebrow">Where Should I Start</div>
+          <h1>No cities match the current tray setup.</h1>
+          <p>Loosen a quick filter or switch the region in the filter tray to bring the discovery map back into view.</p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    render_filter_tray()
     st.stop()
 
-compare_slugs = sync_compare_selection(filtered_cities)
-top_city = filtered_cities[0]
-score_average = round(sum(city.overall_score for city in filtered_cities) / len(filtered_cities), 2)
-featured_slugs = [city.slug for city in filtered_cities[:3]]
-featured_details, _ = fetch_city_details(client, featured_slugs, weights)
+available_slugs = {detail.summary.slug for detail in filtered_details}
+selected_city_slug = st.session_state.get("selected_city_slug", "")
+if selected_city_slug not in available_slugs:
+    selected_city_slug = ""
+    st.session_state["selected_city_slug"] = ""
 
-selected_city_slug = st.session_state.get("selected_city_slug") or top_city.slug
-if selected_city_slug not in {city.slug for city in filtered_cities}:
-    selected_city_slug = top_city.slug
-    st.session_state["selected_city_slug"] = selected_city_slug
-selected_detail, _ = client.get_city(selected_city_slug, weights)
+selected_detail = next(
+    (detail for detail in filtered_details if detail.summary.slug == selected_city_slug),
+    None,
+)
+
+compare_slugs = current_compare_selection(available_slugs)
+compare_details = [detail for detail in filtered_details if detail.summary.slug in compare_slugs]
+top_detail = filtered_details[0]
+score_average = round(sum(detail.summary.overall_score for detail in filtered_details) / len(filtered_details), 2)
 
 st.markdown(
     f"""
     <div class="wsis-hero">
       <div class="wsis-eyebrow">Where Should I Start</div>
-      <h1>Find the city that fits your twenties before you commit to a move.</h1>
-      <p>WSIS is a map-first relocation discovery tool for early-career movers. Adjust your priorities, scan the shortlist, compare a few cities in place, and check the social reality before you talk yourself into the wrong move.</p>
+      <h1>Explore where you could move before you commit to the wrong city.</h1>
+      <p>Browse the market, inspect one city at a time, and only lock in comparison when a few options actually feel plausible.</p>
       <div class="wsis-chip-row">
-        <span class="wsis-chip">Current source: {html.escape(source)}</span>
-        <span class="wsis-chip">{len(filtered_cities)} cities in view</span>
-        <span class="wsis-chip">Top match: {html.escape(top_city.name)}, {html.escape(top_city.state_code)}</span>
-        <span class="wsis-chip">Average score: {score_average}</span>
+        <span class="wsis-chip">Source: {html.escape(source)}</span>
+        <span class="wsis-chip">{len(filtered_details)} cities in play</span>
+        <span class="wsis-chip">Top score: {top_detail.summary.name}, {top_detail.summary.state_code}</span>
+        <span class="wsis-chip">Average fit: {score_average}</span>
       </div>
-      <div class="wsis-note">WSIS is now designed to support three actions from Home: browse the market, understand why a city is surfacing, and compare likely options before you leave the page.</div>
+      <div class="wsis-note">Map for discovery. Side panel for inspection. Trays for control and decision support.</div>
     </div>
     """,
     unsafe_allow_html=True,
 )
 
-hero_metrics = st.columns(4)
-hero_metrics[0].metric("Mapped cities", len(filtered_cities))
-hero_metrics[1].metric("Top right now", f"{top_city.name}, {top_city.state_code}")
-hero_metrics[2].metric("Average fit", score_average)
-hero_metrics[3].metric("Cities in compare", len(compare_slugs))
-
-weights = build_weights_section()
-
 render_section_header(
-    "Map discovery",
-    "Browse the market",
-    "Keep the current point-based map, but use it like a discovery canvas: filter the cohort, scan the score spread, and move straight into shortlist and comparison decisions.",
+    "Discovery Map",
+    "Explore first",
+    "Start with the map, not the dashboard. Hover for a quick signal, click a city to inspect it, and only move deeper when something looks worth your attention.",
 )
-map_columns = st.columns([3, 1.3])
-with map_columns[0]:
-    st.plotly_chart(build_map(filtered_cities), use_container_width=True)
-    st.caption(
-        "Current map uses city points and the active WSIS score. Polygon geography and choropleths remain deferred to a later milestone."
+
+main_columns = st.columns([2.7, 1], gap="large")
+with main_columns[0]:
+    st.markdown('<div class="wsis-map-shell">', unsafe_allow_html=True)
+    render_map_state_bar(selected_detail, compare_details, len(filtered_details))
+    render_filter_tray()
+    map_event = st.plotly_chart(
+        build_map(filtered_details, selected_city_slug or None),
+        width="stretch",
+        key="home_map_chart",
+        on_select="rerun",
+        selection_mode=("points",),
     )
-with map_columns[1]:
-    with st.container(border=True):
-        st.markdown("### Discovery filters")
-        st.selectbox("Region", regions, key="home_region")
-        st.metric("Cities in view", len(filtered_cities))
-        st.metric("Top city in view", f"{top_city.name}, {top_city.state_code}")
-        st.metric("Average score", score_average)
-        st.caption(top_city.headline)
-    with st.container(border=True):
-        st.markdown("### Fast read")
-        st.write(ranking_explanation(weights))
-        st.caption(
-            "Cities on this page are scored relative to the current tracked cohort, so use the ranking as a comparative filter rather than a national promise."
-        )
+    if map_event and map_event.selection.points:
+        point = map_event.selection.points[0]
+        custom_data = point.get("customdata")
+        if custom_data:
+            clicked_slug = custom_data[0]
+            if clicked_slug != st.session_state["selected_city_slug"]:
+                update_selected_city(clicked_slug)
+                st.rerun()
+    st.caption("Hover for a quick read. Click a point to inspect the city in the side panel. Use Clear selection to return to pure discovery mode.")
+    render_compare_tray(compare_details, weights, available_slugs)
+    st.markdown("</div>", unsafe_allow_html=True)
+with main_columns[1]:
+    render_side_panel(selected_detail, weights, compare_details, available_slugs)
 
 render_section_header(
-    "Top matches",
+    "Top Matches",
     "Shortlist",
-    "The shortlist is now card-first. It should help a first-time user decide which cities deserve a closer look before they ever open the full profile page.",
+    "Shortlist cards help you move from broad exploration to a few plausible options without losing the map-first feel.",
 )
-top_cards = st.columns(len(featured_details)) if featured_details else []
-for index, detail in enumerate(featured_details):
+top_cards = st.columns(min(3, len(filtered_details)))
+for index, detail in enumerate(filtered_details[:3]):
     with top_cards[index]:
-        render_top_match_card(detail, index + 1, filtered_cities)
-
-with st.container(border=True):
-    st.markdown("### More cities to inspect")
-    explorer_columns = st.columns([1.3, 1])
-    with explorer_columns[0]:
-        selected_city_slug = st.selectbox(
-            "Focus city",
-            [city.slug for city in filtered_cities],
-            index=next(
-                index for index, city in enumerate(filtered_cities) if city.slug == selected_city_slug
-            ),
-            format_func=lambda slug: next(
-                f"{city.name}, {city.state_code}" for city in filtered_cities if city.slug == slug
-            ),
-        )
-        st.session_state["selected_city_slug"] = selected_city_slug
-        selected_detail, _ = client.get_city(selected_city_slug, weights)
-        render_badges(badge_labels(selected_detail))
-        st.caption(city_reason_snippet(selected_detail, weights))
-    with explorer_columns[1]:
-        st.metric("Focus city score", selected_detail.summary.overall_score)
-        st.metric("Focus city rent", f"${selected_detail.metrics.median_rent:,.0f}")
-        if st.button("View full city profile", type="primary", use_container_width=True):
-            open_profile(selected_detail.summary.slug)
-
-with st.expander("See full score table", expanded=False):
-    shortlist_frame = pd.DataFrame(
-        [
-            {
-                "City": f"{city.name}, {city.state_code}",
-                "Region": city.region,
-                "Overall score": city.overall_score,
-                "Affordability": city.score_breakdown.affordability,
-                "Jobs": city.score_breakdown.job_market,
-                "Safety": city.score_breakdown.safety,
-                "Climate": city.score_breakdown.climate,
-                "Social": city.score_breakdown.social_sentiment,
-            }
-            for city in filtered_cities
-        ]
-    )
-    st.dataframe(shortlist_frame, use_container_width=True, hide_index=True)
+        render_top_match_card(detail, index + 1, available_slugs)
 
 render_section_header(
-    "Quick comparison",
-    "Compare in place",
-    "Use this strip to compare two or three realistic options without leaving Home. The dedicated comparison page still exists for deeper side-by-side work.",
+    "Why These Cities",
+    "Readable logic",
+    "Translate the ranking model into product language so the shortlist feels understandable instead of opaque.",
 )
-with st.container(border=True):
-    st.multiselect(
-        "Cities to compare",
-        [city.slug for city in filtered_cities],
-        format_func=lambda slug: next(
-            f"{city.name}, {city.state_code}" for city in filtered_cities if city.slug == slug
-        ),
-        key="home_compare_slugs",
-        max_selections=3,
-    )
-    if st.session_state.get("home_compare_notice"):
-        st.info(st.session_state.pop("home_compare_notice"))
-    compare_slugs = sync_compare_selection(filtered_cities)
-    if len(compare_slugs) >= 2:
-        comparison_details, comparison_source = client.compare_cities(compare_slugs, weights)
-        compare_frame = pd.DataFrame(comparison_preview_rows(comparison_details))
-        st.caption(f"Comparison source: {comparison_source}.")
-        st.dataframe(compare_frame, use_container_width=True, hide_index=True)
-    else:
-        placeholder_card(
-            "Comparison strip waiting for two cities",
-            "Add two or three cities from the shortlist cards or the selector above to see a compact rent, income, unemployment, sentiment, and overall-score comparison.",
-            "The deeper radar and multi-city page remain available on the dedicated Comparison screen.",
-        )
-
-render_section_header(
-    "Why these cities",
-    "Read the ranking",
-    "Translate the score into plain language so users can understand why cities are surfacing, not just stare at numbers.",
-)
-explanation_columns = st.columns([1.05, 1.2])
-with explanation_columns[0]:
+reason_columns = st.columns([1.05, 1.2])
+with reason_columns[0]:
     with st.container(border=True):
-        st.markdown("### Ranking logic in product language")
+        st.markdown("### Why the ranking looks like this")
         st.write(ranking_explanation(weights))
-        primary_dimensions = strongest_dimensions(selected_detail.summary)[:3]
-        st.caption(
-            f"{selected_detail.summary.name} currently performs best on "
-            + ", ".join(label.lower() for label, _ in primary_dimensions[:-1])
-            + (f", and {primary_dimensions[-1][0].lower()}" if len(primary_dimensions) > 1 else "")
-            + "."
-        )
-        for label, score in primary_dimensions:
+        focus_detail = selected_detail or top_detail
+        strongest = strongest_dimensions(focus_detail.summary)[:3]
+        st.caption(f"{focus_detail.summary.name} currently leads on " + ", ".join(label.lower() for label, _ in strongest) + ".")
+        for label, score in strongest:
             st.markdown(f"**{label}**")
             st.progress(min(score / 10, 1.0))
-            st.caption(f"{label} is scoring {score}/10 for {selected_detail.summary.name}.")
-with explanation_columns[1]:
+            st.caption(f"{label} is currently scoring {score}/10.")
+with reason_columns[1]:
     with st.container(border=True):
-        st.markdown("### Why the shortlist is surfacing")
-        for detail in featured_details:
+        st.markdown("### City-level read")
+        for detail in filtered_details[:3]:
             st.markdown(f"**{detail.summary.name}, {detail.summary.state_code}**")
             st.write(city_reason_snippet(detail, weights))
             render_badges(badge_labels(detail))
             st.caption(detail.summary.headline)
 
 render_section_header(
-    "Social reality",
+    "Social Reality",
     "What it actually feels like",
-    "A score is not enough. The home page should preview the social read in a way that feels deliberate, even when some cities only have thin structured data.",
+    "Keep the social read lightweight but intentional: sentiment score, a couple of themes, and a short excerpt that feels more human than a pure metric.",
 )
-social_cards = st.columns(3)
-for index, column in enumerate(social_cards):
+social_columns = st.columns(3)
+for index, column in enumerate(social_columns):
     with column:
-        if index < len(featured_details):
-            detail = featured_details[index]
+        if index < len(filtered_details[:3]):
+            detail = filtered_details[index]
             with st.container(border=True):
                 st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
                 st.metric("Sentiment", detail.reddit_panel.sentiment_score)
@@ -565,26 +735,26 @@ for index, column in enumerate(social_cards):
             )
 
 render_section_header(
-    "Future watchlist",
+    "Future Watchlist",
     "Coming soon",
-    "These placeholders mark the next consumer product surfaces without pretending the persistence layer already exists.",
+    "These placeholders make the future product shape obvious without pretending persistence or auth already exist.",
 )
 watchlist_columns = st.columns(3)
 with watchlist_columns[0]:
     placeholder_card(
         "Saved cities",
-        "Build a personal shortlist and return to the same markets after you change priorities or narrow your move window.",
+        "Build a personal shortlist and return to the same markets after your priorities change.",
         "Placeholder for watchlist persistence and saved city actions.",
     )
 with watchlist_columns[1]:
     placeholder_card(
         "Alerts and refreshes",
-        "See when a city's ranking changes because unemployment, rent pressure, or social sentiment shifts enough to matter.",
+        "Track when a city's score meaningfully changes because rent, unemployment, or social sentiment moves.",
         "Placeholder for refresh jobs and score-change monitoring.",
     )
 with watchlist_columns[2]:
     placeholder_card(
         "Weight presets",
-        "Save modes like budget-first, strong-jobs, or warm-weather reset so the home experience becomes reusable instead of one-off.",
+        "Save modes like budget-first or strong-jobs so discovery feels reusable instead of one-off.",
         "Placeholder for saved preference profiles and onboarding flows.",
     )

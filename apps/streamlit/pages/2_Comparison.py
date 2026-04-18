@@ -20,7 +20,10 @@ client = get_client()
 active_weights = score_weights_from_state(st.session_state)
 city_summaries, source = client.list_cities(active_weights)
 
-default_slugs = [city.slug for city in city_summaries[:2]]
+seeded_slugs = st.session_state.get("comparison_selected_slugs", [])
+default_slugs = [slug for slug in seeded_slugs if any(city.slug == slug for city in city_summaries)]
+if len(default_slugs) < 2:
+    default_slugs = [city.slug for city in city_summaries[:2]]
 selected_slugs = st.multiselect(
     "Cities to compare",
     [city.slug for city in city_summaries],
@@ -29,6 +32,7 @@ selected_slugs = st.multiselect(
         f"{city.name}, {city.state_code}" for city in city_summaries if city.slug == slug
     ),
 )
+st.session_state["comparison_selected_slugs"] = selected_slugs
 
 st.title("City comparison")
 st.caption(f"Comparison source: {source}. Select two to four cities.")
