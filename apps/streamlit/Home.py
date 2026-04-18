@@ -10,6 +10,16 @@ from wsis.core.config import get_settings
 from wsis.core.weights import WEIGHT_STATE_KEYS, default_score_weights, score_weights_from_state
 from wsis.domain.models import CityDetail, CitySummary, ScoreWeights
 from wsis.services.api_client import ApiCityClient
+from wsis.ui.homepage import (
+    badge_labels,
+    city_reason_snippet,
+    comparison_preview_rows,
+    ranking_explanation,
+    social_excerpt,
+    social_preview_title,
+    social_themes,
+    strongest_dimensions,
+)
 
 
 st.set_page_config(page_title="WSIS", layout="wide")
@@ -122,10 +132,47 @@ def initialize_state() -> None:
     for weight_name, state_key in WEIGHT_STATE_KEYS.items():
         st.session_state.setdefault(state_key, int(default_values[weight_name]))
     st.session_state.setdefault("home_region", "All")
+    st.session_state.setdefault("home_compare_slugs", [])
+    st.session_state.setdefault("selected_city_slug", "")
 
 
 def current_weights() -> ScoreWeights:
     return score_weights_from_state(st.session_state)
+
+
+def render_section_header(title: str, eyebrow: str, description: str) -> None:
+    st.markdown('<div class="wsis-section-space">', unsafe_allow_html=True)
+    st.markdown(f'<div class="wsis-eyebrow">{html.escape(eyebrow)}</div>', unsafe_allow_html=True)
+    st.subheader(title)
+    st.caption(description)
+    st.markdown("</div>", unsafe_allow_html=True)
+
+
+def render_badges(labels: list[str]) -> None:
+    if not labels:
+        return
+    chips = "".join(
+        f'<span class="wsis-chip">{html.escape(label)}</span>' for label in labels
+    )
+    st.markdown(f'<div class="wsis-chip-row">{chips}</div>', unsafe_allow_html=True)
+
+
+def placeholder_card(title: str, body: str, footer: str) -> None:
+    st.markdown(
+        f"""
+        <div class="wsis-placeholder">
+          <h4>{html.escape(title)}</h4>
+          <p>{html.escape(body)}</p>
+          <div class="wsis-mini">{html.escape(footer)}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+def open_profile(slug: str) -> None:
+    st.session_state["selected_city_slug"] = slug
+    st.switch_page("pages/1_City_Profile.py")
 
 
 def build_weights_section() -> ScoreWeights:
@@ -156,8 +203,11 @@ def build_weights_section() -> ScoreWeights:
                 )
 
         weights = current_weights()
-        normalized = weights.normalized().model_dump()
-        ordered_weights = sorted(normalized.items(), key=lambda item: item[1], reverse=True)
+        ordered_weights = sorted(
+            weights.normalized().model_dump().items(),
+            key=lambda item: item[1],
+            reverse=True,
+        )
         summary_columns = st.columns(3)
         summary_columns[0].metric("Lead priority", WEIGHT_LABELS[ordered_weights[0][0]])
         summary_columns[1].metric("Second priority", WEIGHT_LABELS[ordered_weights[1][0]])
@@ -168,10 +218,7 @@ def build_weights_section() -> ScoreWeights:
                 for name, value in ordered_weights[:3]
             ),
         )
-        st.caption(
-            "Current shortlist reflects your active weight mix, region filter, and the current peer cohort. "
-            "Use these controls to shift the ranking, then open a city profile for the full detail view."
-        )
+        st.write(ranking_explanation(weights))
         return weights
 
 
@@ -230,118 +277,69 @@ def build_map(cities: list[CitySummary]):
     return figure
 
 
-def render_section_header(title: str, eyebrow: str, description: str) -> None:
-    st.markdown('<div class="wsis-section-space">', unsafe_allow_html=True)
-    st.markdown(f'<div class="wsis-eyebrow">{html.escape(eyebrow)}</div>', unsafe_allow_html=True)
-    st.subheader(title)
-    st.caption(description)
-    st.markdown("</div>", unsafe_allow_html=True)
+def fetch_city_details(
+    client: ApiCityClient,
+    slugs: list[str],
+    weights: ScoreWeights,
+) -> tuple[list[CityDetail], str]:
+    slug_list = list(dict.fromkeys(slugs))
+    if not slug_list:
+        return [], "local fallback"
+    if len(slug_list) == 1:
+        detail, source = client.get_city(slug_list[0], weights)
+        return [detail], source
+    details, source = client.compare_cities(slug_list, weights)
+    return details, source
 
 
-def render_badges(labels: list[str]) -> None:
-    if not labels:
-        return
-    chips = "".join(
-        f'<span class="wsis-chip">{html.escape(label)}</span>' for label in labels
-    )
-    st.markdown(f'<div class="wsis-chip-row">{chips}</div>', unsafe_allow_html=True)
+def sync_compare_selection(filtered_cities: list[CitySummary]) -> list[str]:
+    available_slugs = [city.slug for city in filtered_cities]
+    selected = [slug for slug in st.session_state["home_compare_slugs"] if slug in available_slugs]
+    target_default = min(2, len(available_slugs))
+    for slug in available_slugs:
+        if len(selected) >= target_default:
+            break
+        if slug not in selected:
+            selected.append(slug)
+    st.session_state["home_compare_slugs"] = selected[:3]
+    return st.session_state["home_compare_slugs"]
 
 
-def placeholder_card(title: str, body: str, footer: str) -> None:
-    st.markdown(
-        f"""
-        <div class="wsis-placeholder">
-          <h4>{html.escape(title)}</h4>
-          <p>{html.escape(body)}</p>
-          <div class="wsis-mini">{html.escape(footer)}</div>
-        </div>
-        """,
-        unsafe_allow_html=True,
-    )
+def toggle_compare_city(slug: str, filtered_cities: list[CitySummary]) -> None:
+    available_slugs = {city.slug for city in filtered_cities}
+    selected = [item for item in st.session_state["home_compare_slugs"] if item in available_slugs]
+    if slug in selected:
+        selected.remove(slug)
+    elif len(selected) < 3:
+        selected.append(slug)
+    else:
+        st.session_state["home_compare_notice"] = "Comparison is limited to three cities on Home."
+    st.session_state["home_compare_slugs"] = selected
 
 
-def city_badges(city: CitySummary) -> list[str]:
-    badges: list[str] = []
-    if city.overall_score >= 7.5:
-        badges.append("High overall fit")
-    breakdown = city.score_breakdown
-    if breakdown.affordability >= 7:
-        badges.append("Budget friendlier")
-    if breakdown.job_market >= 7:
-        badges.append("Career upside")
-    if breakdown.safety >= 7:
-        badges.append("Safer peer set")
-    if breakdown.climate >= 7:
-        badges.append("Climate comfort")
-    if breakdown.social_sentiment >= 6.5:
-        badges.append("Positive social signal")
-    badges.append(city.region)
-    deduped: list[str] = []
-    for badge in badges:
-        if badge not in deduped:
-            deduped.append(badge)
-    return deduped[:4]
+def render_top_match_card(detail: CityDetail, rank: int, filtered_cities: list[CitySummary]) -> None:
+    compare_slugs = st.session_state["home_compare_slugs"]
+    compare_label = "Remove from compare" if detail.summary.slug in compare_slugs else "Compare"
 
-
-def strongest_dimensions(city: CitySummary) -> list[tuple[str, float]]:
-    return sorted(
-        city.score_breakdown.as_dict().items(),
-        key=lambda item: item[1],
-        reverse=True,
-    )
-
-
-def overall_summary_note(city: CitySummary) -> str:
-    top_dimensions = strongest_dimensions(city)[:2]
-    top_labels = " and ".join(label.lower() for label, _ in top_dimensions)
-    return f"{city.name} is surfacing because it currently scores best on {top_labels} within your active weighting mix."
-
-
-def weight_focus_labels(weights: ScoreWeights) -> list[str]:
-    ordered = sorted(
-        weights.normalized().model_dump().items(),
-        key=lambda item: item[1],
-        reverse=True,
-    )
-    return [f"{WEIGHT_LABELS[name]} {int(round(value * 100))}%" for name, value in ordered[:3]]
-
-
-def open_profile(slug: str) -> None:
-    st.session_state["selected_city_slug"] = slug
-    st.switch_page("pages/1_City_Profile.py")
-
-
-def shortlist_frame(cities: list[CitySummary]) -> pd.DataFrame:
-    return pd.DataFrame(
-        [
-            {
-                "City": f"{city.name}, {city.state_code}",
-                "Region": city.region,
-                "Overall score": city.overall_score,
-                "Affordability": city.score_breakdown.affordability,
-                "Jobs": city.score_breakdown.job_market,
-                "Safety": city.score_breakdown.safety,
-                "Climate": city.score_breakdown.climate,
-                "Social": city.score_breakdown.social_sentiment,
-            }
-            for city in cities
-        ]
-    )
-
-
-def render_city_card(city: CitySummary, rank: int) -> None:
     with st.container(border=True):
         st.caption(f"Top match #{rank}")
-        st.markdown(f"### {city.name}, {city.state_code}")
-        render_badges(city_badges(city))
-        st.write(city.headline)
-        card_metrics = st.columns(3)
-        card_metrics[0].metric("WSIS score", city.overall_score)
-        card_metrics[1].metric("Jobs", city.score_breakdown.job_market)
-        card_metrics[2].metric("Social", city.score_breakdown.social_sentiment)
-        st.caption(overall_summary_note(city))
-        if st.button("Open city profile", key=f"card_{city.slug}", use_container_width=True):
-            open_profile(city.slug)
+        st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
+        render_badges(badge_labels(detail))
+        st.write(detail.summary.headline)
+        metric_columns = st.columns(3)
+        metric_columns[0].metric("Overall", detail.summary.overall_score)
+        metric_columns[1].metric("Rent", f"${detail.metrics.median_rent:,.0f}")
+        metric_columns[2].metric("Sentiment", detail.reddit_panel.sentiment_score)
+        st.caption(city_reason_snippet(detail, current_weights()))
+
+        action_columns = st.columns(2)
+        with action_columns[0]:
+            if st.button("View details", key=f"view_{detail.summary.slug}", use_container_width=True):
+                open_profile(detail.summary.slug)
+        with action_columns[1]:
+            if st.button(compare_label, key=f"compare_{detail.summary.slug}", use_container_width=True):
+                toggle_compare_city(detail.summary.slug, filtered_cities)
+                st.rerun()
 
 
 inject_styles()
@@ -363,29 +361,31 @@ if not filtered_cities:
     st.warning("No cities match the active region filter. Reset the filter to continue.")
     st.stop()
 
+compare_slugs = sync_compare_selection(filtered_cities)
 top_city = filtered_cities[0]
 score_average = round(sum(city.overall_score for city in filtered_cities) / len(filtered_cities), 2)
+featured_slugs = [city.slug for city in filtered_cities[:3]]
+featured_details, _ = fetch_city_details(client, featured_slugs, weights)
 
-selected_city_slug = st.session_state.get("selected_city_slug", top_city.slug)
+selected_city_slug = st.session_state.get("selected_city_slug") or top_city.slug
 if selected_city_slug not in {city.slug for city in filtered_cities}:
     selected_city_slug = top_city.slug
     st.session_state["selected_city_slug"] = selected_city_slug
-selected_city = next(city for city in filtered_cities if city.slug == selected_city_slug)
-selected_detail, detail_source = client.get_city(selected_city_slug, weights)
+selected_detail, _ = client.get_city(selected_city_slug, weights)
 
 st.markdown(
     f"""
     <div class="wsis-hero">
       <div class="wsis-eyebrow">Where Should I Start</div>
       <h1>Find the city that fits your twenties before you commit to a move.</h1>
-      <p>WSIS is a map-first relocation discovery tool for early-career movers. Adjust your priorities, scan the shortlist, and check the social reality before you talk yourself into the wrong city.</p>
+      <p>WSIS is a map-first relocation discovery tool for early-career movers. Adjust your priorities, scan the shortlist, compare a few cities in place, and check the social reality before you talk yourself into the wrong move.</p>
       <div class="wsis-chip-row">
         <span class="wsis-chip">Current source: {html.escape(source)}</span>
         <span class="wsis-chip">{len(filtered_cities)} cities in view</span>
         <span class="wsis-chip">Top match: {html.escape(top_city.name)}, {html.escape(top_city.state_code)}</span>
         <span class="wsis-chip">Average score: {score_average}</span>
       </div>
-      <div class="wsis-note">This page is the consumer product skeleton: tune the scoring mix, browse the map, inspect the shortlist, then open a city profile when a place starts to feel real.</div>
+      <div class="wsis-note">WSIS is now designed to support three actions from Home: browse the market, understand why a city is surfacing, and compare likely options before you leave the page.</div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -395,20 +395,20 @@ hero_metrics = st.columns(4)
 hero_metrics[0].metric("Mapped cities", len(filtered_cities))
 hero_metrics[1].metric("Top right now", f"{top_city.name}, {top_city.state_code}")
 hero_metrics[2].metric("Average fit", score_average)
-hero_metrics[3].metric("Active priorities", ", ".join(weight_focus_labels(weights)[:2]))
+hero_metrics[3].metric("Cities in compare", len(compare_slugs))
 
 weights = build_weights_section()
 
 render_section_header(
     "Map discovery",
     "Browse the market",
-    "Keep the current point-based map, but use it like a product discovery canvas: filter the cohort, scan the score spread, and identify where to dig deeper.",
+    "Keep the current point-based map, but use it like a discovery canvas: filter the cohort, scan the score spread, and move straight into shortlist and comparison decisions.",
 )
 map_columns = st.columns([3, 1.3])
 with map_columns[0]:
     st.plotly_chart(build_map(filtered_cities), use_container_width=True)
     st.caption(
-        "Current map uses city points and the active WSIS score. Polygon geography and choropleths are explicitly deferred to a later milestone."
+        "Current map uses city points and the active WSIS score. Polygon geography and choropleths remain deferred to a later milestone."
     )
 with map_columns[1]:
     with st.container(border=True):
@@ -417,137 +417,174 @@ with map_columns[1]:
         st.metric("Cities in view", len(filtered_cities))
         st.metric("Top city in view", f"{top_city.name}, {top_city.state_code}")
         st.metric("Average score", score_average)
-        render_badges(city_badges(top_city))
         st.caption(top_city.headline)
     with st.container(border=True):
-        st.markdown("### What to do next")
-        st.write("1. Adjust the weight mix above.")
-        st.write("2. Scan where the score clusters on the map.")
-        st.write("3. Use the shortlist below to pick a city for deeper review.")
+        st.markdown("### Fast read")
+        st.write(ranking_explanation(weights))
+        st.caption(
+            "Cities on this page are scored relative to the current tracked cohort, so use the ranking as a comparative filter rather than a national promise."
+        )
 
 render_section_header(
     "Top matches",
     "Shortlist",
-    "A product-style shortlist should tell you what rose to the top before you commit to the full profile. These cards stay lightweight while preserving the current selection and navigation flow.",
+    "The shortlist is now card-first. It should help a first-time user decide which cities deserve a closer look before they ever open the full profile page.",
 )
-top_cards = st.columns(3)
-for index, city in enumerate(filtered_cities[:3]):
+top_cards = st.columns(len(featured_details)) if featured_details else []
+for index, detail in enumerate(featured_details):
     with top_cards[index]:
-        render_city_card(city, index + 1)
+        render_top_match_card(detail, index + 1, filtered_cities)
 
-shortlist_columns = st.columns([1.5, 1])
-with shortlist_columns[0]:
-    with st.container(border=True):
-        st.markdown("### Full shortlist table")
-        st.dataframe(shortlist_frame(filtered_cities), use_container_width=True, hide_index=True)
-with shortlist_columns[1]:
-    with st.container(border=True):
-        st.markdown("### Focus city")
+with st.container(border=True):
+    st.markdown("### More cities to inspect")
+    explorer_columns = st.columns([1.3, 1])
+    with explorer_columns[0]:
         selected_city_slug = st.selectbox(
-            "Open a city profile",
+            "Focus city",
             [city.slug for city in filtered_cities],
             index=next(
-                index for index, city in enumerate(filtered_cities) if city.slug == selected_city.slug
+                index for index, city in enumerate(filtered_cities) if city.slug == selected_city_slug
             ),
             format_func=lambda slug: next(
                 f"{city.name}, {city.state_code}" for city in filtered_cities if city.slug == slug
             ),
         )
         st.session_state["selected_city_slug"] = selected_city_slug
-        selected_city = next(city for city in filtered_cities if city.slug == selected_city_slug)
-        selected_detail, detail_source = client.get_city(selected_city_slug, weights)
-        render_badges(city_badges(selected_city))
-        st.markdown(f"### {selected_city.name}, {selected_city.state_code}")
-        st.write(selected_city.headline)
-        focus_metrics = st.columns(2)
-        focus_metrics[0].metric("WSIS score", selected_city.overall_score)
-        focus_metrics[1].metric("Social", selected_city.score_breakdown.social_sentiment)
+        selected_detail, _ = client.get_city(selected_city_slug, weights)
+        render_badges(badge_labels(selected_detail))
+        st.caption(city_reason_snippet(selected_detail, weights))
+    with explorer_columns[1]:
+        st.metric("Focus city score", selected_detail.summary.overall_score)
+        st.metric("Focus city rent", f"${selected_detail.metrics.median_rent:,.0f}")
         if st.button("View full city profile", type="primary", use_container_width=True):
-            open_profile(selected_city.slug)
+            open_profile(selected_detail.summary.slug)
+
+with st.expander("See full score table", expanded=False):
+    shortlist_frame = pd.DataFrame(
+        [
+            {
+                "City": f"{city.name}, {city.state_code}",
+                "Region": city.region,
+                "Overall score": city.overall_score,
+                "Affordability": city.score_breakdown.affordability,
+                "Jobs": city.score_breakdown.job_market,
+                "Safety": city.score_breakdown.safety,
+                "Climate": city.score_breakdown.climate,
+                "Social": city.score_breakdown.social_sentiment,
+            }
+            for city in filtered_cities
+        ]
+    )
+    st.dataframe(shortlist_frame, use_container_width=True, hide_index=True)
+
+render_section_header(
+    "Quick comparison",
+    "Compare in place",
+    "Use this strip to compare two or three realistic options without leaving Home. The dedicated comparison page still exists for deeper side-by-side work.",
+)
+with st.container(border=True):
+    st.multiselect(
+        "Cities to compare",
+        [city.slug for city in filtered_cities],
+        format_func=lambda slug: next(
+            f"{city.name}, {city.state_code}" for city in filtered_cities if city.slug == slug
+        ),
+        key="home_compare_slugs",
+        max_selections=3,
+    )
+    if st.session_state.get("home_compare_notice"):
+        st.info(st.session_state.pop("home_compare_notice"))
+    compare_slugs = sync_compare_selection(filtered_cities)
+    if len(compare_slugs) >= 2:
+        comparison_details, comparison_source = client.compare_cities(compare_slugs, weights)
+        compare_frame = pd.DataFrame(comparison_preview_rows(comparison_details))
+        st.caption(f"Comparison source: {comparison_source}.")
+        st.dataframe(compare_frame, use_container_width=True, hide_index=True)
+    else:
+        placeholder_card(
+            "Comparison strip waiting for two cities",
+            "Add two or three cities from the shortlist cards or the selector above to see a compact rent, income, unemployment, sentiment, and overall-score comparison.",
+            "The deeper radar and multi-city page remain available on the dedicated Comparison screen.",
+        )
 
 render_section_header(
     "Why these cities",
     "Read the ranking",
-    "This section explains the shortlist instead of just displaying it. The point is to make the ranking legible even before neighborhood lenses and deeper comparison tooling exist.",
+    "Translate the score into plain language so users can understand why cities are surfacing, not just stare at numbers.",
 )
-explanation_columns = st.columns([1.2, 1])
+explanation_columns = st.columns([1.05, 1.2])
 with explanation_columns[0]:
     with st.container(border=True):
-        st.markdown(f"### Why {selected_city.name} is showing up")
-        st.write(overall_summary_note(selected_city))
-        for label, score in strongest_dimensions(selected_city)[:3]:
+        st.markdown("### Ranking logic in product language")
+        st.write(ranking_explanation(weights))
+        primary_dimensions = strongest_dimensions(selected_detail.summary)[:3]
+        st.caption(
+            f"{selected_detail.summary.name} currently performs best on "
+            + ", ".join(label.lower() for label, _ in primary_dimensions[:-1])
+            + (f", and {primary_dimensions[-1][0].lower()}" if len(primary_dimensions) > 1 else "")
+            + "."
+        )
+        for label, score in primary_dimensions:
             st.markdown(f"**{label}**")
             st.progress(min(score / 10, 1.0))
-            st.caption(f"{label} is currently scoring {score}/10 for {selected_city.name}.")
+            st.caption(f"{label} is scoring {score}/10 for {selected_detail.summary.name}.")
 with explanation_columns[1]:
     with st.container(border=True):
-        st.markdown("### How to read the score")
-        render_badges(weight_focus_labels(weights))
-        st.write(
-            "WSIS compares each city against the current cohort rather than a national baseline. "
-            "That means the shortlist is best read as a relative fit ranking for this tool's tracked markets."
-        )
-        st.caption(
-            "Current formula blends affordability, job market, safety, climate, and social sentiment. "
-            "The detail page adds source-backed highlights and a stronger social reality read."
-        )
+        st.markdown("### Why the shortlist is surfacing")
+        for detail in featured_details:
+            st.markdown(f"**{detail.summary.name}, {detail.summary.state_code}**")
+            st.write(city_reason_snippet(detail, weights))
+            render_badges(badge_labels(detail))
+            st.caption(detail.summary.headline)
 
 render_section_header(
-    "Social reality preview",
+    "Social reality",
     "What it actually feels like",
-    "The homepage should preview the consumer promise: not just a score, but a believable read on what living there might actually feel like.",
+    "A score is not enough. The home page should preview the social read in a way that feels deliberate, even when some cities only have thin structured data.",
 )
-social_columns = st.columns([1.15, 1])
-with social_columns[0]:
-    with st.container(border=True):
-        st.markdown(f"### {selected_city.name}, {selected_city.state_code}")
-        st.caption(f"Preview source: {detail_source}")
-        st.metric("Reddit sentiment", selected_detail.reddit_panel.sentiment_score)
-        render_badges(
-            [
-                f"{selected_detail.reddit_panel.posts_analyzed} posts analyzed",
-                f"{selected_detail.reddit_panel.lookback_days}-day lookback",
-                f"Generated {selected_detail.reddit_panel.generated_at}",
-            ]
-        )
-        st.write(selected_detail.reddit_panel.summary)
-        st.caption(selected_detail.reddit_panel.methodology)
-with social_columns[1]:
-    with st.container(border=True):
-        st.markdown("### Preview threads")
-        if selected_detail.reddit_panel.posts:
-            for post in selected_detail.reddit_panel.posts[:2]:
-                st.markdown(f"**{post.title}**")
-                st.write(post.excerpt)
-                st.caption(f"Sentiment: {post.sentiment} | Source: {post.subreddit}")
+social_cards = st.columns(3)
+for index, column in enumerate(social_cards):
+    with column:
+        if index < len(featured_details):
+            detail = featured_details[index]
+            with st.container(border=True):
+                st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
+                st.metric("Sentiment", detail.reddit_panel.sentiment_score)
+                render_badges(social_themes(detail))
+                st.caption(
+                    f"{detail.reddit_panel.posts_analyzed} posts analyzed | {detail.reddit_panel.lookback_days}-day lookback"
+                )
+                st.write(detail.reddit_panel.summary)
+                st.markdown(f"**{social_preview_title(detail)}**")
+                st.write(social_excerpt(detail))
         else:
             placeholder_card(
-                "Social preview pending",
-                "This city does not have a fuller thread preview yet, but the city profile still carries the base social signal.",
-                "Planned: richer city-level thread clustering and freshness comparisons.",
+                "Social preview loading",
+                "As richer city-level social summaries arrive, this area can expand into a fuller what-it's-like panel directly on Home.",
+                "Current version intentionally stays lightweight and structured.",
             )
 
 render_section_header(
     "Future watchlist",
     "Coming soon",
-    "These placeholders mark the next product surfaces without pretending they already exist. They make the roadmap visible on the page and give the home experience a fuller product shape.",
+    "These placeholders mark the next consumer product surfaces without pretending the persistence layer already exists.",
 )
 watchlist_columns = st.columns(3)
 with watchlist_columns[0]:
     placeholder_card(
         "Saved cities",
-        "Build a personal shortlist and return to the same markets after you have changed your priorities or compared options with friends.",
-        "Placeholder for watchlist persistence and profile saves.",
+        "Build a personal shortlist and return to the same markets after you change priorities or narrow your move window.",
+        "Placeholder for watchlist persistence and saved city actions.",
     )
 with watchlist_columns[1]:
     placeholder_card(
         "Alerts and refreshes",
-        "See when a city's score moves because rents, unemployment, safety inputs, or social sentiment changed materially.",
+        "See when a city's ranking changes because unemployment, rent pressure, or social sentiment shifts enough to matter.",
         "Placeholder for refresh jobs and score-change monitoring.",
     )
 with watchlist_columns[2]:
     placeholder_card(
         "Weight presets",
-        "Save modes like budget-first, career-max, or warm-weather reset so the home page feels reusable instead of one-off.",
+        "Save modes like budget-first, strong-jobs, or warm-weather reset so the home experience becomes reusable instead of one-off.",
         "Placeholder for saved preference profiles and onboarding flows.",
     )
