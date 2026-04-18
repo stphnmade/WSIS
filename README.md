@@ -9,7 +9,7 @@ WSIS (Where Should I Start) is a map-first relocation discovery product for youn
 - Shared typed domain models, config module, scoring engine, and service layer
 - Canonical `city_profiles` dataset built from raw source adapters under `data/raw/`
 - Repository abstraction so the app can switch between processed and mock data cleanly
-- Placeholder Reddit sentiment service interface with deterministic mock output
+- Structured Reddit sentiment detail adapter with precomputed freshness and provenance metadata
 
 ## Project structure
 
@@ -48,6 +48,10 @@ pip install -e .
 ```
 
 By default the app uses the processed `city_profiles` repository backend defined in `.env.example`.
+
+Optional detail-only Reddit summary payload:
+
+- `WSIS_REDDIT_SENTIMENT_SUMMARIES_PATH=data/raw/reddit/city_sentiment_summaries.json`
 
 ## Run the backend
 
@@ -94,6 +98,7 @@ Raw input files:
 - `data/raw/fbi/county_crime.csv`
 - `data/raw/noaa/county_climate.csv`
 - `data/raw/reddit/city_sentiment.csv`
+- `data/raw/reddit/city_sentiment_summaries.json`
 
 Processed output:
 
@@ -109,6 +114,7 @@ Reference documentation:
 
 - `DATA_NORMALIZATION.md`
 - `CITY_PROFILES_SCHEMA.md`
+- `DATA_SOURCE_MAPPINGS.md`
 
 ## Current scoring model
 
@@ -121,6 +127,8 @@ Default weights from the product docs:
 - Social sentiment: 0.10
 
 The current engine reads repository-backed city metrics from `city_profiles.parquet` and still applies transparent min-max normalization within the active city cohort.
+
+City profile Reddit detail panels are loaded separately from a structured precomputed summary file so scoring remains stable while the UI can show freshness, methodology, and provenance metadata.
 
 ## Deferred integrations
 
@@ -136,6 +144,7 @@ The current engine reads repository-backed city metrics from `city_profiles.parq
 Recommended local checks:
 
 ```bash
+python3 -m wsis.data.validation
 python3 -m compileall src apps tests
 python3 -m pytest
 ```

@@ -75,12 +75,22 @@ with content_columns[1]:
     st.subheader("Social reality panel")
     st.metric("Reddit sentiment", detail.reddit_panel.sentiment_score)
     st.write(detail.reddit_panel.summary)
+    metadata_columns = st.columns(3)
+    metadata_columns[0].metric("Posts analyzed", detail.reddit_panel.posts_analyzed)
+    metadata_columns[1].metric("Lookback days", detail.reddit_panel.lookback_days)
+    metadata_columns[2].metric("Generated", detail.reddit_panel.generated_at)
+    st.caption(detail.reddit_panel.methodology)
+    if detail.reddit_panel.provenance:
+        st.caption("Provenance")
+        for source in detail.reddit_panel.provenance:
+            st.write(f"- {source.subreddit}: `{source.query}`")
+            st.caption(source.note)
     for post in detail.reddit_panel.posts:
         st.markdown(f"**{post.title}**")
         st.write(post.excerpt)
-        st.caption(f"Sentiment: {post.sentiment}")
+        st.caption(f"Sentiment: {post.sentiment} | Source: {post.subreddit}")
 
 st.info(
-    "TODO: replace the placeholder Reddit panel with a production service that "
-    "stores vetted post summaries, provenance, and freshness metadata."
+    "Reddit summaries are precomputed and read from structured local data. "
+    "Next step: replace the seeded summaries with a refreshable moderation-aware pipeline."
 )

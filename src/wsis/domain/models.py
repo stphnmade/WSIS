@@ -2,10 +2,12 @@ from __future__ import annotations
 
 from typing import Dict, List
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class ScoreWeights(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     affordability: float = 0.40
     job_market: float = 0.25
     safety: float = 0.15
@@ -33,27 +35,34 @@ class ScoreWeights(BaseModel):
 
 
 class CityMetrics(BaseModel):
-    slug: str
-    name: str
-    state: str
-    state_code: str
-    region: str
-    headline: str
-    population: int
-    latitude: float
-    longitude: float
-    median_rent: float
-    median_home_price: float
-    median_income: float
-    job_growth_pct: float
-    unemployment_pct: float
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    slug: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    state: str = Field(min_length=1)
+    state_code: str = Field(min_length=2, max_length=2)
+    region: str = Field(min_length=1)
+    headline: str = Field(min_length=1)
+    population: int = Field(gt=0)
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
+    median_rent: float = Field(gt=0)
+    median_home_price: float = Field(gt=0)
+    median_income: float = Field(gt=0)
+    job_growth_pct: float = Field(ge=-100, le=100)
+    unemployment_pct: float = Field(ge=0, le=100)
+    violent_crime_per_100k: float | None = Field(default=None, ge=0)
     safety_score_raw: float = Field(ge=0, le=100)
+    avg_temp_f: float | None = Field(default=None, ge=-50, le=150)
+    sunny_days: float | None = Field(default=None, ge=0, le=366)
     climate_score_raw: float = Field(ge=0, le=100)
     social_sentiment_raw: float = Field(ge=-1, le=1)
-    known_for: str
+    known_for: str = Field(min_length=1)
 
 
 class ScoreBreakdown(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     affordability: float
     job_market: float
     safety: float
@@ -72,35 +81,56 @@ class ScoreBreakdown(BaseModel):
 
 
 class CitySummary(BaseModel):
-    slug: str
-    name: str
-    state: str
-    state_code: str
-    region: str
-    headline: str
-    population: int
-    latitude: float
-    longitude: float
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    slug: str = Field(min_length=1)
+    name: str = Field(min_length=1)
+    state: str = Field(min_length=1)
+    state_code: str = Field(min_length=2, max_length=2)
+    region: str = Field(min_length=1)
+    headline: str = Field(min_length=1)
+    population: int = Field(gt=0)
+    latitude: float = Field(ge=-90, le=90)
+    longitude: float = Field(ge=-180, le=180)
     overall_score: float
     score_breakdown: ScoreBreakdown
 
 
 class RedditPost(BaseModel):
-    title: str
-    excerpt: str
-    sentiment: str
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    title: str = Field(min_length=1)
+    excerpt: str = Field(min_length=1)
+    sentiment: str = Field(min_length=1)
+    subreddit: str = Field(min_length=1)
+
+
+class RedditProvenance(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    subreddit: str = Field(min_length=1)
+    query: str = Field(min_length=1)
+    note: str = Field(min_length=1)
 
 
 class RedditPanel(BaseModel):
-    source: str
-    summary: str
-    sentiment_score: float
-    posts: List[RedditPost]
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    source: str = Field(min_length=1)
+    summary: str = Field(min_length=1)
+    sentiment_score: float = Field(ge=0, le=10)
+    generated_at: str = Field(min_length=1)
+    lookback_days: int = Field(ge=0)
+    posts_analyzed: int = Field(ge=0)
+    methodology: str = Field(min_length=1)
+    provenance: List[RedditProvenance] = Field(default_factory=list)
+    posts: List[RedditPost] = Field(default_factory=list)
 
 
 class CityDetail(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
     summary: CitySummary
     metrics: CityMetrics
     highlights: List[str]
     reddit_panel: RedditPanel
-

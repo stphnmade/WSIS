@@ -6,7 +6,7 @@ from wsis.data.repositories.base import CityRepository
 from wsis.data.repositories.factory import get_city_repository
 from wsis.domain.models import CityDetail, CityMetrics, CitySummary, ScoreWeights
 from wsis.scoring.engine import build_city_summary
-from wsis.services.reddit import PlaceholderRedditSentimentService, RedditSentimentService
+from wsis.services.reddit import PrecomputedRedditSentimentService, RedditSentimentService
 
 
 class CityNotFoundError(ValueError):
@@ -20,7 +20,7 @@ class CityService:
         reddit_service: RedditSentimentService | None = None,
     ) -> None:
         self._repository = repository or get_city_repository()
-        self._reddit_service = reddit_service or PlaceholderRedditSentimentService()
+        self._reddit_service = reddit_service or PrecomputedRedditSentimentService()
 
     def _cities(self) -> list[CityMetrics]:
         return list(self._repository.list_city_metrics())
@@ -38,18 +38,13 @@ class CityService:
             raise CityNotFoundError(slug)
 
         summary = build_city_summary(city, cities, weights or ScoreWeights())
-        highlights = [
-            f"Median rent is ${city.median_rent:,.0f} per month.",
-            f"Median home price is ${city.median_home_price:,.0f}.",
-            f"Job growth is {city.job_growth_pct:.1f}% with unemployment at {city.unemployment_pct:.1f}%.",
-            "TODO: replace generic highlights with source-backed narratives and neighborhood-level context.",
-        ]
+        reddit_panel = self._reddit_service.get_panel(city)
 
         return CityDetail(
             summary=summary,
             metrics=city,
-            highlights=highlights,
-            reddit_panel=self._reddit_service.get_panel(city),
+            highlights=_build_highlights(city, summary),
+            reddit_panel=reddit_panel,
         )
 
     def compare_cities(
@@ -63,3 +58,35 @@ class CityService:
 @lru_cache(maxsize=1)
 def get_city_service() -> CityService:
     return CityService()
+
+
+def _build_highlights(city: CityMetrics, summary: CitySummary) -> list[str]:
+    rent_burden_pct = (city.median_rent * 12 / city.median_income) * 100
+    highlights = [
+        f"Median rent is about {rent_burden_pct:.0f}% of local median income, at roughly ${city.median_rent:,.0f} per month.",
+        f"Median home price is about ${city.median_home_price:,.0f}, with unemployment at {city.unemployment_pct:.1f}% and proxy job growth at {city.job_growth_pct:.1f}%.",
+    ]
+
+    if summary.score_breakdown.affordability >= 7:
+        highlights.append("Affordability is one of this city's clearer strengths versus the current peer set.")
+    elif summary.score_breakdown.affordability <= 4:
+        highlights.append("Housing costs look tighter than the strongest affordability peers in this dataset.")
+
+    if summary.score_breakdown.job_market >= 7:
+        highlights.append("Job-market momentum is a relative plus for this city in the current scoring cohort.")
+
+    if city.violent_crime_per_100k is not None:
+        highlights.append(
+            f"Reported violent crime is about {city.violent_crime_per_100k:,.0f} incidents per 100k residents in the current source slice."
+        )
+    elif summary.score_breakdown.safety >= 7:
+        highlights.append("Safety lands on the stronger side of the current peer cohort.")
+
+    if city.avg_temp_f is not None and city.sunny_days is not None:
+        highlights.append(
+            f"Climate expectations are anchored by an average temperature near {city.avg_temp_f:.0f}F and about {city.sunny_days:.0f} sunny days per year."
+        )
+    elif summary.score_breakdown.climate >= 7:
+        highlights.append("Climate comfort is one of the more favorable parts of this city's profile.")
+
+    return highlights[:5]

@@ -9,6 +9,7 @@ from wsis.core.config import get_settings
 from wsis.data.models import CityProfileRecord
 from wsis.data.pipeline.city_profiles import build_city_profiles_dataset
 from wsis.data.repositories.base import CityRepository
+from wsis.data.validation import validate_city_profiles_frame
 from wsis.domain.models import CityMetrics
 
 
@@ -20,7 +21,7 @@ def load_city_profiles() -> tuple[CityProfileRecord, ...]:
         return build_city_profiles_dataset()
 
     frame = pd.read_parquet(data_path)
-    return tuple(CityProfileRecord.model_validate(record) for record in frame.to_dict("records"))
+    return validate_city_profiles_frame(frame)
 
 
 class NormalizedCityRepository(CityRepository):

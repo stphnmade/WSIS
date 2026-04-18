@@ -10,9 +10,10 @@ from wsis.data.ingestion.census_acs import load_census_acs
 from wsis.data.ingestion.common import fill_or_default, safe_min_max
 from wsis.data.ingestion.fbi import load_fbi_crime
 from wsis.data.ingestion.noaa import load_noaa_climate
-from wsis.data.ingestion.reddit import load_reddit_placeholder
+from wsis.data.ingestion.reddit import load_reddit_sentiment
 from wsis.data.ingestion.simplemaps import load_simplemaps_cities
 from wsis.data.models import CityProfileRecord
+from wsis.data.validation import validate_city_profiles_frame
 
 
 def _derive_home_price(median_rent: pd.Series) -> pd.Series:
@@ -72,7 +73,7 @@ def build_city_profiles_dataset(
     bls = load_bls_unemployment(base_raw_root)
     fbi = load_fbi_crime(base_raw_root)
     noaa = load_noaa_climate(base_raw_root)
-    reddit = load_reddit_placeholder(base_raw_root)
+    reddit = load_reddit_sentiment(base_raw_root)
 
     merged = (
         city_dimension.merge(census, on=["city_state_key", "county_fips"], how="left")
@@ -163,10 +164,11 @@ def build_city_profiles_dataset(
     ]
 
     processed = merged[output_columns].sort_values(["state_code", "city_name"]).reset_index(drop=True)
+    validated_records = validate_city_profiles_frame(processed)
     base_output_path.parent.mkdir(parents=True, exist_ok=True)
     processed.to_parquet(base_output_path, index=False)
 
-    return tuple(CityProfileRecord.model_validate(record) for record in processed.to_dict("records"))
+    return validated_records
 
 
 def main() -> None:

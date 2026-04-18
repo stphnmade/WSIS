@@ -14,6 +14,7 @@ class Settings:
     mock_city_data_path: str
     raw_data_dir: str
     processed_city_profiles_path: str
+    reddit_sentiment_summaries_path: str
     mapbox_token: str
     request_timeout_seconds: float
 
@@ -32,6 +33,17 @@ def get_settings() -> Settings:
     processed_city_profiles_path = (
         processed_path if processed_path.is_absolute() else project_root / processed_path
     )
+    reddit_summaries_path = Path(
+        os.getenv(
+            "WSIS_REDDIT_SENTIMENT_SUMMARIES_PATH",
+            "data/raw/reddit/city_sentiment_summaries.json",
+        )
+    )
+    reddit_sentiment_summaries_path = (
+        reddit_summaries_path
+        if reddit_summaries_path.is_absolute()
+        else project_root / reddit_summaries_path
+    )
 
     return Settings(
         app_env=os.getenv("WSIS_APP_ENV", "development"),
@@ -40,6 +52,7 @@ def get_settings() -> Settings:
         mock_city_data_path=str(mock_city_data_path),
         raw_data_dir=str(raw_data_dir),
         processed_city_profiles_path=str(processed_city_profiles_path),
+        reddit_sentiment_summaries_path=str(reddit_sentiment_summaries_path),
         mapbox_token=os.getenv("WSIS_MAPBOX_TOKEN", ""),
         request_timeout_seconds=float(os.getenv("WSIS_REQUEST_TIMEOUT_SECONDS", "3")),
     )

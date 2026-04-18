@@ -41,9 +41,15 @@ This means:
 
 - `data/processed/city_profiles.parquet`
   - Repository-ready processed dataset used by the app by default.
+- `data/raw/reddit/city_sentiment_summaries.json`
+  - Structured detail-only Reddit summaries used by the city profile panel for freshness, provenance, and representative excerpts.
 
 ## TODOs
 
 - Replace the sample raw slices with real public-source downloads and refresh logic.
 - Add multi-county metro handling where city-only anchoring is too lossy.
 - Add source freshness metadata and refresh jobs.
+
+## Scope boundary
+
+`city_profiles.parquet` is the canonical scoring table. It intentionally stores a single scalar social signal (`social_sentiment_raw`) rather than the full Reddit detail payload. Richer Reddit summaries are loaded separately at detail-view time so the scoring contract stays stable while the product can display provenance and freshness metadata.

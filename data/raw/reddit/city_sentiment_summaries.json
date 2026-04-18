@@ -1,0 +1,352 @@
+[
+  {
+    "city_slug": "austin-tx",
+    "summary": "Recent relocation threads describe Austin as energetic and opportunity-rich, but posters repeatedly warn that housing costs and traffic now shape the day-to-day experience more than they did a few years ago.",
+    "sentiment_score": 7.1,
+    "generated_at": "2026-04-10",
+    "lookback_days": 120,
+    "posts_analyzed": 36,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/Austin",
+        "query": "moving OR relocate",
+        "note": "Used for local tradeoffs around neighborhoods, traffic, and cost escalation."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Austin",
+        "note": "Used for cross-city comparisons from movers evaluating alternatives."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Moving to Austin in my mid-20s",
+        "excerpt": "People still call out jobs and social energy, but many say budgeting for rent and commuting early matters more than it used to.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/Austin"
+      },
+      {
+        "title": "Austin versus Raleigh for a tech move",
+        "excerpt": "Austin is described as more dynamic and faster paced, while replies flag cost creep and summer fatigue as the common drawbacks.",
+        "sentiment": "mixed",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "raleigh-nc",
+    "summary": "Raleigh threads consistently read as steady rather than flashy: posters cite calmer pace, cleaner day-to-day logistics, and a reliable job base, with fewer warnings about burnout than larger boom markets.",
+    "sentiment_score": 7.4,
+    "generated_at": "2026-04-09",
+    "lookback_days": 120,
+    "posts_analyzed": 28,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/raleigh",
+        "query": "moving OR jobs",
+        "note": "Used for local perspective on cost, commute, and neighborhood fit."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Raleigh",
+        "note": "Used for comparison threads from early-career movers."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Is Raleigh still a good relocation city?",
+        "excerpt": "Replies emphasize balanced costs, manageable traffic by Sun Belt standards, and a more sustainable pace for newcomers.",
+        "sentiment": "positive",
+        "subreddit": "r/raleigh"
+      },
+      {
+        "title": "Raleigh versus Charlotte for work-life balance",
+        "excerpt": "Raleigh is usually framed as calmer and more predictable, though some posters say nightlife depth is thinner.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "pittsburgh-pa",
+    "summary": "Pittsburgh discussions are usually favorable on cost and neighborhood character, but posters are split on weather, older housing stock, and how quickly the social scene opens up for newcomers.",
+    "sentiment_score": 6.4,
+    "generated_at": "2026-04-08",
+    "lookback_days": 120,
+    "posts_analyzed": 24,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/pittsburgh",
+        "query": "moving OR neighborhoods",
+        "note": "Used for local commentary on daily life, housing stock, and transit expectations."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Pittsburgh",
+        "note": "Used for relocation comparisons against other affordable metros."
+      }
+    ],
+    "posts": [
+      {
+        "title": "What surprises people after moving to Pittsburgh?",
+        "excerpt": "A lot of replies praise affordability and neighborhood personality, but mention gray winters and steep streets as recurring adjustments.",
+        "sentiment": "mixed",
+        "subreddit": "r/pittsburgh"
+      },
+      {
+        "title": "Affordable city with real urban neighborhoods",
+        "excerpt": "Pittsburgh is often recommended when posters want lower housing costs without giving up institutions and city texture.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "denver-co",
+    "summary": "Denver threads remain upbeat about outdoor access and sunshine, but recent relocation posts increasingly frame housing costs as the main friction point rather than a secondary complaint.",
+    "sentiment_score": 6.8,
+    "generated_at": "2026-04-07",
+    "lookback_days": 120,
+    "posts_analyzed": 31,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/Denver",
+        "query": "moving OR cost of living",
+        "note": "Used for local sentiment on rent, traffic, and outdoor-lifestyle tradeoffs."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Denver",
+        "note": "Used for comparisons among high-growth western metros."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Worth moving to Denver for the lifestyle?",
+        "excerpt": "Most commenters say the sunshine and outdoor access are real advantages, but several stress that rent pressure hits newcomers fast.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/Denver"
+      },
+      {
+        "title": "Denver or Seattle for someone who likes the outdoors",
+        "excerpt": "Denver is usually described as sunnier and more immediately social, with the caveat that housing no longer feels easy.",
+        "sentiment": "mixed",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "minneapolis-mn",
+    "summary": "Minneapolis sentiment tends to be quietly strong: posters praise functional city services, bikeability, and income prospects, while winter severity remains the dominant caution in relocation threads.",
+    "sentiment_score": 6.9,
+    "generated_at": "2026-04-08",
+    "lookback_days": 120,
+    "posts_analyzed": 22,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/Minneapolis",
+        "query": "moving OR winter",
+        "note": "Used for local perspective on daily life, transit, and seasonal adjustment."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Minneapolis",
+        "note": "Used for relocation comparisons centered on affordability versus climate."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Minneapolis for a newcomer without roots there",
+        "excerpt": "Replies often say the city works well if you can handle winter and put effort into building a social circle early.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/Minneapolis"
+      },
+      {
+        "title": "Good city if I want income and amenities without coasts pricing?",
+        "excerpt": "Minneapolis is usually framed as a practical choice with good infrastructure and a real climate tradeoff.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "chicago-il",
+    "summary": "Chicago relocation threads usually separate career depth and urban energy from neighborhood-level safety variation; the result is a credible but mixed read rather than a simple thumbs-up or thumbs-down.",
+    "sentiment_score": 5.8,
+    "generated_at": "2026-04-06",
+    "lookback_days": 120,
+    "posts_analyzed": 40,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/chicago",
+        "query": "moving OR neighborhoods",
+        "note": "Used for neighborhood-specific advice, transit expectations, and safety variation."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Chicago",
+        "note": "Used for relocation comparisons against lower-cost or warmer cities."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Chicago pros and cons for a 20-something move",
+        "excerpt": "Career options, transit, and city energy are common positives; safety by neighborhood and winter are the routine caveats.",
+        "sentiment": "mixed",
+        "subreddit": "r/chicago"
+      },
+      {
+        "title": "Why do people still recommend Chicago so often?",
+        "excerpt": "The city is usually defended on value-for-urbanism and job access, even by posters who flag uneven day-to-day risk by area.",
+        "sentiment": "mixed",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "charlotte-nc",
+    "summary": "Charlotte comments are generally favorable on growth and jobs, though the tone is more pragmatic than enthusiastic: posters mention convenience and opportunity more often than culture or identity.",
+    "sentiment_score": 6.2,
+    "generated_at": "2026-04-08",
+    "lookback_days": 120,
+    "posts_analyzed": 20,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/Charlotte",
+        "query": "moving OR jobs",
+        "note": "Used for local perspective on convenience, traffic, and banking-sector employment."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Charlotte",
+        "note": "Used for comparisons with Raleigh, Atlanta, and other southern metros."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Is Charlotte a good starter city?",
+        "excerpt": "Replies often point to job access and newer housing, while noting that the city can feel more functional than distinctive.",
+        "sentiment": "mostly positive",
+        "subreddit": "r/Charlotte"
+      },
+      {
+        "title": "Charlotte versus Raleigh for a first move",
+        "excerpt": "Charlotte is typically described as more corporate and faster-growing, with Raleigh seen as calmer and more balanced.",
+        "sentiment": "mixed",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "madison-wi",
+    "summary": "Madison threads skew warm and community-oriented, with posters repeatedly mentioning civic feel, bikeability, and a manageable size; the tradeoff is a smaller labor market than larger regional hubs.",
+    "sentiment_score": 7.3,
+    "generated_at": "2026-04-09",
+    "lookback_days": 120,
+    "posts_analyzed": 18,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/madisonwi",
+        "query": "moving OR quality of life",
+        "note": "Used for local commentary on day-to-day livability, winter, and culture."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Madison",
+        "note": "Used for comparisons against larger metros with stronger job depth."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Madison for someone leaving a larger city",
+        "excerpt": "Commenters usually say the city feels friendly and easy to navigate, though career breadth is narrower outside core sectors.",
+        "sentiment": "positive",
+        "subreddit": "r/madisonwi"
+      },
+      {
+        "title": "Underrated small city for quality of life?",
+        "excerpt": "Madison is often described as a place that feels balanced if you value community and can accept a smaller market.",
+        "sentiment": "positive",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "tampa-fl",
+    "summary": "Tampa posts stay favorable on weather and lifestyle appeal, but the tone has cooled as insurance, heat, and fast-rising costs appear more often in newcomer threads.",
+    "sentiment_score": 5.9,
+    "generated_at": "2026-04-07",
+    "lookback_days": 120,
+    "posts_analyzed": 26,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/tampa",
+        "query": "moving OR rent OR insurance",
+        "note": "Used for local perspective on climate, costs, and neighborhood tradeoffs."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Tampa",
+        "note": "Used for relocation comparisons among Sun Belt metros."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Tampa move: what should I know first?",
+        "excerpt": "Replies still sell weather and amenities, but many caution that housing and insurance costs now change the value equation.",
+        "sentiment": "mixed",
+        "subreddit": "r/tampa"
+      },
+      {
+        "title": "Best warm city if I work remotely?",
+        "excerpt": "Tampa stays in the conversation for climate and lifestyle, though commenters increasingly warn that affordability is no longer the easy part.",
+        "sentiment": "mixed",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  },
+  {
+    "city_slug": "seattle-wa",
+    "summary": "Seattle sentiment stays split in a recognizable way: posters endorse salaries, nature access, and walkable neighborhoods, but cost, gray winters, and social reserve remain the recurring cautions.",
+    "sentiment_score": 6.1,
+    "generated_at": "2026-04-06",
+    "lookback_days": 120,
+    "posts_analyzed": 34,
+    "methodology": "Seeded city-level Reddit summary built from precomputed relocation and local-city discussion excerpts, then normalized into a 0-10 sentiment score for UI display.",
+    "provenance": [
+      {
+        "subreddit": "r/Seattle",
+        "query": "moving OR neighborhoods",
+        "note": "Used for local detail on cost, weather adjustment, and neighborhood selection."
+      },
+      {
+        "subreddit": "r/SameGrassButGreener",
+        "query": "Seattle",
+        "note": "Used for comparisons with other high-income coastal cities."
+      }
+    ],
+    "posts": [
+      {
+        "title": "Is Seattle worth the cost if I like the outdoors?",
+        "excerpt": "Many replies say yes if income is strong, but note that weather and social reserve can take real adjustment.",
+        "sentiment": "mixed",
+        "subreddit": "r/Seattle"
+      },
+      {
+        "title": "Seattle or Denver for a high-income move",
+        "excerpt": "Seattle tends to win on wages and urban neighborhood feel, while Denver is framed as sunnier and easier socially.",
+        "sentiment": "mixed",
+        "subreddit": "r/SameGrassButGreener"
+      }
+    ]
+  }
+]
