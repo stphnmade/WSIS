@@ -82,6 +82,12 @@ def _score_dimension(
 def _score_context(city: CityMetrics, dimensions: list[ScoreDimension]) -> ScoreContext:
     included = [dimension.label for dimension in dimensions if dimension.included_in_score]
     excluded = [dimension.label for dimension in dimensions if not dimension.included_in_score]
+    exclusion_reasons = [
+        f"{dimension.label} is {dimension.confidence} from {dimension.source}."
+        for dimension in dimensions
+        if dimension.key in {"affordability", "job_market", "safety", "climate"}
+        and not dimension.included_in_score
+    ]
     explanation = (
         "WSIS ranks cities using affordability, job market, safety, and climate when those inputs "
         "are source-backed. Social sentiment stays visible as context and does not change the score."
@@ -97,6 +103,7 @@ def _score_context(city: CityMetrics, dimensions: list[ScoreDimension]) -> Score
         eligible_for_mvp_ranking=city.is_mvp_eligible,
         included_dimensions=included,
         excluded_dimensions=excluded,
+        exclusion_reasons=exclusion_reasons,
         explanation=explanation,
         beta_warning=beta_warning,
     )

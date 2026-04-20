@@ -32,6 +32,7 @@ from wsis.ui.homepage import (
     standout_attribute,
     strongest_dimensions,
 )
+from wsis.ui.trust import city_core_freshness_summary, freshness_badge
 
 
 st.set_page_config(page_title="WSIS", layout="wide")
@@ -589,6 +590,12 @@ def render_side_panel(detail: CityDetail | None, weights: ScoreWeights, compare_
         st.caption(detail.summary.score_context.explanation)
         if detail.summary.score_context.beta_warning:
             st.warning(detail.summary.score_context.beta_warning)
+        st.caption("Core freshness: " + " | ".join(city_core_freshness_summary(detail)))
+        st.caption(
+            "Context freshness: "
+            f"home price {freshness_badge(detail.metrics.median_home_price_source_date)} | "
+            f"job growth {freshness_badge(detail.metrics.job_growth_source_date)}"
+        )
         stat_columns = st.columns(2)
         for column, (label, value) in zip(stat_columns * 2, quick_stats(detail)):
             column.metric(label, value)

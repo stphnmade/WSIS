@@ -71,8 +71,14 @@ class CityMetrics(BaseModel):
     longitude: float = Field(ge=-180, le=180)
     median_rent: float = Field(gt=0)
     median_home_price: float = Field(gt=0)
+    median_home_price_source: str = Field(min_length=1)
+    median_home_price_source_date: str = Field(min_length=1)
+    median_home_price_is_imputed: bool = False
     median_income: float = Field(gt=0)
     job_growth_pct: float = Field(ge=-100, le=100)
+    job_growth_source: str = Field(min_length=1)
+    job_growth_source_date: str = Field(min_length=1)
+    job_growth_is_imputed: bool = False
     unemployment_pct: float = Field(ge=0, le=100)
     violent_crime_per_100k: float | None = Field(default=None, ge=0)
     safety_score_raw: float = Field(ge=0, le=100)
@@ -130,6 +136,7 @@ class ScoreContext(BaseModel):
     eligible_for_mvp_ranking: bool
     included_dimensions: List[str] = Field(default_factory=list)
     excluded_dimensions: List[str] = Field(default_factory=list)
+    exclusion_reasons: List[str] = Field(default_factory=list)
     explanation: str = Field(min_length=1)
     beta_warning: str | None = None
 

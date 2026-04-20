@@ -36,6 +36,8 @@ Confidence labels used across the dataset, API, and UI:
 - `seeded`: intentionally seeded beta context that is visible but not rank-defining
 - `missing`: no usable input is available for that dimension
 
+The UI also surfaces source freshness from file dates so stale but still source-backed slices are visible as an honesty signal without changing the ranking policy.
+
 See [DATA_STANDARDS.md](/Users/steph/WSIS/DATA_STANDARDS.md:1) for the full policy.
 
 ## Project structure
@@ -74,10 +76,12 @@ python3 -m pip install -e .
 Environment-driven paths:
 
 - `WSIS_RAW_DATA_DIR`
+- `WSIS_SOURCE_SAMPLE_DIR`
 - `WSIS_PROCESSED_CITY_PROFILES_PATH`
 - `WSIS_CITY_PROFILES_VALIDATION_REPORT_PATH`
 - `WSIS_REDDIT_SENTIMENT_SUMMARIES_PATH`
 - `WSIS_API_BASE_URL`
+- `WSIS_SOURCE_STALE_AFTER_DAYS`
 
 ## Run the backend
 

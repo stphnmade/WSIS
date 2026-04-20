@@ -6,6 +6,7 @@ import re
 
 import pandas as pd
 
+from wsis.core.freshness import source_age_days, source_freshness_label
 from wsis.core.config import get_settings
 from wsis.data.models import (
     CITY_PROFILE_NON_EMPTY_STRING_COLUMNS,
@@ -151,10 +152,99 @@ def _require_mvp_eligibility_consistency(frame: pd.DataFrame) -> None:
         _raise("city_profiles violates MVP eligibility rules: " + "; ".join(failures))
 
 
+def _exclusion_reasons(frame: pd.DataFrame) -> dict[str, list[str]]:
+    reasons: dict[str, list[str]] = {}
+    ineligible = frame.loc[~frame["is_mvp_eligible"]]
+    for _, row in ineligible.iterrows():
+        city_reasons: list[str] = []
+        for dimension in RANKED_DIMENSIONS:
+            confidence = str(row[f"{dimension}_confidence"])
+            if confidence != "source_backed":
+                city_reasons.append(
+                    f"{dimension.replace('_', ' ')} is {confidence} from {row[f'{dimension}_source']}"
+                )
+        reasons[str(row["city_slug"])] = city_reasons
+    return reasons
+
+
+def _source_file_status(
+    frame: pd.DataFrame,
+    raw_root: Path,
+    source_samples_root: Path,
+    stale_after_days: int,
+) -> dict[str, dict[str, object]]:
+    source_specs = {
+        "simplemaps": (raw_root / "simplemaps" / "us_cities.csv", "has_simplemaps_data"),
+        "census": (raw_root / "census" / "acs_city_metrics.csv", "has_census_data"),
+        "bls": (raw_root / "bls" / "county_unemployment.csv", "has_bls_data"),
+        "fbi": (raw_root / "fbi" / "county_crime.csv", "has_fbi_data"),
+        "noaa": (raw_root / "noaa" / "county_climate.csv", "has_noaa_data"),
+        "reddit": (raw_root / "reddit" / "city_sentiment.csv", "has_reddit_data"),
+        "cost_of_living_context": (
+            source_samples_root / "cost_of_living.csv",
+            "has_cost_of_living_context",
+        ),
+        "jobs_context": (source_samples_root / "jobs.csv", "has_jobs_context"),
+    }
+    status: dict[str, dict[str, object]] = {}
+    row_count = max(len(frame), 1)
+    for source_name, (path, coverage_column) in source_specs.items():
+        exists = path.exists()
+        source_date = (
+            pd.Timestamp(path.stat().st_mtime, unit="s", tz="UTC").date().isoformat()
+            if exists
+            else "unknown"
+        )
+        coverage_count = int(frame[coverage_column].sum()) if coverage_column in frame.columns else 0
+        coverage_pct = round((coverage_count / row_count) * 100, 2)
+        age_days = source_age_days(source_date)
+        freshness = source_freshness_label(source_date, stale_after_days)
+        status_value = "healthy"
+        if not exists:
+            status_value = "missing"
+        elif coverage_count == 0:
+            status_value = "outage"
+        elif coverage_count < len(frame):
+            status_value = "partial_outage"
+
+        status[source_name] = {
+            "path": str(path),
+            "exists": exists,
+            "source_date": source_date,
+            "age_days": age_days,
+            "freshness": freshness,
+            "coverage_count": coverage_count,
+            "coverage_pct": coverage_pct,
+            "status": status_value,
+        }
+    return status
+
+
 def build_city_profiles_validation_report(
     frame: pd.DataFrame,
     dataset_path: Path | None = None,
+    raw_root: Path | None = None,
+    source_samples_root: Path | None = None,
 ) -> dict[str, object]:
+    settings = get_settings()
+    resolved_raw_root = raw_root or Path(settings.raw_data_dir)
+    resolved_source_samples_root = source_samples_root or Path(settings.source_samples_dir)
+    source_status = _source_file_status(
+        frame,
+        resolved_raw_root,
+        resolved_source_samples_root,
+        settings.source_stale_after_days,
+    )
+    stale_sources = sorted(
+        source_name
+        for source_name, status in source_status.items()
+        if status["freshness"] == "stale"
+    )
+    partial_outages = sorted(
+        source_name
+        for source_name, status in source_status.items()
+        if status["status"] in {"partial_outage", "outage", "missing"}
+    )
     report: dict[str, object] = {
         "dataset_path": str(dataset_path) if dataset_path is not None else "",
         "row_count": int(len(frame)),
@@ -163,6 +253,7 @@ def build_city_profiles_validation_report(
         "cities_excluded_from_mvp": sorted(
             frame.loc[~frame["is_mvp_eligible"], "city_slug"].astype(str).tolist()
         ),
+        "city_exclusion_reasons": _exclusion_reasons(frame),
         "dimension_confidence": {},
         "dimension_imputation": {},
         "source_coverage": {
@@ -172,8 +263,16 @@ def build_city_profiles_validation_report(
             "fbi": int(frame["has_fbi_data"].sum()),
             "noaa": int(frame["has_noaa_data"].sum()),
             "reddit": int(frame["has_reddit_data"].sum()),
+            "cost_of_living_context": int(frame["has_cost_of_living_context"].sum()),
+            "jobs_context": int(frame["has_jobs_context"].sum()),
         },
-        "failures": [],
+        "source_file_status": source_status,
+        "stale_sources": stale_sources,
+        "partial_outages": partial_outages,
+        "failures": [
+            *[f"stale source: {source_name}" for source_name in stale_sources],
+            *[f"source coverage issue: {source_name}" for source_name in partial_outages],
+        ],
     }
 
     for dimension in ALL_DIMENSIONS:
@@ -221,7 +320,12 @@ def main() -> None:
     report_path = Path(settings.city_profiles_validation_report_path)
     frame = pd.read_parquet(path)
     records = validate_city_profiles_frame(frame)
-    report = build_city_profiles_validation_report(frame, path)
+    report = build_city_profiles_validation_report(
+        frame,
+        path,
+        raw_root=Path(settings.raw_data_dir),
+        source_samples_root=Path(settings.source_samples_dir),
+    )
     write_city_profiles_validation_report(report, report_path)
     print(
         "Validated city_profiles dataset with "

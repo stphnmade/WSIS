@@ -21,8 +21,14 @@ CITY_PROFILE_REQUIRED_COLUMNS = (
     "median_income",
     "median_rent",
     "median_home_price",
+    "median_home_price_source",
+    "median_home_price_source_date",
+    "median_home_price_is_imputed",
     "unemployment_pct",
     "job_growth_pct",
+    "job_growth_source",
+    "job_growth_source_date",
+    "job_growth_is_imputed",
     "violent_crime_per_100k",
     "safety_score_raw",
     "avg_temp_f",
@@ -61,6 +67,8 @@ CITY_PROFILE_REQUIRED_COLUMNS = (
     "has_fbi_data",
     "has_noaa_data",
     "has_reddit_data",
+    "has_cost_of_living_context",
+    "has_jobs_context",
     "headline",
     "known_for",
 )
@@ -107,6 +115,10 @@ CITY_PROFILE_NON_EMPTY_STRING_COLUMNS = (
     "job_market_confidence",
     "job_market_source",
     "job_market_source_date",
+    "median_home_price_source",
+    "median_home_price_source_date",
+    "job_growth_source",
+    "job_growth_source_date",
     "safety_confidence",
     "safety_source",
     "safety_source_date",
@@ -135,8 +147,14 @@ class CityProfileRecord(BaseModel):
     median_income: float = Field(gt=0)
     median_rent: float = Field(gt=0)
     median_home_price: float = Field(gt=0)
+    median_home_price_source: str = Field(min_length=1)
+    median_home_price_source_date: str = Field(min_length=1)
+    median_home_price_is_imputed: bool
     unemployment_pct: float = Field(ge=0, le=100)
     job_growth_pct: float = Field(ge=-100, le=100)
+    job_growth_source: str = Field(min_length=1)
+    job_growth_source_date: str = Field(min_length=1)
+    job_growth_is_imputed: bool
     violent_crime_per_100k: float = Field(ge=0)
     safety_score_raw: float = Field(ge=0, le=100)
     avg_temp_f: float = Field(ge=-50, le=150)
@@ -175,6 +193,8 @@ class CityProfileRecord(BaseModel):
     has_fbi_data: bool
     has_noaa_data: bool
     has_reddit_data: bool
+    has_cost_of_living_context: bool
+    has_jobs_context: bool
     headline: str = Field(min_length=1)
     known_for: str = Field(min_length=1)
 
@@ -184,8 +204,8 @@ class CityProfileRecord(BaseModel):
         source_date = getattr(self, f"{dimension}_source_date")
         is_imputed = getattr(self, f"{dimension}_is_imputed")
         note_map = {
-            "affordability": "Built from rent burden against local median income; estimated housing proxies are excluded from ranking.",
-            "job_market": "Built from currently available labor-market inputs; proxy job-growth context stays visible but does not drive the MVP rank.",
+            "affordability": "Built from rent burden against local median income; median home price stays visible as separate context.",
+            "job_market": "Built from source-backed unemployment data; job-growth context stays visible separately and does not change the MVP rank.",
             "safety": "Derived from the current crime-rate slice anchored to the city's county FIPS.",
             "climate": "Derived from the current climate slice anchored to the city's county FIPS.",
             "social": "Social sentiment is visible as context only and does not change the MVP rank.",
@@ -211,8 +231,14 @@ class CityProfileRecord(BaseModel):
             longitude=self.longitude,
             median_rent=self.median_rent,
             median_home_price=self.median_home_price,
+            median_home_price_source=self.median_home_price_source,
+            median_home_price_source_date=self.median_home_price_source_date,
+            median_home_price_is_imputed=self.median_home_price_is_imputed,
             median_income=self.median_income,
             job_growth_pct=self.job_growth_pct,
+            job_growth_source=self.job_growth_source,
+            job_growth_source_date=self.job_growth_source_date,
+            job_growth_is_imputed=self.job_growth_is_imputed,
             unemployment_pct=self.unemployment_pct,
             violent_crime_per_100k=self.violent_crime_per_100k,
             safety_score_raw=self.safety_score_raw,

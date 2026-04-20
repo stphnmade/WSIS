@@ -30,8 +30,14 @@ def _valid_frame() -> pd.DataFrame:
                 "median_income": 92000,
                 "median_rent": 1750,
                 "median_home_price": 525000,
+                "median_home_price_source": "cost_of_living_sample",
+                "median_home_price_source_date": "2026-04-20",
+                "median_home_price_is_imputed": False,
                 "unemployment_pct": 3.4,
                 "job_growth_pct": 4.8,
+                "job_growth_source": "jobs_sample",
+                "job_growth_source_date": "2026-04-20",
+                "job_growth_is_imputed": False,
                 "violent_crime_per_100k": 420,
                 "safety_score_raw": 66,
                 "avg_temp_f": 69,
@@ -70,6 +76,8 @@ def _valid_frame() -> pd.DataFrame:
                 "has_fbi_data": True,
                 "has_noaa_data": True,
                 "has_reddit_data": True,
+                "has_cost_of_living_context": True,
+                "has_jobs_context": True,
                 "headline": "Austin combines job resilience and positive social sentiment for early-career movers.",
                 "known_for": "south, 979,882 residents, Travis County",
             }
@@ -122,3 +130,16 @@ def test_validation_report_summarizes_coverage() -> None:
     assert report["row_count"] == 1
     assert report["eligible_city_count"] == 1
     assert report["dimension_confidence"]["social"]["seeded"] == 1
+    assert report["source_coverage"]["cost_of_living_context"] == 1
+    assert report["source_coverage"]["jobs_context"] == 1
+
+
+def test_validation_report_includes_exclusion_reasons() -> None:
+    frame = _valid_frame()
+    frame.loc[0, "is_mvp_eligible"] = False
+    frame.loc[0, "job_market_confidence"] = "estimated"
+
+    report = build_city_profiles_validation_report(frame)
+
+    assert "austin-tx" in report["city_exclusion_reasons"]
+    assert any("job market is estimated" in reason for reason in report["city_exclusion_reasons"]["austin-tx"])

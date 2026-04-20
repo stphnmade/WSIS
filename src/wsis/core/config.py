@@ -13,11 +13,13 @@ class Settings:
     city_repository_backend: str
     mock_city_data_path: str
     raw_data_dir: str
+    source_samples_dir: str
     processed_city_profiles_path: str
     city_profiles_validation_report_path: str
     reddit_sentiment_summaries_path: str
     mapbox_token: str
     request_timeout_seconds: float
+    source_stale_after_days: int
 
 
 @lru_cache(maxsize=1)
@@ -25,12 +27,16 @@ def get_settings() -> Settings:
     project_root = Path(__file__).resolve().parents[3]
     mock_path = Path(os.getenv("WSIS_MOCK_CITY_DATA_PATH", "data/mock/cities.csv"))
     raw_dir = Path(os.getenv("WSIS_RAW_DATA_DIR", "data/raw"))
+    source_samples_dir = Path(os.getenv("WSIS_SOURCE_SAMPLE_DIR", "data/source_samples"))
     processed_path = Path(
         os.getenv("WSIS_PROCESSED_CITY_PROFILES_PATH", "data/processed/city_profiles.parquet")
     )
 
     mock_city_data_path = mock_path if mock_path.is_absolute() else project_root / mock_path
     raw_data_dir = raw_dir if raw_dir.is_absolute() else project_root / raw_dir
+    resolved_source_samples_dir = (
+        source_samples_dir if source_samples_dir.is_absolute() else project_root / source_samples_dir
+    )
     processed_city_profiles_path = (
         processed_path if processed_path.is_absolute() else project_root / processed_path
     )
@@ -63,9 +69,11 @@ def get_settings() -> Settings:
         city_repository_backend=os.getenv("WSIS_CITY_REPOSITORY_BACKEND", "processed"),
         mock_city_data_path=str(mock_city_data_path),
         raw_data_dir=str(raw_data_dir),
+        source_samples_dir=str(resolved_source_samples_dir),
         processed_city_profiles_path=str(processed_city_profiles_path),
         city_profiles_validation_report_path=str(city_profiles_validation_report_path),
         reddit_sentiment_summaries_path=str(reddit_sentiment_summaries_path),
         mapbox_token=os.getenv("WSIS_MAPBOX_TOKEN", ""),
         request_timeout_seconds=float(os.getenv("WSIS_REQUEST_TIMEOUT_SECONDS", "3")),
+        source_stale_after_days=int(os.getenv("WSIS_SOURCE_STALE_AFTER_DAYS", "540")),
     )

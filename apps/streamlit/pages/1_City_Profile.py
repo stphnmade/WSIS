@@ -7,6 +7,7 @@ import streamlit as st
 from wsis.core.weights import score_weights_from_state
 from wsis.domain.models import ScoreWeights
 from wsis.services.api_client import ApiCityClient
+from wsis.ui.trust import city_core_freshness_summary, freshness_badge
 
 
 st.set_page_config(page_title="WSIS | City Profile", layout="wide")
@@ -46,6 +47,10 @@ st.write(detail.summary.headline)
 st.info(detail.summary.score_context.explanation)
 if detail.summary.score_context.beta_warning:
     st.warning(detail.summary.score_context.beta_warning)
+if detail.summary.score_context.exclusion_reasons:
+    st.caption("Inspection-only reasons")
+    for reason in detail.summary.score_context.exclusion_reasons:
+        st.write(f"- {reason}")
 
 metric_columns = st.columns(4)
 metric_columns[0].metric("Livability score", detail.summary.overall_score)
@@ -76,7 +81,7 @@ with content_columns[0]:
         color_discrete_map={"Yes": "#2f7d62", "Context only": "#c3a373"},
         range_y=[0, 10],
     )
-    st.plotly_chart(chart, use_container_width=True)
+    st.plotly_chart(chart, width="stretch")
     st.caption(
         "Included in score: "
         + ", ".join(detail.summary.score_context.included_dimensions)
@@ -94,12 +99,36 @@ with content_columns[0]:
                 "Included": "Yes" if dimension.included_in_score else "No",
                 "Source": dimension.source,
                 "Source date": dimension.source_date,
+                "Freshness": freshness_badge(dimension.source_date),
                 "Imputed": "Yes" if dimension.is_imputed else "No",
             }
             for dimension in detail.summary.score_dimensions
         ]
     )
-    st.dataframe(trust_frame, use_container_width=True, hide_index=True)
+    st.dataframe(trust_frame, width="stretch", hide_index=True)
+
+    st.subheader("Context metric freshness")
+    context_frame = pd.DataFrame(
+        [
+            {
+                "Metric": "Median home price",
+                "Value": f"${detail.metrics.median_home_price:,.0f}",
+                "Source": detail.metrics.median_home_price_source,
+                "Source date": detail.metrics.median_home_price_source_date,
+                "Freshness": freshness_badge(detail.metrics.median_home_price_source_date),
+                "Estimated": "Yes" if detail.metrics.median_home_price_is_imputed else "No",
+            },
+            {
+                "Metric": "Job growth",
+                "Value": f"{detail.metrics.job_growth_pct:.1f}%",
+                "Source": detail.metrics.job_growth_source,
+                "Source date": detail.metrics.job_growth_source_date,
+                "Freshness": freshness_badge(detail.metrics.job_growth_source_date),
+                "Estimated": "Yes" if detail.metrics.job_growth_is_imputed else "No",
+            },
+        ]
+    )
+    st.dataframe(context_frame, width="stretch", hide_index=True)
 
     st.subheader("Why this city might fit")
     for highlight in detail.highlights:
@@ -120,10 +149,12 @@ with content_columns[1]:
         for source in detail.reddit_panel.provenance:
             st.write(f"- {source.subreddit}: `{source.query}`")
             st.caption(source.note)
-    for post in detail.reddit_panel.posts:
-        st.markdown(f"**{post.title}**")
-        st.write(post.excerpt)
-        st.caption(f"Sentiment: {post.sentiment} | Source: {post.subreddit}")
+        for post in detail.reddit_panel.posts:
+            st.markdown(f"**{post.title}**")
+            st.write(post.excerpt)
+            st.caption(f"Sentiment: {post.sentiment} | Source: {post.subreddit}")
+
+st.caption("Core source freshness: " + " | ".join(city_core_freshness_summary(detail)))
 
 st.info(
     "Reddit summaries are seeded beta context from structured local data. "

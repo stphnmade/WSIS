@@ -9,6 +9,7 @@ from wsis.core.config import get_settings
 from wsis.data.ingestion.bls import load_bls_unemployment
 from wsis.data.ingestion.census_acs import load_census_acs
 from wsis.data.ingestion.common import fill_or_default, safe_min_max
+from wsis.data.ingestion.context_samples import load_cost_of_living_context, load_jobs_context
 from wsis.data.ingestion.fbi import load_fbi_crime
 from wsis.data.ingestion.noaa import load_noaa_climate
 from wsis.data.ingestion.reddit import load_reddit_sentiment
@@ -78,6 +79,7 @@ def build_city_profiles_dataset(
 ) -> tuple[CityProfileRecord, ...]:
     settings = get_settings()
     base_raw_root = raw_root or Path(settings.raw_data_dir)
+    base_source_samples_root = Path(settings.source_samples_dir)
     base_output_path = output_path or Path(settings.processed_city_profiles_path)
     base_report_path = report_path or Path(settings.city_profiles_validation_report_path)
 
@@ -87,6 +89,8 @@ def build_city_profiles_dataset(
     fbi = load_fbi_crime(base_raw_root)
     noaa = load_noaa_climate(base_raw_root)
     reddit = load_reddit_sentiment(base_raw_root)
+    cost_context = load_cost_of_living_context(base_source_samples_root)
+    jobs_context = load_jobs_context(base_source_samples_root)
 
     merged = (
         city_dimension.merge(census, on=["city_state_key", "county_fips"], how="left")
@@ -94,6 +98,8 @@ def build_city_profiles_dataset(
         .merge(fbi, on="county_fips", how="left")
         .merge(noaa, on="county_fips", how="left")
         .merge(reddit, on="city_state_key", how="left")
+        .merge(cost_context, on="county_fips", how="left")
+        .merge(jobs_context, on="county_fips", how="left")
     )
 
     for flag in [
@@ -102,6 +108,8 @@ def build_city_profiles_dataset(
         "has_fbi_data",
         "has_noaa_data",
         "has_reddit_data",
+        "has_cost_of_living_context",
+        "has_jobs_context",
     ]:
         if flag not in merged.columns:
             merged[flag] = False
@@ -115,8 +123,14 @@ def build_city_profiles_dataset(
     merged["sunny_days"] = fill_or_default(merged.get("sunny_days"), 205)
     merged["social_sentiment_raw"] = fill_or_default(merged.get("social_sentiment_raw"), 0.0).clip(-1, 1)
 
-    merged["median_home_price"] = _derive_home_price(merged["median_rent"])
-    merged["job_growth_pct"] = _derive_job_growth(merged["unemployment_pct"])
+    merged["median_home_price"] = fill_or_default(
+        merged.get("median_home_price"),
+        _derive_home_price(merged["median_rent"]).median(),
+    )
+    merged["job_growth_pct"] = fill_or_default(
+        merged.get("job_growth_pct"),
+        _derive_job_growth(merged["unemployment_pct"]).median(),
+    )
     merged["safety_score_raw"] = _derive_safety_score(merged["violent_crime_per_100k"])
     merged["climate_score_raw"] = _derive_climate_score(merged["avg_temp_f"], merged["sunny_days"])
 
@@ -139,6 +153,8 @@ def build_city_profiles_dataset(
     fbi_date = _source_date(base_raw_root / "fbi" / "county_crime.csv")
     noaa_date = _source_date(base_raw_root / "noaa" / "county_climate.csv")
     reddit_date = _source_date(base_raw_root / "reddit" / "city_sentiment.csv")
+    cost_context_date = _source_date(base_source_samples_root / "cost_of_living.csv")
+    jobs_context_date = _source_date(base_source_samples_root / "jobs.csv")
 
     merged["affordability_confidence"] = merged["has_census_data"].map(
         lambda value: "source_backed" if value else "estimated"
@@ -176,6 +192,20 @@ def build_city_profiles_dataset(
     )
     merged["social_source_date"] = reddit_date
     merged["social_is_imputed"] = ~merged["has_reddit_data"]
+    merged["median_home_price_source"] = merged["has_cost_of_living_context"].map(
+        lambda value: "cost_of_living_sample" if value else "derived_from_median_rent_proxy"
+    )
+    merged["median_home_price_source_date"] = merged["has_cost_of_living_context"].map(
+        lambda value: cost_context_date if value else census_date
+    )
+    merged["median_home_price_is_imputed"] = ~merged["has_cost_of_living_context"]
+    merged["job_growth_source"] = merged["has_jobs_context"].map(
+        lambda value: "jobs_sample" if value else "derived_from_unemployment_proxy"
+    )
+    merged["job_growth_source_date"] = merged["has_jobs_context"].map(
+        lambda value: jobs_context_date if value else bls_date
+    )
+    merged["job_growth_is_imputed"] = ~merged["has_jobs_context"]
     merged["is_mvp_eligible"] = (
         merged["affordability_confidence"].eq("source_backed")
         & merged["job_market_confidence"].eq("source_backed")
@@ -202,8 +232,14 @@ def build_city_profiles_dataset(
         "median_income",
         "median_rent",
         "median_home_price",
+        "median_home_price_source",
+        "median_home_price_source_date",
+        "median_home_price_is_imputed",
         "unemployment_pct",
         "job_growth_pct",
+        "job_growth_source",
+        "job_growth_source_date",
+        "job_growth_is_imputed",
         "violent_crime_per_100k",
         "safety_score_raw",
         "avg_temp_f",
@@ -242,6 +278,8 @@ def build_city_profiles_dataset(
         "has_fbi_data",
         "has_noaa_data",
         "has_reddit_data",
+        "has_cost_of_living_context",
+        "has_jobs_context",
         "headline",
         "known_for",
     ]
@@ -250,7 +288,12 @@ def build_city_profiles_dataset(
     validated_records = validate_city_profiles_frame(processed)
     base_output_path.parent.mkdir(parents=True, exist_ok=True)
     processed.to_parquet(base_output_path, index=False)
-    report = build_city_profiles_validation_report(processed, base_output_path)
+    report = build_city_profiles_validation_report(
+        processed,
+        base_output_path,
+        raw_root=base_raw_root,
+        source_samples_root=base_source_samples_root,
+    )
     write_city_profiles_validation_report(report, base_report_path)
 
     return validated_records

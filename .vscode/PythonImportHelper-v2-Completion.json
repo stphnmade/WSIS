@@ -232,6 +232,30 @@
         "documentation": {}
     },
     {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
+        "label": "annotations",
+        "importPath": "__future__",
+        "description": "__future__",
+        "isExtraImport": true,
+        "detail": "__future__",
+        "documentation": {}
+    },
+    {
         "label": "pandas",
         "kind": 6,
         "isExtraImport": true,
@@ -595,6 +619,22 @@
         "documentation": {}
     },
     {
+        "label": "CityDetail",
+        "importPath": "wsis.domain.models",
+        "description": "wsis.domain.models",
+        "isExtraImport": true,
+        "detail": "wsis.domain.models",
+        "documentation": {}
+    },
+    {
+        "label": "ScoreDimension",
+        "importPath": "wsis.domain.models",
+        "description": "wsis.domain.models",
+        "isExtraImport": true,
+        "detail": "wsis.domain.models",
+        "documentation": {}
+    },
+    {
         "label": "ScoreWeights",
         "importPath": "wsis.domain.models",
         "description": "wsis.domain.models",
@@ -728,6 +768,46 @@
         "description": "wsis.services.api_client",
         "isExtraImport": true,
         "detail": "wsis.services.api_client",
+        "documentation": {}
+    },
+    {
+        "label": "city_core_freshness_summary",
+        "importPath": "wsis.ui.trust",
+        "description": "wsis.ui.trust",
+        "isExtraImport": true,
+        "detail": "wsis.ui.trust",
+        "documentation": {}
+    },
+    {
+        "label": "freshness_badge",
+        "importPath": "wsis.ui.trust",
+        "description": "wsis.ui.trust",
+        "isExtraImport": true,
+        "detail": "wsis.ui.trust",
+        "documentation": {}
+    },
+    {
+        "label": "freshness_badge",
+        "importPath": "wsis.ui.trust",
+        "description": "wsis.ui.trust",
+        "isExtraImport": true,
+        "detail": "wsis.ui.trust",
+        "documentation": {}
+    },
+    {
+        "label": "city_core_freshness_summary",
+        "importPath": "wsis.ui.trust",
+        "description": "wsis.ui.trust",
+        "isExtraImport": true,
+        "detail": "wsis.ui.trust",
+        "documentation": {}
+    },
+    {
+        "label": "freshness_badge",
+        "importPath": "wsis.ui.trust",
+        "description": "wsis.ui.trust",
+        "isExtraImport": true,
+        "detail": "wsis.ui.trust",
         "documentation": {}
     },
     {
@@ -1319,6 +1399,46 @@
         "documentation": {}
     },
     {
+        "label": "Path",
+        "importPath": "pathlib",
+        "description": "pathlib",
+        "isExtraImport": true,
+        "detail": "pathlib",
+        "documentation": {}
+    },
+    {
+        "label": "date",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "datetime",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
+        "label": "timezone",
+        "importPath": "datetime",
+        "description": "datetime",
+        "isExtraImport": true,
+        "detail": "datetime",
+        "documentation": {}
+    },
+    {
         "label": "Mapping",
         "importPath": "collections.abc",
         "description": "collections.abc",
@@ -1336,6 +1456,14 @@
     },
     {
         "label": "build_city_state_key",
+        "importPath": "wsis.data.ingestion.common",
+        "description": "wsis.data.ingestion.common",
+        "isExtraImport": true,
+        "detail": "wsis.data.ingestion.common",
+        "documentation": {}
+    },
+    {
+        "label": "load_raw_csv",
         "importPath": "wsis.data.ingestion.common",
         "description": "wsis.data.ingestion.common",
         "isExtraImport": true,
@@ -1504,19 +1632,11 @@
         "documentation": {}
     },
     {
-        "label": "datetime",
-        "importPath": "datetime",
-        "description": "datetime",
+        "label": "get_settings",
+        "importPath": "wsis.core.config",
+        "description": "wsis.core.config",
         "isExtraImport": true,
-        "detail": "datetime",
-        "documentation": {}
-    },
-    {
-        "label": "timezone",
-        "importPath": "datetime",
-        "description": "datetime",
-        "isExtraImport": true,
-        "detail": "datetime",
+        "detail": "wsis.core.config",
         "documentation": {}
     },
     {
@@ -1589,6 +1709,22 @@
         "description": "wsis.data.ingestion.census_acs",
         "isExtraImport": true,
         "detail": "wsis.data.ingestion.census_acs",
+        "documentation": {}
+    },
+    {
+        "label": "load_cost_of_living_context",
+        "importPath": "wsis.data.ingestion.context_samples",
+        "description": "wsis.data.ingestion.context_samples",
+        "isExtraImport": true,
+        "detail": "wsis.data.ingestion.context_samples",
+        "documentation": {}
+    },
+    {
+        "label": "load_jobs_context",
+        "importPath": "wsis.data.ingestion.context_samples",
+        "description": "wsis.data.ingestion.context_samples",
+        "isExtraImport": true,
+        "detail": "wsis.data.ingestion.context_samples",
         "documentation": {}
     },
     {
@@ -1920,6 +2056,30 @@
         "documentation": {}
     },
     {
+        "label": "source_age_days",
+        "importPath": "wsis.core.freshness",
+        "description": "wsis.core.freshness",
+        "isExtraImport": true,
+        "detail": "wsis.core.freshness",
+        "documentation": {}
+    },
+    {
+        "label": "source_freshness_label",
+        "importPath": "wsis.core.freshness",
+        "description": "wsis.core.freshness",
+        "isExtraImport": true,
+        "detail": "wsis.core.freshness",
+        "documentation": {}
+    },
+    {
+        "label": "source_freshness_label",
+        "importPath": "wsis.core.freshness",
+        "description": "wsis.core.freshness",
+        "isExtraImport": true,
+        "detail": "wsis.core.freshness",
+        "documentation": {}
+    },
+    {
         "label": "requests",
         "kind": 6,
         "isExtraImport": true,
@@ -2068,7 +2228,7 @@
         "kind": 5,
         "importPath": "apps.streamlit.pages.1_City_Profile",
         "description": "apps.streamlit.pages.1_City_Profile",
-        "peekOfCode": "st.session_state[\"selected_city_slug\"] = selected_slug\ndetail, source = client.get_city(selected_slug, current_weights())\nst.title(f\"{detail.summary.name}, {detail.summary.state_code}\")\nst.caption(f\"Profile source: {source}. Discovery list source: {list_source}.\")\nst.write(detail.summary.headline)\nst.info(detail.summary.score_context.explanation)\nif detail.summary.score_context.beta_warning:\n    st.warning(detail.summary.score_context.beta_warning)\nmetric_columns = st.columns(4)\nmetric_columns[0].metric(\"Livability score\", detail.summary.overall_score)",
+        "peekOfCode": "st.session_state[\"selected_city_slug\"] = selected_slug\ndetail, source = client.get_city(selected_slug, current_weights())\nst.title(f\"{detail.summary.name}, {detail.summary.state_code}\")\nst.caption(f\"Profile source: {source}. Discovery list source: {list_source}.\")\nst.write(detail.summary.headline)\nst.info(detail.summary.score_context.explanation)\nif detail.summary.score_context.beta_warning:\n    st.warning(detail.summary.score_context.beta_warning)\nif detail.summary.score_context.exclusion_reasons:\n    st.caption(\"Inspection-only reasons\")",
         "detail": "apps.streamlit.pages.1_City_Profile",
         "documentation": {}
     },
@@ -2194,7 +2354,7 @@
         "kind": 5,
         "importPath": "apps.streamlit.pages.2_Comparison",
         "description": "apps.streamlit.pages.2_Comparison",
-        "peekOfCode": "trust_frame = pd.DataFrame(\n    [\n        {\n            \"City\": f\"{detail.summary.name}, {detail.summary.state_code}\",\n            \"Eligible for ranking\": \"Yes\" if detail.summary.score_context.eligible_for_mvp_ranking else \"No\",\n            \"Included dimensions\": \", \".join(detail.summary.score_context.included_dimensions),\n            \"Context only\": \", \".join(detail.summary.score_context.excluded_dimensions),\n            \"Overall confidence\": detail.summary.score_context.overall_confidence,\n        }\n        for detail in details",
+        "peekOfCode": "trust_frame = pd.DataFrame(\n    [\n        {\n            \"City\": f\"{detail.summary.name}, {detail.summary.state_code}\",\n            \"Eligible for ranking\": \"Yes\" if detail.summary.score_context.eligible_for_mvp_ranking else \"No\",\n            \"Included dimensions\": \", \".join(detail.summary.score_context.included_dimensions),\n            \"Context only\": \", \".join(detail.summary.score_context.excluded_dimensions),\n            \"Overall confidence\": detail.summary.score_context.overall_confidence,\n            \"Exclusion reasons\": \"; \".join(detail.summary.score_context.exclusion_reasons) or \"None\",\n            \"Core freshness\": \", \".join(",
         "detail": "apps.streamlit.pages.2_Comparison",
         "documentation": {}
     },
@@ -2653,7 +2813,7 @@
         "kind": 6,
         "importPath": "src.wsis.core.config",
         "description": "src.wsis.core.config",
-        "peekOfCode": "class Settings:\n    app_env: str\n    api_base_url: str\n    city_repository_backend: str\n    mock_city_data_path: str\n    raw_data_dir: str\n    processed_city_profiles_path: str\n    city_profiles_validation_report_path: str\n    reddit_sentiment_summaries_path: str\n    mapbox_token: str",
+        "peekOfCode": "class Settings:\n    app_env: str\n    api_base_url: str\n    city_repository_backend: str\n    mock_city_data_path: str\n    raw_data_dir: str\n    source_samples_dir: str\n    processed_city_profiles_path: str\n    city_profiles_validation_report_path: str\n    reddit_sentiment_summaries_path: str",
         "detail": "src.wsis.core.config",
         "documentation": {}
     },
@@ -2662,8 +2822,35 @@
         "kind": 2,
         "importPath": "src.wsis.core.config",
         "description": "src.wsis.core.config",
-        "peekOfCode": "def get_settings() -> Settings:\n    project_root = Path(__file__).resolve().parents[3]\n    mock_path = Path(os.getenv(\"WSIS_MOCK_CITY_DATA_PATH\", \"data/mock/cities.csv\"))\n    raw_dir = Path(os.getenv(\"WSIS_RAW_DATA_DIR\", \"data/raw\"))\n    processed_path = Path(\n        os.getenv(\"WSIS_PROCESSED_CITY_PROFILES_PATH\", \"data/processed/city_profiles.parquet\")\n    )\n    mock_city_data_path = mock_path if mock_path.is_absolute() else project_root / mock_path\n    raw_data_dir = raw_dir if raw_dir.is_absolute() else project_root / raw_dir\n    processed_city_profiles_path = (",
+        "peekOfCode": "def get_settings() -> Settings:\n    project_root = Path(__file__).resolve().parents[3]\n    mock_path = Path(os.getenv(\"WSIS_MOCK_CITY_DATA_PATH\", \"data/mock/cities.csv\"))\n    raw_dir = Path(os.getenv(\"WSIS_RAW_DATA_DIR\", \"data/raw\"))\n    source_samples_dir = Path(os.getenv(\"WSIS_SOURCE_SAMPLE_DIR\", \"data/source_samples\"))\n    processed_path = Path(\n        os.getenv(\"WSIS_PROCESSED_CITY_PROFILES_PATH\", \"data/processed/city_profiles.parquet\")\n    )\n    mock_city_data_path = mock_path if mock_path.is_absolute() else project_root / mock_path\n    raw_data_dir = raw_dir if raw_dir.is_absolute() else project_root / raw_dir",
         "detail": "src.wsis.core.config",
+        "documentation": {}
+    },
+    {
+        "label": "parse_source_date",
+        "kind": 2,
+        "importPath": "src.wsis.core.freshness",
+        "description": "src.wsis.core.freshness",
+        "peekOfCode": "def parse_source_date(value: str) -> date | None:\n    if not value or value == \"unknown\":\n        return None\n    try:\n        return datetime.fromisoformat(value).date()\n    except ValueError:\n        return None\ndef source_age_days(value: str, today: date | None = None) -> int | None:\n    parsed = parse_source_date(value)\n    if parsed is None:",
+        "detail": "src.wsis.core.freshness",
+        "documentation": {}
+    },
+    {
+        "label": "source_age_days",
+        "kind": 2,
+        "importPath": "src.wsis.core.freshness",
+        "description": "src.wsis.core.freshness",
+        "peekOfCode": "def source_age_days(value: str, today: date | None = None) -> int | None:\n    parsed = parse_source_date(value)\n    if parsed is None:\n        return None\n    anchor = today or date.today()\n    return max((anchor - parsed).days, 0)\ndef source_freshness_label(\n    value: str,\n    stale_after_days: int,\n    today: date | None = None,",
+        "detail": "src.wsis.core.freshness",
+        "documentation": {}
+    },
+    {
+        "label": "source_freshness_label",
+        "kind": 2,
+        "importPath": "src.wsis.core.freshness",
+        "description": "src.wsis.core.freshness",
+        "peekOfCode": "def source_freshness_label(\n    value: str,\n    stale_after_days: int,\n    today: date | None = None,\n) -> str:\n    age_days = source_age_days(value, today=today)\n    if age_days is None:\n        return \"unknown\"\n    if age_days > stale_after_days:\n        return \"stale\"",
+        "detail": "src.wsis.core.freshness",
         "documentation": {}
     },
     {
@@ -2775,6 +2962,24 @@
         "documentation": {}
     },
     {
+        "label": "load_cost_of_living_context",
+        "kind": 2,
+        "importPath": "src.wsis.data.ingestion.context_samples",
+        "description": "src.wsis.data.ingestion.context_samples",
+        "peekOfCode": "def load_cost_of_living_context(source_root: Path) -> pd.DataFrame:\n    frame = load_raw_csv(source_root / \"cost_of_living.csv\", dtype={\"county_fips\": str})\n    if frame.empty:\n        return pd.DataFrame(\n            columns=[\n                \"county_fips\",\n                \"median_home_price\",\n                \"has_cost_of_living_context\",\n            ]\n        )",
+        "detail": "src.wsis.data.ingestion.context_samples",
+        "documentation": {}
+    },
+    {
+        "label": "load_jobs_context",
+        "kind": 2,
+        "importPath": "src.wsis.data.ingestion.context_samples",
+        "description": "src.wsis.data.ingestion.context_samples",
+        "peekOfCode": "def load_jobs_context(source_root: Path) -> pd.DataFrame:\n    frame = load_raw_csv(source_root / \"jobs.csv\", dtype={\"county_fips\": str})\n    if frame.empty:\n        return pd.DataFrame(\n            columns=[\n                \"county_fips\",\n                \"job_growth_pct\",\n                \"has_jobs_context\",\n            ]\n        )",
+        "detail": "src.wsis.data.ingestion.context_samples",
+        "documentation": {}
+    },
+    {
         "label": "load_fbi_crime",
         "kind": 2,
         "importPath": "src.wsis.data.ingestion.fbi",
@@ -2824,7 +3029,7 @@
         "kind": 2,
         "importPath": "src.wsis.data.pipeline.city_profiles",
         "description": "src.wsis.data.pipeline.city_profiles",
-        "peekOfCode": "def build_city_profiles_dataset(\n    raw_root: Path | None = None,\n    output_path: Path | None = None,\n    report_path: Path | None = None,\n) -> tuple[CityProfileRecord, ...]:\n    settings = get_settings()\n    base_raw_root = raw_root or Path(settings.raw_data_dir)\n    base_output_path = output_path or Path(settings.processed_city_profiles_path)\n    base_report_path = report_path or Path(settings.city_profiles_validation_report_path)\n    city_dimension = load_simplemaps_cities(base_raw_root)",
+        "peekOfCode": "def build_city_profiles_dataset(\n    raw_root: Path | None = None,\n    output_path: Path | None = None,\n    report_path: Path | None = None,\n) -> tuple[CityProfileRecord, ...]:\n    settings = get_settings()\n    base_raw_root = raw_root or Path(settings.raw_data_dir)\n    base_source_samples_root = Path(settings.source_samples_dir)\n    base_output_path = output_path or Path(settings.processed_city_profiles_path)\n    base_report_path = report_path or Path(settings.city_profiles_validation_report_path)",
         "detail": "src.wsis.data.pipeline.city_profiles",
         "documentation": {}
     },
@@ -2959,7 +3164,7 @@
         "kind": 2,
         "importPath": "src.wsis.data.validation",
         "description": "src.wsis.data.validation",
-        "peekOfCode": "def build_city_profiles_validation_report(\n    frame: pd.DataFrame,\n    dataset_path: Path | None = None,\n) -> dict[str, object]:\n    report: dict[str, object] = {\n        \"dataset_path\": str(dataset_path) if dataset_path is not None else \"\",\n        \"row_count\": int(len(frame)),\n        \"eligible_city_count\": int(frame[\"is_mvp_eligible\"].sum()),\n        \"ineligible_city_count\": int((~frame[\"is_mvp_eligible\"]).sum()),\n        \"cities_excluded_from_mvp\": sorted(",
+        "peekOfCode": "def build_city_profiles_validation_report(\n    frame: pd.DataFrame,\n    dataset_path: Path | None = None,\n    raw_root: Path | None = None,\n    source_samples_root: Path | None = None,\n) -> dict[str, object]:\n    settings = get_settings()\n    resolved_raw_root = raw_root or Path(settings.raw_data_dir)\n    resolved_source_samples_root = source_samples_root or Path(settings.source_samples_dir)\n    source_status = _source_file_status(",
         "detail": "src.wsis.data.validation",
         "documentation": {}
     },
@@ -2986,7 +3191,7 @@
         "kind": 2,
         "importPath": "src.wsis.data.validation",
         "description": "src.wsis.data.validation",
-        "peekOfCode": "def validate_city_profiles_file(path: Path) -> tuple[CityProfileRecord, ...]:\n    frame = pd.read_parquet(path)\n    return validate_city_profiles_frame(frame)\ndef main() -> None:\n    settings = get_settings()\n    path = Path(settings.processed_city_profiles_path)\n    report_path = Path(settings.city_profiles_validation_report_path)\n    frame = pd.read_parquet(path)\n    records = validate_city_profiles_frame(frame)\n    report = build_city_profiles_validation_report(frame, path)",
+        "peekOfCode": "def validate_city_profiles_file(path: Path) -> tuple[CityProfileRecord, ...]:\n    frame = pd.read_parquet(path)\n    return validate_city_profiles_frame(frame)\ndef main() -> None:\n    settings = get_settings()\n    path = Path(settings.processed_city_profiles_path)\n    report_path = Path(settings.city_profiles_validation_report_path)\n    frame = pd.read_parquet(path)\n    records = validate_city_profiles_frame(frame)\n    report = build_city_profiles_validation_report(",
         "detail": "src.wsis.data.validation",
         "documentation": {}
     },
@@ -2995,7 +3200,7 @@
         "kind": 2,
         "importPath": "src.wsis.data.validation",
         "description": "src.wsis.data.validation",
-        "peekOfCode": "def main() -> None:\n    settings = get_settings()\n    path = Path(settings.processed_city_profiles_path)\n    report_path = Path(settings.city_profiles_validation_report_path)\n    frame = pd.read_parquet(path)\n    records = validate_city_profiles_frame(frame)\n    report = build_city_profiles_validation_report(frame, path)\n    write_city_profiles_validation_report(report, report_path)\n    print(\n        \"Validated city_profiles dataset with \"",
+        "peekOfCode": "def main() -> None:\n    settings = get_settings()\n    path = Path(settings.processed_city_profiles_path)\n    report_path = Path(settings.city_profiles_validation_report_path)\n    frame = pd.read_parquet(path)\n    records = validate_city_profiles_frame(frame)\n    report = build_city_profiles_validation_report(\n        frame,\n        path,\n        raw_root=Path(settings.raw_data_dir),",
         "detail": "src.wsis.data.validation",
         "documentation": {}
     },
@@ -3049,7 +3254,7 @@
         "kind": 6,
         "importPath": "src.wsis.domain.models",
         "description": "src.wsis.domain.models",
-        "peekOfCode": "class ScoreContext(BaseModel):\n    model_config = ConfigDict(str_strip_whitespace=True)\n    overall_confidence: ConfidenceLabel\n    eligible_for_mvp_ranking: bool\n    included_dimensions: List[str] = Field(default_factory=list)\n    excluded_dimensions: List[str] = Field(default_factory=list)\n    explanation: str = Field(min_length=1)\n    beta_warning: str | None = None\nclass CitySummary(BaseModel):\n    model_config = ConfigDict(str_strip_whitespace=True)",
+        "peekOfCode": "class ScoreContext(BaseModel):\n    model_config = ConfigDict(str_strip_whitespace=True)\n    overall_confidence: ConfidenceLabel\n    eligible_for_mvp_ranking: bool\n    included_dimensions: List[str] = Field(default_factory=list)\n    excluded_dimensions: List[str] = Field(default_factory=list)\n    exclusion_reasons: List[str] = Field(default_factory=list)\n    explanation: str = Field(min_length=1)\n    beta_warning: str | None = None\nclass CitySummary(BaseModel):",
         "detail": "src.wsis.domain.models",
         "documentation": {}
     },
@@ -3184,7 +3389,7 @@
         "kind": 2,
         "importPath": "src.wsis.services.city_service",
         "description": "src.wsis.services.city_service",
-        "peekOfCode": "def get_city_service() -> CityService:\n    return CityService()\ndef _build_highlights(city: CityMetrics, summary: CitySummary) -> list[str]:\n    rent_burden_pct = (city.median_rent * 12 / city.median_income) * 100\n    highlights = [\n        f\"Median rent is about {rent_burden_pct:.0f}% of local median income, at roughly ${city.median_rent:,.0f} per month.\",\n        f\"Median home price is about ${city.median_home_price:,.0f}, with unemployment at {city.unemployment_pct:.1f}% and proxy job growth at {city.job_growth_pct:.1f}%.\",\n    ]\n    if summary.score_context.beta_warning:\n        highlights.append(summary.score_context.beta_warning)",
+        "peekOfCode": "def get_city_service() -> CityService:\n    return CityService()\ndef _build_highlights(city: CityMetrics, summary: CitySummary) -> list[str]:\n    rent_burden_pct = (city.median_rent * 12 / city.median_income) * 100\n    home_price_note = (\n        \"source-backed local context\"\n        if not city.median_home_price_is_imputed\n        else \"estimated fallback context\"\n    )\n    job_growth_note = (",
         "detail": "src.wsis.services.city_service",
         "documentation": {}
     },
@@ -3513,6 +3718,33 @@
         "documentation": {}
     },
     {
+        "label": "freshness_badge",
+        "kind": 2,
+        "importPath": "src.wsis.ui.trust",
+        "description": "src.wsis.ui.trust",
+        "peekOfCode": "def freshness_badge(source_date: str) -> str:\n    settings = get_settings()\n    freshness = source_freshness_label(source_date, settings.source_stale_after_days)\n    labels = {\n        \"current\": \"Current\",\n        \"aging\": \"Aging\",\n        \"stale\": \"Stale\",\n        \"unknown\": \"Unknown\",\n    }\n    return labels[freshness]",
+        "detail": "src.wsis.ui.trust",
+        "documentation": {}
+    },
+    {
+        "label": "dimension_freshness_summary",
+        "kind": 2,
+        "importPath": "src.wsis.ui.trust",
+        "description": "src.wsis.ui.trust",
+        "peekOfCode": "def dimension_freshness_summary(dimension: ScoreDimension) -> str:\n    return f\"{dimension.label}: {freshness_badge(dimension.source_date)} ({dimension.source_date})\"\ndef city_core_freshness_summary(detail: CityDetail) -> list[str]:\n    return [\n        dimension_freshness_summary(dimension)\n        for dimension in detail.summary.score_dimensions\n        if dimension.key in {\"affordability\", \"job_market\", \"safety\", \"climate\"}\n    ]",
+        "detail": "src.wsis.ui.trust",
+        "documentation": {}
+    },
+    {
+        "label": "city_core_freshness_summary",
+        "kind": 2,
+        "importPath": "src.wsis.ui.trust",
+        "description": "src.wsis.ui.trust",
+        "peekOfCode": "def city_core_freshness_summary(detail: CityDetail) -> list[str]:\n    return [\n        dimension_freshness_summary(dimension)\n        for dimension in detail.summary.score_dimensions\n        if dimension.key in {\"affordability\", \"job_market\", \"safety\", \"climate\"}\n    ]",
+        "detail": "src.wsis.ui.trust",
+        "documentation": {}
+    },
+    {
         "label": "test_health_endpoint",
         "kind": 2,
         "importPath": "tests.test_api",
@@ -3607,7 +3839,16 @@
         "kind": 2,
         "importPath": "tests.test_city_profiles_validation",
         "description": "tests.test_city_profiles_validation",
-        "peekOfCode": "def test_validation_report_summarizes_coverage() -> None:\n    frame = _valid_frame()\n    report = build_city_profiles_validation_report(frame)\n    assert report[\"row_count\"] == 1\n    assert report[\"eligible_city_count\"] == 1\n    assert report[\"dimension_confidence\"][\"social\"][\"seeded\"] == 1",
+        "peekOfCode": "def test_validation_report_summarizes_coverage() -> None:\n    frame = _valid_frame()\n    report = build_city_profiles_validation_report(frame)\n    assert report[\"row_count\"] == 1\n    assert report[\"eligible_city_count\"] == 1\n    assert report[\"dimension_confidence\"][\"social\"][\"seeded\"] == 1\n    assert report[\"source_coverage\"][\"cost_of_living_context\"] == 1\n    assert report[\"source_coverage\"][\"jobs_context\"] == 1\ndef test_validation_report_includes_exclusion_reasons() -> None:\n    frame = _valid_frame()",
+        "detail": "tests.test_city_profiles_validation",
+        "documentation": {}
+    },
+    {
+        "label": "test_validation_report_includes_exclusion_reasons",
+        "kind": 2,
+        "importPath": "tests.test_city_profiles_validation",
+        "description": "tests.test_city_profiles_validation",
+        "peekOfCode": "def test_validation_report_includes_exclusion_reasons() -> None:\n    frame = _valid_frame()\n    frame.loc[0, \"is_mvp_eligible\"] = False\n    frame.loc[0, \"job_market_confidence\"] = \"estimated\"\n    report = build_city_profiles_validation_report(frame)\n    assert \"austin-tx\" in report[\"city_exclusion_reasons\"]\n    assert any(\"job market is estimated\" in reason for reason in report[\"city_exclusion_reasons\"][\"austin-tx\"])",
         "detail": "tests.test_city_profiles_validation",
         "documentation": {}
     },

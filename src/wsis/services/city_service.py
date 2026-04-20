@@ -68,9 +68,20 @@ def get_city_service() -> CityService:
 
 def _build_highlights(city: CityMetrics, summary: CitySummary) -> list[str]:
     rent_burden_pct = (city.median_rent * 12 / city.median_income) * 100
+    home_price_note = (
+        "source-backed local context"
+        if not city.median_home_price_is_imputed
+        else "estimated fallback context"
+    )
+    job_growth_note = (
+        "source-backed local context"
+        if not city.job_growth_is_imputed
+        else "estimated fallback context"
+    )
     highlights = [
         f"Median rent is about {rent_burden_pct:.0f}% of local median income, at roughly ${city.median_rent:,.0f} per month.",
-        f"Median home price is about ${city.median_home_price:,.0f}, with unemployment at {city.unemployment_pct:.1f}% and proxy job growth at {city.job_growth_pct:.1f}%.",
+        f"Median home price is about ${city.median_home_price:,.0f} ({home_price_note}), with unemployment at {city.unemployment_pct:.1f}%.",
+        f"Job growth context is about {city.job_growth_pct:.1f}% ({job_growth_note}), visible for inspection but not required for the ranked MVP score.",
     ]
 
     if summary.score_context.beta_warning:

@@ -11,7 +11,39 @@
     "seattle-wa",
     "tampa-fl"
   ],
-  "dataset_path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-13/test_city_profiles_dataset_han0/city_profiles.parquet",
+  "city_exclusion_reasons": {
+    "austin-tx": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "charlotte-nc": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "chicago-il": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "denver-co": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "madison-wi": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "minneapolis-mn": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "pittsburgh-pa": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "raleigh-nc": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "seattle-wa": [
+      "climate is estimated from noaa_county_climate"
+    ],
+    "tampa-fl": [
+      "climate is estimated from noaa_county_climate"
+    ]
+  },
+  "dataset_path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/city_profiles.parquet",
   "dimension_confidence": {
     "affordability": {
       "source_backed": 10
@@ -52,15 +84,105 @@
     }
   },
   "eligible_city_count": 0,
-  "failures": [],
+  "failures": [
+    "source coverage issue: noaa"
+  ],
   "ineligible_city_count": 10,
+  "partial_outages": [
+    "noaa"
+  ],
   "row_count": 10,
   "source_coverage": {
     "bls": 10,
     "census": 10,
+    "cost_of_living_context": 10,
     "fbi": 10,
+    "jobs_context": 10,
     "noaa": 0,
     "reddit": 10,
     "simplemaps": 10
-  }
+  },
+  "source_file_status": {
+    "bls": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/raw/bls/county_unemployment.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    },
+    "census": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/raw/census/acs_city_metrics.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    },
+    "cost_of_living_context": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/Users/steph/WSIS/data/source_samples/cost_of_living.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    },
+    "fbi": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/raw/fbi/county_crime.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    },
+    "jobs_context": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/Users/steph/WSIS/data/source_samples/jobs.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    },
+    "noaa": {
+      "age_days": null,
+      "coverage_count": 0,
+      "coverage_pct": 0.0,
+      "exists": false,
+      "freshness": "unknown",
+      "path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/raw/noaa/county_climate.csv",
+      "source_date": "unknown",
+      "status": "missing"
+    },
+    "reddit": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/raw/reddit/city_sentiment.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    },
+    "simplemaps": {
+      "age_days": 35,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-15/test_city_profiles_dataset_han0/raw/simplemaps/us_cities.csv",
+      "source_date": "2026-03-16",
+      "status": "healthy"
+    }
+  },
+  "stale_sources": []
 }

@@ -28,6 +28,10 @@ def test_get_city_returns_detail_with_reddit_panel() -> None:
     assert all("TODO:" not in highlight for highlight in detail.highlights)
     assert "Social sentiment" in detail.summary.score_context.excluded_dimensions
     assert detail.summary.score_context.eligible_for_mvp_ranking is True
+    assert detail.metrics.median_home_price_source
+    assert detail.metrics.job_growth_source
+    assert detail.metrics.median_home_price_source_date
+    assert detail.metrics.job_growth_source_date
 
 
 class _StubRepository(CityRepository):
@@ -83,3 +87,4 @@ def test_get_city_still_returns_ineligible_city_for_inspection() -> None:
     assert detail.summary.slug == "inspection-only-city"
     assert detail.summary.score_context.eligible_for_mvp_ranking is False
     assert detail.summary.score_context.beta_warning
+    assert detail.summary.score_context.exclusion_reasons

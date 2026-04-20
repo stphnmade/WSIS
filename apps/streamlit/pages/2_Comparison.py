@@ -6,6 +6,7 @@ import streamlit as st
 
 from wsis.core.weights import score_weights_from_state
 from wsis.services.api_client import ApiCityClient
+from wsis.ui.trust import freshness_badge
 
 
 st.set_page_config(page_title="WSIS | Comparison", layout="wide")
@@ -68,7 +69,7 @@ radar.update_layout(
     height=540,
 )
 
-st.plotly_chart(radar, use_container_width=True)
+st.plotly_chart(radar, width="stretch")
 
 comparison_frame = pd.DataFrame(
     [
@@ -80,13 +81,15 @@ comparison_frame = pd.DataFrame(
             "Median income": detail.metrics.median_income,
             "Job growth %": detail.metrics.job_growth_pct,
             "Unemployment %": detail.metrics.unemployment_pct,
+            "Home price freshness": freshness_badge(detail.metrics.median_home_price_source_date),
+            "Job growth freshness": freshness_badge(detail.metrics.job_growth_source_date),
         }
         for detail in details
     ]
 )
 
 st.subheader("Cost and market snapshot")
-st.dataframe(comparison_frame, use_container_width=True, hide_index=True)
+st.dataframe(comparison_frame, width="stretch", hide_index=True)
 
 trust_frame = pd.DataFrame(
     [
@@ -96,12 +99,18 @@ trust_frame = pd.DataFrame(
             "Included dimensions": ", ".join(detail.summary.score_context.included_dimensions),
             "Context only": ", ".join(detail.summary.score_context.excluded_dimensions),
             "Overall confidence": detail.summary.score_context.overall_confidence,
+            "Exclusion reasons": "; ".join(detail.summary.score_context.exclusion_reasons) or "None",
+            "Core freshness": ", ".join(
+                f"{dimension.label}: {freshness_badge(dimension.source_date)}"
+                for dimension in detail.summary.score_dimensions
+                if dimension.key in {"affordability", "job_market", "safety", "climate"}
+            ),
         }
         for detail in details
     ]
 )
 st.subheader("Trust summary")
-st.dataframe(trust_frame, use_container_width=True, hide_index=True)
+st.dataframe(trust_frame, width="stretch", hide_index=True)
 
 st.info(
     "This MVP comparison keeps social sentiment in view without letting seeded social context alter the rank."
