@@ -1,55 +1,35 @@
 # WSIS Data Normalization
 
-## Canonical Geography Unit
+## Canonical geography
 
-For the MVP, WSIS uses a **city record anchored to a single county FIPS**.
+For the MVP, WSIS uses one city record anchored to one county FIPS.
 
-Why:
+- `city_slug` is the product-facing key
+- `county_fips` is the structured-data join key
 
-- The product experience is city-first, so the UI and API should remain centered on recognizable cities.
-- Most early source datasets are county-level or can be mapped cleanly to county-level geography.
-- A single anchor county FIPS gives the MVP one stable join key without forcing premature multi-county metro modeling.
+## Ranked normalization policy
 
-This means:
+The ranked MVP score uses:
 
-- `city_slug` is the product-facing stable identifier.
-- `county_fips` is the canonical structured-data join key.
-- The normalized dataset is one row per city anchor.
+- affordability from rent burden against local median income
+- job market from unemployment conditions
+- safety from the current crime-rate slice
+- climate from the current climate slice
 
-## Join Keys
+The ranked MVP score does not use social sentiment.
 
-- Primary structured-data join key: `county_fips`
-- Product/entity key: `city_slug`
-- Social placeholder compatibility key: `city_slug` with `county_fips` consistency checks
+## Confidence policy
 
-## Source Mapping
+Each ranked or contextual dimension carries:
 
-- `data/raw/simplemaps/us_cities.csv`
-  - Defines the canonical city dimension and anchor county mapping.
-- `data/raw/census/acs_city_metrics.csv`
-  - City-level ACS inputs for income and rent.
-- `data/raw/bls/county_unemployment.csv`
-  - County-level labor-market input.
-- `data/raw/fbi/county_crime.csv`
-  - County-level crime input.
-- `data/raw/noaa/county_climate.csv`
-  - County-level climate input.
-- `data/raw/reddit/city_sentiment.csv`
-  - City-level social sentiment placeholder input.
+- confidence label
+- source name
+- source date
+- imputation flag
 
-## Processed Output
+These fields are part of the canonical dataset, not UI-only decorations.
+
+## Output artifacts
 
 - `data/processed/city_profiles.parquet`
-  - Repository-ready processed dataset used by the app by default.
-- `data/raw/reddit/city_sentiment_summaries.json`
-  - Structured detail-only Reddit summaries used by the city profile panel for freshness, provenance, and representative excerpts.
-
-## TODOs
-
-- Replace the sample raw slices with real public-source downloads and refresh logic.
-- Add multi-county metro handling where city-only anchoring is too lossy.
-- Add source freshness metadata and refresh jobs.
-
-## Scope boundary
-
-`city_profiles.parquet` is the canonical scoring table. It intentionally stores a single scalar social signal (`social_sentiment_raw`) rather than the full Reddit detail payload. Richer Reddit summaries are loaded separately at detail-view time so the scoring contract stays stable while the product can display provenance and freshness metadata.
+- `data/processed/city_profiles_validation_report.json`

@@ -2,26 +2,92 @@ from wsis.domain.models import (
     CityDetail,
     CityMetrics,
     CitySummary,
+    DimensionTrust,
     RedditPanel,
     RedditPost,
     ScoreBreakdown,
+    ScoreContext,
+    ScoreDimension,
     ScoreWeights,
 )
 from wsis.ui.homepage import (
     active_filter_descriptions,
     apply_consumer_filters,
     badge_labels,
+    best_places_to_start_score,
     city_reason_snippet,
     comparison_preview_rows,
+    county_overlay_state_fips,
+    interaction_stage_copy,
+    labeled_city_slugs,
+    map_focus_config,
     quick_stats,
     ranking_explanation,
     social_excerpt,
+    aggregate_state_start_scores,
     standout_attribute,
     social_themes,
 )
 
 
 def _detail() -> CityDetail:
+    dimensions = [
+        ScoreDimension(
+            key="affordability",
+            label="Affordability",
+            score=7.2,
+            confidence="source_backed",
+            included_in_score=True,
+            source="census_acs_city_metrics",
+            source_date="2026-04-20",
+            is_imputed=False,
+            note="Included in score.",
+        ),
+        ScoreDimension(
+            key="job_market",
+            label="Job market",
+            score=8.4,
+            confidence="source_backed",
+            included_in_score=True,
+            source="bls_county_unemployment",
+            source_date="2026-04-20",
+            is_imputed=False,
+            note="Included in score.",
+        ),
+        ScoreDimension(
+            key="safety",
+            label="Safety",
+            score=6.3,
+            confidence="source_backed",
+            included_in_score=True,
+            source="fbi_county_crime",
+            source_date="2026-04-20",
+            is_imputed=False,
+            note="Included in score.",
+        ),
+        ScoreDimension(
+            key="climate",
+            label="Climate",
+            score=7.5,
+            confidence="source_backed",
+            included_in_score=True,
+            source="noaa_county_climate",
+            source_date="2026-04-20",
+            is_imputed=False,
+            note="Included in score.",
+        ),
+        ScoreDimension(
+            key="social_sentiment",
+            label="Social sentiment",
+            score=7.1,
+            confidence="seeded",
+            included_in_score=False,
+            source="seeded_reddit_placeholder",
+            source_date="2026-04-20",
+            is_imputed=False,
+            note="Context only.",
+        ),
+    ]
     return CityDetail(
         summary=CitySummary(
             slug="austin-tx",
@@ -41,6 +107,15 @@ def _detail() -> CityDetail:
                 climate=7.5,
                 social_sentiment=7.1,
                 total=7.9,
+            ),
+            score_dimensions=dimensions,
+            score_context=ScoreContext(
+                overall_confidence="source_backed",
+                eligible_for_mvp_ranking=True,
+                included_dimensions=["Affordability", "Job market", "Safety", "Climate"],
+                excluded_dimensions=["Social sentiment"],
+                explanation="Trust-first MVP score.",
+                beta_warning=None,
             ),
         ),
         metrics=CityMetrics(
@@ -64,11 +139,49 @@ def _detail() -> CityDetail:
             sunny_days=228,
             climate_score_raw=78,
             social_sentiment_raw=0.42,
+            affordability_trust=DimensionTrust(
+                confidence="source_backed",
+                source="census_acs_city_metrics",
+                source_date="2026-04-20",
+                is_imputed=False,
+                note="Included in score.",
+            ),
+            job_market_trust=DimensionTrust(
+                confidence="source_backed",
+                source="bls_county_unemployment",
+                source_date="2026-04-20",
+                is_imputed=False,
+                note="Included in score.",
+            ),
+            safety_trust=DimensionTrust(
+                confidence="source_backed",
+                source="fbi_county_crime",
+                source_date="2026-04-20",
+                is_imputed=False,
+                note="Included in score.",
+            ),
+            climate_trust=DimensionTrust(
+                confidence="source_backed",
+                source="noaa_county_climate",
+                source_date="2026-04-20",
+                is_imputed=False,
+                note="Included in score.",
+            ),
+            social_trust=DimensionTrust(
+                confidence="seeded",
+                source="seeded_reddit_placeholder",
+                source_date="2026-04-20",
+                is_imputed=False,
+                note="Context only.",
+            ),
+            is_mvp_eligible=True,
             known_for="tech hiring, live music, warm weather",
         ),
         highlights=[],
         reddit_panel=RedditPanel(
             source="precomputed_city_sentiment",
+            confidence="seeded",
+            included_in_score=False,
             summary="Posters mention jobs, rent pressure, traffic, and social life.",
             sentiment_score=7.1,
             generated_at="2026-04-10",
@@ -95,12 +208,13 @@ def test_ranking_explanation_uses_top_weights() -> None:
             job_market=25,
             safety=15,
             climate=10,
-            social_sentiment=10,
+            social_sentiment=0,
         )
     )
 
     assert "affordability" in explanation
     assert "job market strength" in explanation
+    assert "does not affect the rank" in explanation
 
 
 def test_badge_labels_use_metrics_and_social_signal() -> None:
@@ -156,3 +270,38 @@ def test_active_filter_descriptions_marks_placeholder_filters() -> None:
 
     assert "Placeholder logic for now." in descriptions[0]
     assert "Placeholder logic for now." not in descriptions[1]
+
+
+def test_best_places_to_start_score_and_state_aggregation() -> None:
+    detail = _detail()
+    state_rows = aggregate_state_start_scores([detail], ScoreWeights())
+
+    assert best_places_to_start_score(detail, ScoreWeights()) >= 7
+    assert state_rows[0]["state_code"] == "TX"
+    assert state_rows[0]["top_city"] == "Austin"
+
+
+def test_label_density_focus_and_interaction_stage_copy() -> None:
+    detail = _detail()
+    label_slugs = labeled_city_slugs(
+        [detail],
+        ScoreWeights(),
+        "South",
+        detail,
+        [],
+    )
+    focus = map_focus_config("South", detail, [])
+    stage_title, stage_body = interaction_stage_copy(detail, [])
+
+    assert "austin-tx" in label_slugs
+    assert focus["mode"] == "inspect"
+    assert "Inspecting Austin" in stage_title
+    assert "add it to compare" in stage_body
+
+
+def test_county_overlay_state_fips_stays_scoped() -> None:
+    detail = _detail()
+
+    assert county_overlay_state_fips([detail], "All", None, []) == set()
+    assert county_overlay_state_fips([detail], "South", None, []) == {"48"}
+    assert county_overlay_state_fips([detail], "All", detail, []) == {"48"}

@@ -36,6 +36,10 @@ st.session_state["comparison_selected_slugs"] = selected_slugs
 
 st.title("City comparison")
 st.caption(f"Comparison source: {source}. Select two to four cities.")
+st.info(
+    "Comparison ranking uses source-backed affordability, job market, safety, and climate. "
+    "Social sentiment remains visible as context only."
+)
 
 if len(selected_slugs) < 2:
     st.warning("Select at least two cities to build a comparison.")
@@ -45,10 +49,10 @@ details, detail_source = client.compare_cities(selected_slugs, active_weights)
 st.caption(f"Detail source: {detail_source}.")
 
 radar = go.Figure()
-categories = list(details[0].summary.score_breakdown.as_dict().keys())
+categories = [dimension.label for dimension in details[0].summary.score_dimensions]
 
 for detail in details:
-    values = list(detail.summary.score_breakdown.as_dict().values())
+    values = [dimension.score for dimension in detail.summary.score_dimensions]
     radar.add_trace(
         go.Scatterpolar(
             r=values + [values[0]],
@@ -84,7 +88,21 @@ comparison_frame = pd.DataFrame(
 st.subheader("Cost and market snapshot")
 st.dataframe(comparison_frame, use_container_width=True, hide_index=True)
 
+trust_frame = pd.DataFrame(
+    [
+        {
+            "City": f"{detail.summary.name}, {detail.summary.state_code}",
+            "Eligible for ranking": "Yes" if detail.summary.score_context.eligible_for_mvp_ranking else "No",
+            "Included dimensions": ", ".join(detail.summary.score_context.included_dimensions),
+            "Context only": ", ".join(detail.summary.score_context.excluded_dimensions),
+            "Overall confidence": detail.summary.score_context.overall_confidence,
+        }
+        for detail in details
+    ]
+)
+st.subheader("Trust summary")
+st.dataframe(trust_frame, use_container_width=True, hide_index=True)
+
 st.info(
-    "TODO: add side-by-side neighborhood lenses, watchlist actions, and saved weight presets "
-    "after the persistence layer is introduced."
+    "This MVP comparison keeps social sentiment in view without letting seeded social context alter the rank."
 )

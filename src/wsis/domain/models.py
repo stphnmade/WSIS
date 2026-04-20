@@ -1,8 +1,12 @@
 from __future__ import annotations
 
-from typing import Dict, List
+from typing import Dict, List, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
+
+ConfidenceLabel = Literal["source_backed", "estimated", "seeded", "missing"]
+RANKED_DIMENSIONS = ("affordability", "job_market", "safety", "climate")
+ALL_DIMENSIONS = (*RANKED_DIMENSIONS, "social")
 
 
 class ScoreWeights(BaseModel):
@@ -12,7 +16,7 @@ class ScoreWeights(BaseModel):
     job_market: float = 0.25
     safety: float = 0.15
     climate: float = 0.10
-    social_sentiment: float = 0.10
+    social_sentiment: float = 0.0
 
     def normalized(self) -> "ScoreWeights":
         total = (
@@ -32,6 +36,25 @@ class ScoreWeights(BaseModel):
             climate=self.climate / total,
             social_sentiment=self.social_sentiment / total,
         )
+
+    def ranking_normalized(self) -> "ScoreWeights":
+        return ScoreWeights(
+            affordability=self.affordability,
+            job_market=self.job_market,
+            safety=self.safety,
+            climate=self.climate,
+            social_sentiment=0,
+        ).normalized()
+
+
+class DimensionTrust(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    confidence: ConfidenceLabel
+    source: str = Field(min_length=1)
+    source_date: str = Field(min_length=1)
+    is_imputed: bool = False
+    note: str = Field(min_length=1)
 
 
 class CityMetrics(BaseModel):
@@ -57,6 +80,12 @@ class CityMetrics(BaseModel):
     sunny_days: float | None = Field(default=None, ge=0, le=366)
     climate_score_raw: float = Field(ge=0, le=100)
     social_sentiment_raw: float = Field(ge=-1, le=1)
+    affordability_trust: DimensionTrust
+    job_market_trust: DimensionTrust
+    safety_trust: DimensionTrust
+    climate_trust: DimensionTrust
+    social_trust: DimensionTrust
+    is_mvp_eligible: bool
     known_for: str = Field(min_length=1)
 
 
@@ -80,6 +109,31 @@ class ScoreBreakdown(BaseModel):
         }
 
 
+class ScoreDimension(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    key: str = Field(min_length=1)
+    label: str = Field(min_length=1)
+    score: float = Field(ge=0, le=10)
+    confidence: ConfidenceLabel
+    included_in_score: bool
+    source: str = Field(min_length=1)
+    source_date: str = Field(min_length=1)
+    is_imputed: bool = False
+    note: str = Field(min_length=1)
+
+
+class ScoreContext(BaseModel):
+    model_config = ConfigDict(str_strip_whitespace=True)
+
+    overall_confidence: ConfidenceLabel
+    eligible_for_mvp_ranking: bool
+    included_dimensions: List[str] = Field(default_factory=list)
+    excluded_dimensions: List[str] = Field(default_factory=list)
+    explanation: str = Field(min_length=1)
+    beta_warning: str | None = None
+
+
 class CitySummary(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
@@ -94,6 +148,8 @@ class CitySummary(BaseModel):
     longitude: float = Field(ge=-180, le=180)
     overall_score: float
     score_breakdown: ScoreBreakdown
+    score_dimensions: List[ScoreDimension] = Field(default_factory=list)
+    score_context: ScoreContext
 
 
 class RedditPost(BaseModel):
@@ -117,6 +173,8 @@ class RedditPanel(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     source: str = Field(min_length=1)
+    confidence: ConfidenceLabel
+    included_in_score: bool = False
     summary: str = Field(min_length=1)
     sentiment_score: float = Field(ge=0, le=10)
     generated_at: str = Field(min_length=1)

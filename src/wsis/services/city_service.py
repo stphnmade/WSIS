@@ -25,19 +25,25 @@ class CityService:
     def _cities(self) -> list[CityMetrics]:
         return list(self._repository.list_city_metrics())
 
+    def _eligible_cities(self, cities: list[CityMetrics]) -> list[CityMetrics]:
+        eligible = [city for city in cities if city.is_mvp_eligible]
+        return eligible or cities
+
     def list_cities(self, weights: ScoreWeights | None = None) -> list[CitySummary]:
         active_weights = weights or ScoreWeights()
         cities = self._cities()
-        summaries = [build_city_summary(city, cities, active_weights) for city in cities]
+        ranked_cities = self._eligible_cities(cities)
+        summaries = [build_city_summary(city, ranked_cities, active_weights) for city in ranked_cities]
         return sorted(summaries, key=lambda summary: summary.overall_score, reverse=True)
 
     def get_city(self, slug: str, weights: ScoreWeights | None = None) -> CityDetail:
         cities = self._cities()
+        ranked_cities = self._eligible_cities(cities)
         city = next((item for item in cities if item.slug == slug), None)
         if city is None:
             raise CityNotFoundError(slug)
 
-        summary = build_city_summary(city, cities, weights or ScoreWeights())
+        summary = build_city_summary(city, ranked_cities, weights or ScoreWeights())
         reddit_panel = self._reddit_service.get_panel(city)
 
         return CityDetail(
@@ -66,6 +72,11 @@ def _build_highlights(city: CityMetrics, summary: CitySummary) -> list[str]:
         f"Median rent is about {rent_burden_pct:.0f}% of local median income, at roughly ${city.median_rent:,.0f} per month.",
         f"Median home price is about ${city.median_home_price:,.0f}, with unemployment at {city.unemployment_pct:.1f}% and proxy job growth at {city.job_growth_pct:.1f}%.",
     ]
+
+    if summary.score_context.beta_warning:
+        highlights.append(summary.score_context.beta_warning)
+    else:
+        highlights.append("This city meets the current MVP trust threshold for ranked discovery.")
 
     if summary.score_breakdown.affordability >= 7:
         highlights.append("Affordability is one of this city's clearer strengths versus the current peer set.")

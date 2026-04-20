@@ -1,19 +1,33 @@
 # Implementation Plan
 
-Phase 1
-Data ingestion pipelines
+## Phase 1
 
-Phase 2
-Livability scoring
+Trust-first data contract
 
-Phase 3
-Reddit sentiment pipeline
+- Add per-dimension confidence, provenance, and imputation metadata
+- Add MVP eligibility flag for ranked discovery
+- Emit a machine-readable validation report during dataset builds
 
-Phase 4
-Streamlit map dashboard
+## Phase 2
 
-Phase 5
-City comparison tools
+Trust-first scoring and API semantics
 
-Phase 6
-AWS deployment
+- Rank only eligible cities
+- Exclude social sentiment from the ranked score
+- Expose score context, confidence labels, and inclusion/exclusion metadata through the API
+
+## Phase 3
+
+Trust-first UI alignment
+
+- Update map, profile, and comparison views to explain score inclusion rules
+- Surface confidence, provenance, and beta warnings
+- Keep social context visible without letting it influence rank
+
+## Phase 4
+
+Source depth and validation hardening
+
+- Replace remaining proxy or fallback logic where practical
+- Tighten coverage thresholds
+- Expand QA around dataset freshness and provenance

@@ -23,6 +23,25 @@ def test_score_weights_are_normalized() -> None:
     assert round(total, 6) == 1.0
 
 
+def test_social_sentiment_does_not_change_overall_score() -> None:
+    cities = [record.to_city_metrics() for record in load_city_profiles()]
+    city = cities[0]
+
+    low_social = build_score_breakdown(
+        city,
+        cities,
+        ScoreWeights(affordability=40, job_market=25, safety=15, climate=10, social_sentiment=0),
+    )
+    high_social = build_score_breakdown(
+        city,
+        cities,
+        ScoreWeights(affordability=40, job_market=25, safety=15, climate=10, social_sentiment=100),
+    )
+
+    assert low_social.social_sentiment == high_social.social_sentiment
+    assert low_social.total == high_social.total
+
+
 def test_breakdown_scores_stay_within_expected_bounds() -> None:
     cities = [record.to_city_metrics() for record in load_city_profiles()]
     breakdown = build_score_breakdown(cities[0], cities, ScoreWeights())

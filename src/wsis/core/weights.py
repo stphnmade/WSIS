@@ -20,7 +20,7 @@ def default_score_weights() -> ScoreWeights:
         job_market=25,
         safety=15,
         climate=10,
-        social_sentiment=10,
+        social_sentiment=0,
     )
 
 

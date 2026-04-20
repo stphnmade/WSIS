@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from statistics import fmean
+
 from wsis.domain.models import CityDetail, CitySummary, ScoreWeights
 
 
@@ -8,7 +10,6 @@ WEIGHT_PRODUCT_LABELS = {
     "job_market": "job market strength",
     "safety": "safety",
     "climate": "climate comfort",
-    "social_sentiment": "social momentum",
 }
 
 WEIGHT_REASON_PHRASES = {
@@ -16,7 +17,6 @@ WEIGHT_REASON_PHRASES = {
     "job_market": "stronger employment metrics and career upside",
     "safety": "safer peer-set conditions",
     "climate": "warmer or more comfortable climate signals",
-    "social_sentiment": "better social buzz and city sentiment",
 }
 
 THEME_PATTERNS = (
@@ -79,14 +79,225 @@ CONSUMER_FILTERS = (
 REPUBLICAN_PLACEHOLDER_STATES = {"TX", "FL", "NC"}
 DEMOCRATIC_PLACEHOLDER_STATES = {"WA", "IL", "MN", "CO", "PA", "WI"}
 
+STARTER_BASELINE_WEIGHTS = {
+    "affordability": 0.30,
+    "job_market": 0.34,
+    "safety": 0.20,
+    "climate": 0.16,
+}
 
-def strongest_dimensions(summary: CitySummary) -> list[tuple[str, float]]:
-    return sorted(summary.score_breakdown.as_dict().items(), key=lambda item: item[1], reverse=True)
+REGION_MAP_FOCUS = {
+    "All": {"lat": 38.2, "lon": -96.2, "scale": 1.02, "mode": "national"},
+    "West": {"lat": 39.2, "lon": -111.3, "scale": 1.45, "mode": "region"},
+    "Midwest": {"lat": 41.6, "lon": -90.3, "scale": 1.65, "mode": "region"},
+    "South": {"lat": 34.2, "lon": -84.6, "scale": 1.55, "mode": "region"},
+    "Northeast": {"lat": 41.1, "lon": -74.9, "scale": 2.35, "mode": "region"},
+}
+
+STATE_CODE_TO_FIPS = {
+    "AL": "01", "AK": "02", "AZ": "04", "AR": "05", "CA": "06", "CO": "08", "CT": "09",
+    "DE": "10", "DC": "11", "FL": "12", "GA": "13", "HI": "15", "ID": "16", "IL": "17",
+    "IN": "18", "IA": "19", "KS": "20", "KY": "21", "LA": "22", "ME": "23", "MD": "24",
+    "MA": "25", "MI": "26", "MN": "27", "MS": "28", "MO": "29", "MT": "30", "NE": "31",
+    "NV": "32", "NH": "33", "NJ": "34", "NM": "35", "NY": "36", "NC": "37", "ND": "38",
+    "OH": "39", "OK": "40", "OR": "41", "PA": "42", "RI": "44", "SC": "45", "SD": "46",
+    "TN": "47", "TX": "48", "UT": "49", "VT": "50", "VA": "51", "WA": "53", "WV": "54",
+    "WI": "55", "WY": "56",
+}
+
+
+def strongest_dimensions(summary: CitySummary, include_context: bool = False) -> list[tuple[str, float]]:
+    items = summary.score_breakdown.as_dict().items()
+    if not include_context:
+        included_labels = set(summary.score_context.included_dimensions)
+        items = [(label, score) for label, score in items if label in included_labels]
+        if not items:
+            items = list(summary.score_breakdown.as_dict().items())
+    return sorted(items, key=lambda item: item[1], reverse=True)
+
+
+def best_places_to_start_score(detail: CityDetail, weights: ScoreWeights) -> float:
+    active_weights = weights.ranking_normalized().model_dump()
+    blended_weights = {
+        key: (active_weights[key] + STARTER_BASELINE_WEIGHTS[key]) / 2
+        for key in STARTER_BASELINE_WEIGHTS
+    }
+    weight_total = sum(blended_weights.values())
+    breakdown = detail.summary.score_breakdown
+    score = (
+        breakdown.affordability * blended_weights["affordability"]
+        + breakdown.job_market * blended_weights["job_market"]
+        + breakdown.safety * blended_weights["safety"]
+        + breakdown.climate * blended_weights["climate"]
+    ) / weight_total
+    return round(score, 2)
+
+
+def aggregate_state_start_scores(
+    details: list[CityDetail],
+    weights: ScoreWeights,
+) -> list[dict[str, object]]:
+    state_rows: dict[tuple[str, str], list[dict[str, object]]] = {}
+    for detail in details:
+        state_key = (detail.summary.state_code, detail.summary.state)
+        state_rows.setdefault(state_key, []).append(
+            {
+                "detail": detail,
+                "start_score": best_places_to_start_score(detail, weights),
+            }
+        )
+
+    aggregates: list[dict[str, object]] = []
+    for (state_code, state_name), rows in state_rows.items():
+        total_population = sum(item["detail"].summary.population for item in rows)
+        if total_population > 0:
+            weighted_score = sum(
+                item["start_score"] * item["detail"].summary.population for item in rows
+            ) / total_population
+        else:
+            weighted_score = fmean(item["start_score"] for item in rows)
+        top_city_row = max(rows, key=lambda item: item["start_score"])
+        aggregates.append(
+            {
+                "state_code": state_code,
+                "state": state_name,
+                "start_score": round(weighted_score, 2),
+                "top_city": top_city_row["detail"].summary.name,
+                "city_count": len(rows),
+            }
+        )
+
+    return sorted(aggregates, key=lambda row: float(row["start_score"]), reverse=True)
+
+
+def labeled_city_slugs(
+    details: list[CityDetail],
+    weights: ScoreWeights,
+    selected_region: str,
+    selected_detail: CityDetail | None,
+    compare_details: list[CityDetail],
+) -> set[str]:
+    if selected_detail is not None:
+        slugs = {selected_detail.summary.slug}
+        slugs.update(detail.summary.slug for detail in compare_details)
+        same_state = [
+            detail
+            for detail in details
+            if detail.summary.state_code == selected_detail.summary.state_code
+            and detail.summary.slug not in slugs
+        ]
+        for detail in sorted(
+            same_state,
+            key=lambda row: best_places_to_start_score(row, weights),
+            reverse=True,
+        )[:2]:
+            slugs.add(detail.summary.slug)
+        return slugs
+
+    if len(compare_details) >= 2:
+        slugs = {detail.summary.slug for detail in compare_details}
+        for detail in sorted(
+            details,
+            key=lambda row: best_places_to_start_score(row, weights),
+            reverse=True,
+        )[:2]:
+            slugs.add(detail.summary.slug)
+        return slugs
+
+    label_budget = 6 if selected_region != "All" else 4
+    return {
+        detail.summary.slug
+        for detail in sorted(
+            details,
+            key=lambda row: best_places_to_start_score(row, weights),
+            reverse=True,
+        )[:label_budget]
+    }
+
+
+def map_focus_config(
+    selected_region: str,
+    selected_detail: CityDetail | None,
+    compare_details: list[CityDetail],
+) -> dict[str, float | str]:
+    if selected_detail is not None:
+        return {
+            "lat": selected_detail.summary.latitude,
+            "lon": selected_detail.summary.longitude,
+            "scale": 4.8,
+            "mode": "inspect",
+        }
+
+    if len(compare_details) >= 2:
+        return {
+            "lat": fmean(detail.summary.latitude for detail in compare_details),
+            "lon": fmean(detail.summary.longitude for detail in compare_details),
+            "scale": 2.2,
+            "mode": "compare",
+        }
+
+    return REGION_MAP_FOCUS.get(selected_region, REGION_MAP_FOCUS["All"])
+
+
+def interaction_stage_copy(
+    selected_detail: CityDetail | None,
+    compare_details: list[CityDetail],
+) -> tuple[str, str]:
+    if selected_detail is None and len(compare_details) < 2:
+        return (
+            "Discovery mode",
+            "Read state shading first, then click a city when something looks worth inspecting.",
+        )
+    if selected_detail is not None and len(compare_details) < 2:
+        return (
+            f"Inspecting {selected_detail.summary.name}, {selected_detail.summary.state_code}",
+            "Keep this city in the side panel, then add it to compare only if it still feels plausible.",
+        )
+    if selected_detail is not None:
+        return (
+            f"Inspecting {selected_detail.summary.name}, {selected_detail.summary.state_code}",
+            "Compare tray is active. Keep clicking cities to inspect them without losing the shortlist you locked in.",
+        )
+    return (
+        "Compare mode",
+        "Two or more cities are locked in below. Click any point to inspect it while keeping the tray intact.",
+    )
+
+
+def county_overlay_state_codes(
+    details: list[CityDetail],
+    selected_region: str,
+    selected_detail: CityDetail | None,
+    compare_details: list[CityDetail],
+) -> set[str]:
+    if selected_detail is not None:
+        return {selected_detail.summary.state_code}
+
+    if len(compare_details) >= 2:
+        return {detail.summary.state_code for detail in compare_details}
+
+    if selected_region != "All":
+        return {detail.summary.state_code for detail in details}
+
+    return set()
+
+
+def county_overlay_state_fips(
+    details: list[CityDetail],
+    selected_region: str,
+    selected_detail: CityDetail | None,
+    compare_details: list[CityDetail],
+) -> set[str]:
+    return {
+        STATE_CODE_TO_FIPS[state_code]
+        for state_code in county_overlay_state_codes(details, selected_region, selected_detail, compare_details)
+        if state_code in STATE_CODE_TO_FIPS
+    }
 
 
 def ranking_explanation(weights: ScoreWeights) -> str:
     ordered = sorted(
-        weights.normalized().model_dump().items(),
+        weights.ranking_normalized().model_dump().items(),
         key=lambda item: item[1],
         reverse=True,
     )
@@ -96,15 +307,15 @@ def ranking_explanation(weights: ScoreWeights) -> str:
         f"Your current ranking emphasizes {WEIGHT_PRODUCT_LABELS[primary_key]} and "
         f"{WEIGHT_PRODUCT_LABELS[secondary_key]}, so cities with "
         f"{WEIGHT_REASON_PHRASES[primary_key]} and {WEIGHT_REASON_PHRASES[secondary_key]} "
-        "are surfacing higher."
+        "are surfacing higher. Social sentiment is shown separately as context and does not affect the rank."
     )
 
 
 def city_reason_snippet(detail: CityDetail, weights: ScoreWeights) -> str:
     top_dimensions = strongest_dimensions(detail.summary)[:2]
-    dimension_labels = " and ".join(label.lower() for label, _ in top_dimensions)
+    dimension_labels = " and ".join(label.lower() for label, _ in top_dimensions) or "the available trusted dimensions"
     lead_weights = sorted(
-        weights.normalized().model_dump().items(),
+        weights.ranking_normalized().model_dump().items(),
         key=lambda item: item[1],
         reverse=True,
     )[:2]
@@ -151,7 +362,7 @@ def social_themes(detail: CityDetail) -> list[str]:
     if matches:
         return matches[:3]
 
-    top_dimensions = strongest_dimensions(detail.summary)[:2]
+    top_dimensions = strongest_dimensions(detail.summary, include_context=True)[:2]
     fallback = []
     for label, _ in top_dimensions:
         if label == "Affordability":

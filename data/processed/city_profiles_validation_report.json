@@ -1,0 +1,66 @@
+{
+  "cities_excluded_from_mvp": [
+    "austin-tx",
+    "charlotte-nc",
+    "chicago-il",
+    "denver-co",
+    "madison-wi",
+    "minneapolis-mn",
+    "pittsburgh-pa",
+    "raleigh-nc",
+    "seattle-wa",
+    "tampa-fl"
+  ],
+  "dataset_path": "/private/var/folders/kd/n2pyd6bx17915wkj3sm3bf700000gn/T/pytest-of-steph/pytest-13/test_city_profiles_dataset_han0/city_profiles.parquet",
+  "dimension_confidence": {
+    "affordability": {
+      "source_backed": 10
+    },
+    "climate": {
+      "estimated": 10
+    },
+    "job_market": {
+      "source_backed": 10
+    },
+    "safety": {
+      "source_backed": 10
+    },
+    "social": {
+      "seeded": 10
+    }
+  },
+  "dimension_imputation": {
+    "affordability": {
+      "imputed_count": 0,
+      "imputed_pct": 0.0
+    },
+    "climate": {
+      "imputed_count": 10,
+      "imputed_pct": 100.0
+    },
+    "job_market": {
+      "imputed_count": 0,
+      "imputed_pct": 0.0
+    },
+    "safety": {
+      "imputed_count": 0,
+      "imputed_pct": 0.0
+    },
+    "social": {
+      "imputed_count": 0,
+      "imputed_pct": 0.0
+    }
+  },
+  "eligible_city_count": 0,
+  "failures": [],
+  "ineligible_city_count": 10,
+  "row_count": 10,
+  "source_coverage": {
+    "bls": 10,
+    "census": 10,
+    "fbi": 10,
+    "noaa": 0,
+    "reddit": 10,
+    "simplemaps": 10
+  }
+}

@@ -1,15 +1,42 @@
 # WSIS
 
-WSIS (Where Should I Start) is a map-first relocation discovery product for young adults and early-career professionals in the United States. This milestone delivers a local-first vertical slice with a FastAPI backend, a Streamlit frontend, a transparent scoring model, and a modular ingestion pipeline that produces a canonical `city_profiles` dataset from public-source-shaped raw files.
+WSIS (Where Should I Start) is a trust-first relocation exploration tool for recent grads and first-job movers in the United States.
 
-## What is included
+The current MVP helps users narrow a shortlist honestly. It does not claim to produce a definitive “best city” ranking.
 
-- FastAPI service scaffold with health, city list, city detail, and comparison endpoints
-- Streamlit app with a discovery map, city profile view, and comparison view
-- Shared typed domain models, config module, scoring engine, and service layer
-- Canonical `city_profiles` dataset built from raw source adapters under `data/raw/`
-- Repository abstraction so the app can switch between processed and mock data cleanly
-- Structured Reddit sentiment detail adapter with precomputed freshness and provenance metadata
+## MVP promise
+
+- Explore a balanced-middle city set with a map, profile view, and comparison flow
+- Rank cities only when affordability, job market, safety, and climate are source-backed
+- Show social sentiment as context only
+- Surface confidence and provenance so users can tell what is source-backed, estimated, seeded, or missing
+- Emit a machine-readable validation report on every dataset build
+
+## What the current score includes
+
+The ranked MVP score includes:
+
+- Affordability
+- Job market
+- Safety
+- Climate
+
+The ranked MVP score does not include:
+
+- Social sentiment
+
+Social sentiment stays visible in the product as a seeded beta context panel and does not change rank order.
+
+## Trust model
+
+Confidence labels used across the dataset, API, and UI:
+
+- `source_backed`: built from the current raw source slice without imputation for that dimension
+- `estimated`: available only through fallback, imputation, or proxy treatment
+- `seeded`: intentionally seeded beta context that is visible but not rank-defining
+- `missing`: no usable input is available for that dimension
+
+See [DATA_STANDARDS.md](/Users/steph/WSIS/DATA_STANDARDS.md:1) for the full policy.
 
 ## Project structure
 
@@ -21,6 +48,7 @@ apps/
 data/
   raw/
   processed/city_profiles.parquet
+  processed/city_profiles_validation_report.json
 src/
   wsis/
     api/
@@ -37,21 +65,19 @@ tests/
 
 ## Local setup
 
-1. Create a virtual environment.
-2. Install the package in editable mode.
-3. Copy `.env.example` to `.env` if you want local overrides.
-
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
-pip install -e .
+python3 -m pip install -e .
 ```
 
-By default the app uses the processed `city_profiles` repository backend defined in `.env.example`.
+Environment-driven paths:
 
-Optional detail-only Reddit summary payload:
-
-- `WSIS_REDDIT_SENTIMENT_SUMMARIES_PATH=data/raw/reddit/city_sentiment_summaries.json`
+- `WSIS_RAW_DATA_DIR`
+- `WSIS_PROCESSED_CITY_PROFILES_PATH`
+- `WSIS_CITY_PROFILES_VALIDATION_REPORT_PATH`
+- `WSIS_REDDIT_SENTIMENT_SUMMARIES_PATH`
+- `WSIS_API_BASE_URL`
 
 ## Run the backend
 
@@ -59,99 +85,53 @@ Optional detail-only Reddit summary payload:
 uvicorn apps.api.main:app --reload
 ```
 
-Backend URLs:
-
 - API root: `http://localhost:8000/`
 - Health: `http://localhost:8000/health`
 - OpenAPI docs: `http://localhost:8000/docs`
 
 ## Run the frontend
 
-In a second terminal:
-
 ```bash
-source .venv/bin/activate
 streamlit run apps/streamlit/Home.py
 ```
 
-Frontend URL:
-
 - Streamlit app: `http://localhost:8501/`
 
-The frontend prefers the FastAPI backend when it is available at `WSIS_API_BASE_URL`. If the backend is offline, it falls back to the shared local service so the prototype still runs.
+The frontend prefers the FastAPI backend when available and falls back to the local shared service when the backend is offline.
 
-## Data pipeline
+## Build and validate the dataset
 
-Canonical MVP geography:
-
-- One city record anchored to one `county_fips`
-- `county_fips` is the structured-data join key
-- `city_slug` remains the product-facing identifier
-
-This keeps the product city-first while using a stable join key across county-shaped source data.
-
-Raw input files:
-
-- `data/raw/simplemaps/us_cities.csv`
-- `data/raw/census/acs_city_metrics.csv`
-- `data/raw/bls/county_unemployment.csv`
-- `data/raw/fbi/county_crime.csv`
-- `data/raw/noaa/county_climate.csv`
-- `data/raw/reddit/city_sentiment.csv`
-- `data/raw/reddit/city_sentiment_summaries.json`
-
-Processed output:
-
-- `data/processed/city_profiles.parquet`
-
-Build the processed dataset locally:
+Build the canonical dataset and validation report:
 
 ```bash
-python -m wsis.data.pipeline.city_profiles
+python3 -m wsis.data.pipeline.city_profiles
 ```
 
-Reference documentation:
+Validate the current processed dataset:
 
-- `DATA_NORMALIZATION.md`
-- `CITY_PROFILES_SCHEMA.md`
-- `DATA_SOURCE_MAPPINGS.md`
+```bash
+python3 -m wsis.data.validation
+```
 
-## Current scoring model
+Build artifacts:
 
-Default weights from the product docs:
+- `data/processed/city_profiles.parquet`
+- `data/processed/city_profiles_validation_report.json`
 
-- Affordability: 0.40
-- Job market: 0.25
-- Safety: 0.15
-- Climate: 0.10
-- Social sentiment: 0.10
-
-The current engine reads repository-backed city metrics from `city_profiles.parquet` and still applies transparent min-max normalization within the active city cohort.
-
-City profile Reddit detail panels are loaded separately from a structured precomputed summary file so scoring remains stable while the UI can show freshness, methodology, and provenance metadata.
-
-## Deferred integrations
-
-- Real public-source downloads and refreshable ingestion jobs
-- Stronger source-specific transforms, QA checks, and provenance metadata
-- GeoPandas-based choropleth polygons once the canonical city geometry pipeline is ready
-- Real Reddit harvesting, entity resolution, summarization, and moderation logic
-- Postgres or Supabase persistence
-- AWS containerization and deployment assets
-
-## Validation
-
-Recommended local checks:
+## Local checks
 
 ```bash
 python3 -m wsis.data.validation
 python3 -m compileall src apps tests
-python3 -m pytest
+python3 -m pytest -q
 ```
 
-## Notes for the next milestone
+## Reference docs
 
-- Replace the sample raw slices with real public-source downloads and refreshable ingestion jobs
-- Add a Postgres-backed repository behind the existing city repository interface
-- Introduce batch jobs for scoring refresh and Reddit panel refresh
-- Add deployment assets for Lambda container images and ECR
+- [PRD.md](/Users/steph/WSIS/PRD.md:1)
+- [UX_SPEC.md](/Users/steph/WSIS/UX_SPEC.md:1)
+- [IMPLEMENTATION_PLAN.md](/Users/steph/WSIS/IMPLEMENTATION_PLAN.md:1)
+- [CITY_PROFILES_SCHEMA.md](/Users/steph/WSIS/CITY_PROFILES_SCHEMA.md:1)
+- [DATA_SOURCE_MAPPINGS.md](/Users/steph/WSIS/DATA_SOURCE_MAPPINGS.md:1)
+- [DATA_NORMALIZATION.md](/Users/steph/WSIS/DATA_NORMALIZATION.md:1)
+- [DATA_STANDARDS.md](/Users/steph/WSIS/DATA_STANDARDS.md:1)

@@ -1,23 +1,29 @@
 from __future__ import annotations
 
 import html
+import json
+from urllib.request import urlopen
 
 import pandas as pd
-import plotly.express as px
+import plotly.graph_objects as go
 import streamlit as st
 
-from wsis.core.config import get_settings
 from wsis.core.weights import WEIGHT_STATE_KEYS, default_score_weights, score_weights_from_state
 from wsis.domain.models import CityDetail, ScoreWeights
 from wsis.services.api_client import ApiCityClient
 from wsis.ui.homepage import (
     active_filter_descriptions,
+    aggregate_state_start_scores,
     apply_consumer_filters,
     badge_labels,
+    best_places_to_start_score,
     city_reason_snippet,
     comparison_preview_rows,
     consumer_filter_labels,
-    filter_option_by_label,
+    county_overlay_state_fips,
+    interaction_stage_copy,
+    labeled_city_slugs,
+    map_focus_config,
     quick_stats,
     ranking_explanation,
     social_excerpt,
@@ -36,21 +42,52 @@ WEIGHT_LABELS = {
     "job_market": "Job market",
     "safety": "Safety",
     "climate": "Climate",
-    "social_sentiment": "Social sentiment",
 }
+
+COUNTY_GEOJSON_URL = "https://raw.githubusercontent.com/plotly/datasets/master/geojson-counties-fips.json"
 
 WEIGHT_HELP = {
     "affordability": "Lower cost pressure relative to income and home-value proxy.",
     "job_market": "Career upside from proxy job growth and unemployment conditions.",
     "safety": "Relative safety based on the current source crime-rate slice.",
     "climate": "Comfort score based on temperature and sunny-day inputs.",
-    "social_sentiment": "Current social signal drawn from the city sentiment input.",
 }
 
 
 @st.cache_resource
 def get_client() -> ApiCityClient:
     return ApiCityClient()
+
+
+@st.cache_data(show_spinner=False)
+def load_county_geojson() -> dict[str, object] | None:
+    try:
+        with urlopen(COUNTY_GEOJSON_URL, timeout=8) as response:
+            return json.load(response)
+    except Exception:
+        return None
+
+
+@st.cache_data(show_spinner=False)
+def filtered_county_geojson(state_fips_prefixes: tuple[str, ...]) -> dict[str, object] | None:
+    if not state_fips_prefixes:
+        return None
+    county_geojson = load_county_geojson()
+    if county_geojson is None:
+        return None
+
+    features = [
+        feature
+        for feature in county_geojson.get("features", [])
+        if str(feature.get("id", ""))[:2] in state_fips_prefixes
+    ]
+    if not features:
+        return None
+
+    return {
+        "type": county_geojson.get("type", "FeatureCollection"),
+        "features": features,
+    }
 
 
 def inject_styles() -> None:
@@ -263,82 +300,177 @@ def reset_discovery_tray() -> None:
     clear_selected_city()
     st.session_state["home_region"] = "All"
     st.session_state["home_selected_filters"] = []
+    clear_compare_selection()
+    st.session_state["home_compare_notice"] = ""
 
 
 def clear_compare_selection() -> None:
     st.session_state["home_compare_slugs"] = []
 
 
-def build_map(details: list[CityDetail], selected_slug: str | None):
-    settings = get_settings()
-    frame = pd.DataFrame(
+def build_map(
+    details: list[CityDetail],
+    weights: ScoreWeights,
+    selected_region: str,
+    selected_detail: CityDetail | None,
+    compare_details: list[CityDetail],
+):
+    focus = map_focus_config(selected_region, selected_detail, compare_details)
+    label_slugs = labeled_city_slugs(
+        details,
+        weights,
+        selected_region,
+        selected_detail,
+        compare_details,
+    )
+    state_rows = aggregate_state_start_scores(details, weights)
+    state_frame = pd.DataFrame(state_rows)
+    city_frame = pd.DataFrame(
         [
             {
                 "slug": detail.summary.slug,
                 "city": detail.summary.name,
                 "state": detail.summary.state,
+                "state_code": detail.summary.state_code,
                 "score": detail.summary.overall_score,
+                "start_score": best_places_to_start_score(detail, weights),
                 "latitude": detail.summary.latitude,
                 "longitude": detail.summary.longitude,
                 "standout": standout_attribute(detail),
+                "label": f"{detail.summary.name}, {detail.summary.state_code}"
+                if detail.summary.slug in label_slugs
+                else "",
             }
             for detail in details
         ]
     )
-
-    if settings.mapbox_token:
-        px.set_mapbox_access_token(settings.mapbox_token)
-        figure = px.scatter_mapbox(
-            frame,
-            lat="latitude",
-            lon="longitude",
-            color="score",
-            size="score",
-            hover_name="city",
-            hover_data={
-                "state": True,
-                "score": True,
-                "standout": True,
-                "latitude": False,
-                "longitude": False,
-            },
-            custom_data=["slug"],
-            color_continuous_scale="YlGnBu",
-            zoom=2.9,
-            height=620,
-            mapbox_style="carto-positron",
+    county_state_fips = tuple(
+        sorted(
+            county_overlay_state_fips(
+                details,
+                selected_region,
+                selected_detail,
+                compare_details,
+            )
         )
-    else:
-        figure = px.scatter_geo(
-            frame,
-            lat="latitude",
-            lon="longitude",
-            color="score",
-            size="score",
-            hover_name="city",
-            hover_data={
-                "state": True,
-                "score": True,
-                "standout": True,
-            },
-            custom_data=["slug"],
-            color_continuous_scale="YlGnBu",
-            scope="usa",
-            projection="albers usa",
-            height=620,
-        )
-
-    selected_points = frame.index[frame["slug"] == selected_slug].tolist() if selected_slug else []
-    figure.update_layout(
-        margin={"l": 0, "r": 0, "t": 0, "b": 0},
-        coloraxis_colorbar={"title": "WSIS score"},
-        clickmode="event+select",
     )
-    figure.update_traces(
-        marker={"opacity": 0.88, "line": {"color": "white", "width": 1.2}},
-        selectedpoints=selected_points or None,
-        selected={"marker": {"opacity": 1.0, "size": 24, "color": "#0f766e"}},
-        unselected={"marker": {"opacity": 0.42}},
+    county_geojson = filtered_county_geojson(county_state_fips)
+    figure = go.Figure()
+    figure.add_trace(
+        go.Choropleth(
+            locations=state_frame["state_code"],
+            z=state_frame["start_score"],
+            locationmode="USA-states",
+            text=state_frame["state"],
+            customdata=state_frame[["top_city", "city_count"]],
+            colorscale="YlGnBu",
+            zmin=0,
+            zmax=10,
+            showscale=True,
+            colorbar={"title": "Best places to start"},
+            marker_line_color="rgba(255,255,255,0.92)",
+            marker_line_width=1.35,
+            hovertemplate=(
+                "<b>%{text}</b><br>"
+                "Best places to start: %{z:.1f}/10<br>"
+                "Cities tracked: %{customdata[1]}<br>"
+                "Top local starting point: %{customdata[0]}"
+                "<extra></extra>"
+            ),
+        )
+    )
+    if county_geojson is not None:
+        county_ids = [
+            feature.get("id")
+            for feature in county_geojson.get("features", [])
+            if feature.get("id")
+        ]
+        figure.add_trace(
+            go.Choropleth(
+                geojson=county_geojson,
+                locations=county_ids,
+                z=[0] * len(county_ids),
+                featureidkey="id",
+                colorscale=[[0, "rgba(0,0,0,0)"], [1, "rgba(0,0,0,0)"]],
+                marker_line_color="rgba(94, 104, 105, 0.18)",
+                marker_line_width=0.35,
+                showscale=False,
+                hoverinfo="skip",
+            )
+        )
+
+    selected_slug = selected_detail.summary.slug if selected_detail is not None else None
+    selected_points = city_frame.index[city_frame["slug"] == selected_slug].tolist() if selected_slug else []
+    base_marker_size = {
+        "national": 11,
+        "region": 13,
+        "compare": 15,
+        "inspect": 17,
+    }.get(str(focus["mode"]), 12)
+    figure.add_trace(
+        go.Scattergeo(
+            lat=city_frame["latitude"],
+            lon=city_frame["longitude"],
+            hovertext=[f"{row.city}, {row.state}" for row in city_frame.itertuples()],
+            customdata=city_frame[["slug", "state", "start_score", "score", "standout"]],
+            mode="markers",
+            marker={
+                "size": [base_marker_size + (score * 1.1) for score in city_frame["start_score"]],
+                "color": city_frame["start_score"],
+                "colorscale": "YlGnBu",
+                "cmin": 0,
+                "cmax": 10,
+                "opacity": 0.92,
+                "line": {"color": "rgba(255,255,255,0.95)", "width": 1.1},
+                "showscale": False,
+            },
+            selectedpoints=selected_points or None,
+            selected={"marker": {"opacity": 1.0, "size": base_marker_size + 13, "color": "#0f766e"}},
+            unselected={"marker": {"opacity": 0.42}},
+            hovertemplate=(
+                "<b>%{hovertext}</b><br>"
+                "Best places to start: %{customdata[2]:.1f}/10<br>"
+                "WSIS score: %{customdata[3]:.1f}/10<br>"
+                "Standout: %{customdata[4]}"
+                "<extra></extra>"
+            ),
+        )
+    )
+    labeled_frame = city_frame[city_frame["label"] != ""].copy()
+    if not labeled_frame.empty:
+        figure.add_trace(
+            go.Scattergeo(
+                lat=labeled_frame["latitude"],
+                lon=labeled_frame["longitude"],
+                text=labeled_frame["label"],
+                mode="text",
+                textposition="top center",
+                textfont={"size": 10, "color": "#1f2b28"},
+                hoverinfo="skip",
+                showlegend=False,
+            )
+        )
+
+    figure.update_layout(
+        height=640,
+        margin={"l": 0, "r": 0, "t": 0, "b": 0},
+        clickmode="event+select",
+        showlegend=False,
+    )
+    figure.update_geos(
+        scope="usa",
+        projection_type="albers usa",
+        center={"lat": float(focus["lat"]), "lon": float(focus["lon"])},
+        projection_scale=float(focus["scale"]),
+        showland=True,
+        landcolor="rgb(247, 248, 246)",
+        showcountries=False,
+        showcoastlines=False,
+        showlakes=False,
+        showsubunits=True,
+        subunitcolor="rgba(255,255,255,0.72)",
+        subunitwidth=0.7,
+        bgcolor="rgba(0,0,0,0)",
     )
     return figure
 
@@ -346,17 +478,16 @@ def build_map(details: list[CityDetail], selected_slug: str | None):
 def render_map_state_bar(detail: CityDetail | None, compare_details: list[CityDetail], visible_count: int) -> None:
     st.markdown('<div class="wsis-state-bar">', unsafe_allow_html=True)
     columns = st.columns([1.5, 1.2, 0.8, 0.8])
+    stage_title, stage_body = interaction_stage_copy(detail, compare_details)
     with columns[0]:
         st.caption("Inspection state")
-        if detail is None:
-            st.write("Discovery mode")
-            st.caption("Click a city to inspect it in the side panel.")
-        else:
-            st.write(f"Inspecting {detail.summary.name}, {detail.summary.state_code}")
-            st.caption("This city is highlighted on the map and expanded in the side panel.")
+        st.write(stage_title)
+        st.caption(stage_body)
     with columns[1]:
-        st.caption("In play")
+        st.caption("Map layers")
         chips = [f"{visible_count} cities visible"]
+        chips.append("State starter score")
+        chips.append("County lines")
         if compare_details:
             chips.append(f"{len(compare_details)} in compare tray")
         render_badges(chips)
@@ -401,7 +532,6 @@ def render_filter_tray() -> None:
                 (first_row[1], "job_market"),
                 (first_row[2], "safety"),
                 (second_row[0], "climate"),
-                (second_row[1], "social_sentiment"),
             ]
             for column, weight_name in slider_columns:
                 with column:
@@ -413,6 +543,9 @@ def render_filter_tray() -> None:
                         key=WEIGHT_STATE_KEYS[weight_name],
                         help=WEIGHT_HELP[weight_name],
                     )
+            with second_row[1]:
+                st.caption("Social sentiment")
+                st.info("Shown as context only for the MVP. It does not change the ranked discovery score.")
     if st.session_state["home_selected_filters"]:
         st.caption(" | ".join(active_filter_descriptions(st.session_state["home_selected_filters"])))
     st.markdown("</div>", unsafe_allow_html=True)
@@ -420,11 +553,11 @@ def render_filter_tray() -> None:
 
 def render_side_panel_intro(weights: ScoreWeights, visible_count: int, total_count: int) -> None:
     st.markdown("### Explore the map")
-    st.caption("Hover for a quick read. Click a city to turn this panel into an inspection view.")
+    st.caption("Read the state shading first, then click a city when something looks worth a closer inspection.")
     render_badges([f"{visible_count} visible", f"{total_count} tracked"])
-    st.write("Use the filter tray only when you want to steer the map. Use compare only when two or three options start to feel real.")
+    st.write("County lines give geographic context, state color shows the starter score, and city labels tighten as you move from discovery into inspection.")
     st.caption(ranking_explanation(weights))
-    st.info("Inspection tabs and deep-dive actions appear here after selection.")
+    st.info("Ranked discovery currently uses only source-backed affordability, job market, safety, and climate data.")
 
 
 def render_selected_compare_links(compare_details: list[CityDetail]) -> None:
@@ -450,7 +583,12 @@ def render_side_panel(detail: CityDetail | None, weights: ScoreWeights, compare_
             unsafe_allow_html=True,
         )
         render_badges(badge_labels(detail))
-        st.metric("WSIS score", detail.summary.overall_score)
+        score_columns = st.columns(2)
+        score_columns[0].metric("WSIS score", detail.summary.overall_score)
+        score_columns[1].metric("Start score", f"{best_places_to_start_score(detail, weights):.1f}")
+        st.caption(detail.summary.score_context.explanation)
+        if detail.summary.score_context.beta_warning:
+            st.warning(detail.summary.score_context.beta_warning)
         stat_columns = st.columns(2)
         for column, (label, value) in zip(stat_columns * 2, quick_stats(detail)):
             column.metric(label, value)
@@ -479,12 +617,25 @@ def render_side_panel(detail: CityDetail | None, weights: ScoreWeights, compare_
         with tabs[0]:
             st.write(detail.summary.headline)
             st.caption(city_reason_snippet(detail, weights))
-            st.caption("Inspect here first, then either open the full profile or keep the city in compare.")
+            st.caption(
+                "Included in score: "
+                + ", ".join(detail.summary.score_context.included_dimensions)
+                + ". Context only: "
+                + ", ".join(detail.summary.score_context.excluded_dimensions)
+                + "."
+            )
+            if not compare_details:
+                st.caption("Inspect here first, then add this city to compare only if it still feels like a live option.")
+            elif detail.summary.slug not in {item.summary.slug for item in compare_details}:
+                st.caption("Your compare tray is active. Keep inspecting here, then add this city only if it beats one of the current candidates.")
+            else:
+                st.caption("This city is already locked into compare. Inspect it here, then open the full comparison when you are ready.")
             for highlight in detail.highlights[:3]:
                 st.write(f"- {highlight}")
         with tabs[1]:
             st.metric("Sentiment score", detail.reddit_panel.sentiment_score)
             render_badges(social_themes(detail))
+            st.caption("Social context is not part of the ranked discovery score in the MVP.")
             st.write(detail.reddit_panel.summary)
             st.markdown(f"**{social_preview_title(detail)}**")
             st.write(social_excerpt(detail))
@@ -521,7 +672,9 @@ def render_compare_tray(compare_details: list[CityDetail], weights: ScoreWeights
                     status_labels.append("Active inspection")
                 status_labels.extend(badge_labels(detail)[:2])
                 render_badges(status_labels)
-                st.metric("Score", detail.summary.overall_score)
+                metric_columns = st.columns(2)
+                metric_columns[0].metric("WSIS", detail.summary.overall_score)
+                metric_columns[1].metric("Start", f"{best_places_to_start_score(detail, weights):.1f}")
                 for label, value in quick_stats(detail)[:3]:
                     st.caption(f"{label}: {value}")
                 st.caption(city_reason_snippet(detail, weights))
@@ -556,7 +709,9 @@ def render_top_match_card(detail: CityDetail, rank: int, available_slugs: set[st
             status_labels.append("In compare tray")
         if status_labels:
             render_badges(status_labels)
-        st.metric("Score", detail.summary.overall_score)
+        metric_columns = st.columns(2)
+        metric_columns[0].metric("WSIS", detail.summary.overall_score)
+        metric_columns[1].metric("Start", f"{best_places_to_start_score(detail, current_weights()):.1f}")
         render_badges(badge_labels(detail))
         st.write(detail.summary.headline)
         st.caption(city_reason_snippet(detail, current_weights()))
@@ -626,14 +781,14 @@ st.markdown(
     <div class="wsis-hero">
       <div class="wsis-eyebrow">Where Should I Start</div>
       <h1>Explore where you could move before you commit to the wrong city.</h1>
-      <p>Browse the market, inspect one city at a time, and only lock in comparison when a few options actually feel plausible.</p>
+      <p>Browse the market, inspect one city at a time, and narrow to a few realistic options before deeper research.</p>
       <div class="wsis-chip-row">
         <span class="wsis-chip">Source: {html.escape(source)}</span>
         <span class="wsis-chip">{len(filtered_details)} cities in play</span>
         <span class="wsis-chip">Top score: {top_detail.summary.name}, {top_detail.summary.state_code}</span>
         <span class="wsis-chip">Average fit: {score_average}</span>
       </div>
-      <div class="wsis-note">Map for discovery. Side panel for inspection. Trays for control and decision support.</div>
+      <div class="wsis-note">Trust-first MVP: ranking uses source-backed affordability, jobs, safety, and climate. Social sentiment stays visible as context only.</div>
     </div>
     """,
     unsafe_allow_html=True,
@@ -651,7 +806,13 @@ with main_columns[0]:
     render_map_state_bar(selected_detail, compare_details, len(filtered_details))
     render_filter_tray()
     map_event = st.plotly_chart(
-        build_map(filtered_details, selected_city_slug or None),
+        build_map(
+            filtered_details,
+            weights,
+            st.session_state["home_region"],
+            selected_detail,
+            compare_details,
+        ),
         width="stretch",
         key="home_map_chart",
         on_select="rerun",
@@ -662,10 +823,10 @@ with main_columns[0]:
         custom_data = point.get("customdata")
         if custom_data:
             clicked_slug = custom_data[0]
-            if clicked_slug != st.session_state["selected_city_slug"]:
+            if clicked_slug in available_slugs and clicked_slug != st.session_state["selected_city_slug"]:
                 update_selected_city(clicked_slug)
                 st.rerun()
-    st.caption("Hover for a quick read. Click a point to inspect the city in the side panel. Use Clear selection to return to pure discovery mode.")
+    st.caption("State fill uses the trust-first starter score. County lines add context. Click a city point to inspect it and use Clear selection to return to pure discovery mode.")
     render_compare_tray(compare_details, weights, available_slugs)
     st.markdown("</div>", unsafe_allow_html=True)
 with main_columns[1]:
@@ -691,6 +852,7 @@ with reason_columns[0]:
     with st.container(border=True):
         st.markdown("### Why the ranking looks like this")
         st.write(ranking_explanation(weights))
+        st.caption(top_detail.summary.score_context.explanation)
         focus_detail = selected_detail or top_detail
         strongest = strongest_dimensions(focus_detail.summary)[:3]
         st.caption(f"{focus_detail.summary.name} currently leads on " + ", ".join(label.lower() for label, _ in strongest) + ".")
@@ -710,7 +872,7 @@ with reason_columns[1]:
 render_section_header(
     "Social Reality",
     "What it actually feels like",
-    "Keep the social read lightweight but intentional: sentiment score, a couple of themes, and a short excerpt that feels more human than a pure metric.",
+    "Keep the social read lightweight but intentional: sentiment score, a couple of themes, and a short excerpt that feels more human than a pure metric. This section does not affect the ranked score.",
 )
 social_columns = st.columns(3)
 for index, column in enumerate(social_columns):
@@ -724,6 +886,7 @@ for index, column in enumerate(social_columns):
                 st.caption(
                     f"{detail.reddit_panel.posts_analyzed} posts analyzed | {detail.reddit_panel.lookback_days}-day lookback"
                 )
+                st.caption("Context only for MVP ranking.")
                 st.write(detail.reddit_panel.summary)
                 st.markdown(f"**{social_preview_title(detail)}**")
                 st.write(social_excerpt(detail))

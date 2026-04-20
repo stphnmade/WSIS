@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from pydantic import BaseModel, Field
 
-from wsis.domain.models import CityMetrics
+from wsis.domain.models import CityMetrics, DimensionTrust
 
 
 CITY_PROFILE_REQUIRED_COLUMNS = (
@@ -34,6 +34,27 @@ CITY_PROFILE_REQUIRED_COLUMNS = (
     "safety_norm",
     "climate_norm",
     "social_norm",
+    "affordability_confidence",
+    "affordability_source",
+    "affordability_source_date",
+    "affordability_is_imputed",
+    "job_market_confidence",
+    "job_market_source",
+    "job_market_source_date",
+    "job_market_is_imputed",
+    "safety_confidence",
+    "safety_source",
+    "safety_source_date",
+    "safety_is_imputed",
+    "climate_confidence",
+    "climate_source",
+    "climate_source_date",
+    "climate_is_imputed",
+    "social_confidence",
+    "social_source",
+    "social_source_date",
+    "social_is_imputed",
+    "is_mvp_eligible",
     "has_simplemaps_data",
     "has_census_data",
     "has_bls_data",
@@ -80,6 +101,21 @@ CITY_PROFILE_NON_EMPTY_STRING_COLUMNS = (
     "region",
     "headline",
     "known_for",
+    "affordability_confidence",
+    "affordability_source",
+    "affordability_source_date",
+    "job_market_confidence",
+    "job_market_source",
+    "job_market_source_date",
+    "safety_confidence",
+    "safety_source",
+    "safety_source_date",
+    "climate_confidence",
+    "climate_source",
+    "climate_source_date",
+    "social_confidence",
+    "social_source",
+    "social_source_date",
 )
 
 
@@ -112,6 +148,27 @@ class CityProfileRecord(BaseModel):
     safety_norm: float = Field(ge=0, le=1)
     climate_norm: float = Field(ge=0, le=1)
     social_norm: float = Field(ge=0, le=1)
+    affordability_confidence: str = Field(min_length=1)
+    affordability_source: str = Field(min_length=1)
+    affordability_source_date: str = Field(min_length=1)
+    affordability_is_imputed: bool
+    job_market_confidence: str = Field(min_length=1)
+    job_market_source: str = Field(min_length=1)
+    job_market_source_date: str = Field(min_length=1)
+    job_market_is_imputed: bool
+    safety_confidence: str = Field(min_length=1)
+    safety_source: str = Field(min_length=1)
+    safety_source_date: str = Field(min_length=1)
+    safety_is_imputed: bool
+    climate_confidence: str = Field(min_length=1)
+    climate_source: str = Field(min_length=1)
+    climate_source_date: str = Field(min_length=1)
+    climate_is_imputed: bool
+    social_confidence: str = Field(min_length=1)
+    social_source: str = Field(min_length=1)
+    social_source_date: str = Field(min_length=1)
+    social_is_imputed: bool
+    is_mvp_eligible: bool
     has_simplemaps_data: bool
     has_census_data: bool
     has_bls_data: bool
@@ -120,6 +177,26 @@ class CityProfileRecord(BaseModel):
     has_reddit_data: bool
     headline: str = Field(min_length=1)
     known_for: str = Field(min_length=1)
+
+    def _dimension_trust(self, dimension: str) -> DimensionTrust:
+        confidence = getattr(self, f"{dimension}_confidence")
+        source = getattr(self, f"{dimension}_source")
+        source_date = getattr(self, f"{dimension}_source_date")
+        is_imputed = getattr(self, f"{dimension}_is_imputed")
+        note_map = {
+            "affordability": "Built from rent burden against local median income; estimated housing proxies are excluded from ranking.",
+            "job_market": "Built from currently available labor-market inputs; proxy job-growth context stays visible but does not drive the MVP rank.",
+            "safety": "Derived from the current crime-rate slice anchored to the city's county FIPS.",
+            "climate": "Derived from the current climate slice anchored to the city's county FIPS.",
+            "social": "Social sentiment is visible as context only and does not change the MVP rank.",
+        }
+        return DimensionTrust(
+            confidence=confidence,
+            source=source,
+            source_date=source_date,
+            is_imputed=is_imputed,
+            note=note_map[dimension],
+        )
 
     def to_city_metrics(self) -> CityMetrics:
         return CityMetrics(
@@ -143,5 +220,11 @@ class CityProfileRecord(BaseModel):
             sunny_days=self.sunny_days,
             climate_score_raw=self.climate_score_raw,
             social_sentiment_raw=self.social_sentiment_raw,
+            affordability_trust=self._dimension_trust("affordability"),
+            job_market_trust=self._dimension_trust("job_market"),
+            safety_trust=self._dimension_trust("safety"),
+            climate_trust=self._dimension_trust("climate"),
+            social_trust=self._dimension_trust("social"),
+            is_mvp_eligible=self.is_mvp_eligible,
             known_for=self.known_for,
         )

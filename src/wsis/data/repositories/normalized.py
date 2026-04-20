@@ -9,7 +9,7 @@ from wsis.core.config import get_settings
 from wsis.data.models import CityProfileRecord
 from wsis.data.pipeline.city_profiles import build_city_profiles_dataset
 from wsis.data.repositories.base import CityRepository
-from wsis.data.validation import validate_city_profiles_frame
+from wsis.data.validation import CityProfilesValidationError, validate_city_profiles_frame
 from wsis.domain.models import CityMetrics
 
 
@@ -20,8 +20,11 @@ def load_city_profiles() -> tuple[CityProfileRecord, ...]:
     if not data_path.exists():
         return build_city_profiles_dataset()
 
-    frame = pd.read_parquet(data_path)
-    return validate_city_profiles_frame(frame)
+    try:
+        frame = pd.read_parquet(data_path)
+        return validate_city_profiles_frame(frame)
+    except (CityProfilesValidationError, FileNotFoundError, ValueError):
+        return build_city_profiles_dataset(output_path=data_path)
 
 
 class NormalizedCityRepository(CityRepository):

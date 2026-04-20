@@ -5,6 +5,7 @@ import pytest
 
 from wsis.data.validation import (
     CityProfilesValidationError,
+    build_city_profiles_validation_report,
     validate_city_profiles_file,
     validate_city_profiles_frame,
 )
@@ -42,6 +43,27 @@ def _valid_frame() -> pd.DataFrame:
                 "safety_norm": 0.66,
                 "climate_norm": 0.78,
                 "social_norm": 0.71,
+                "affordability_confidence": "source_backed",
+                "affordability_source": "census_acs_city_metrics",
+                "affordability_source_date": "2026-04-20",
+                "affordability_is_imputed": False,
+                "job_market_confidence": "source_backed",
+                "job_market_source": "bls_county_unemployment",
+                "job_market_source_date": "2026-04-20",
+                "job_market_is_imputed": False,
+                "safety_confidence": "source_backed",
+                "safety_source": "fbi_county_crime",
+                "safety_source_date": "2026-04-20",
+                "safety_is_imputed": False,
+                "climate_confidence": "source_backed",
+                "climate_source": "noaa_county_climate",
+                "climate_source_date": "2026-04-20",
+                "climate_is_imputed": False,
+                "social_confidence": "seeded",
+                "social_source": "seeded_reddit_placeholder",
+                "social_source_date": "2026-04-20",
+                "social_is_imputed": False,
+                "is_mvp_eligible": True,
                 "has_simplemaps_data": True,
                 "has_census_data": True,
                 "has_bls_data": True,
@@ -82,3 +104,21 @@ def test_validate_city_profiles_frame_rejects_invalid_numeric_ranges() -> None:
 
     with pytest.raises(CityProfilesValidationError, match="out-of-range"):
         validate_city_profiles_frame(frame)
+
+
+def test_validate_city_profiles_frame_rejects_eligible_city_with_estimated_dimension() -> None:
+    frame = _valid_frame()
+    frame.loc[0, "job_market_confidence"] = "estimated"
+
+    with pytest.raises(CityProfilesValidationError, match="eligibility"):
+        validate_city_profiles_frame(frame)
+
+
+def test_validation_report_summarizes_coverage() -> None:
+    frame = _valid_frame()
+
+    report = build_city_profiles_validation_report(frame)
+
+    assert report["row_count"] == 1
+    assert report["eligible_city_count"] == 1
+    assert report["dimension_confidence"]["social"]["seeded"] == 1

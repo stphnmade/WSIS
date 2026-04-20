@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from datetime import datetime, timezone
 from pathlib import Path
 
 import pandas as pd
@@ -13,7 +14,11 @@ from wsis.data.ingestion.noaa import load_noaa_climate
 from wsis.data.ingestion.reddit import load_reddit_sentiment
 from wsis.data.ingestion.simplemaps import load_simplemaps_cities
 from wsis.data.models import CityProfileRecord
-from wsis.data.validation import validate_city_profiles_frame
+from wsis.data.validation import (
+    build_city_profiles_validation_report,
+    validate_city_profiles_frame,
+    write_city_profiles_validation_report,
+)
 
 
 def _derive_home_price(median_rent: pd.Series) -> pd.Series:
@@ -60,13 +65,21 @@ def _known_for_row(row: pd.Series) -> str:
     return ", ".join(descriptors)
 
 
+def _source_date(path: Path) -> str:
+    if not path.exists():
+        return "unknown"
+    return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).date().isoformat()
+
+
 def build_city_profiles_dataset(
     raw_root: Path | None = None,
     output_path: Path | None = None,
+    report_path: Path | None = None,
 ) -> tuple[CityProfileRecord, ...]:
     settings = get_settings()
     base_raw_root = raw_root or Path(settings.raw_data_dir)
     base_output_path = output_path or Path(settings.processed_city_profiles_path)
+    base_report_path = report_path or Path(settings.city_profiles_validation_report_path)
 
     city_dimension = load_simplemaps_cities(base_raw_root)
     census = load_census_acs(base_raw_root)
@@ -121,6 +134,55 @@ def build_city_profiles_dataset(
     merged["climate_norm"] = (merged["climate_score_raw"] / 100).round(4)
     merged["social_norm"] = (((merged["social_sentiment_raw"] + 1) / 2).clip(0, 1)).round(4)
 
+    census_date = _source_date(base_raw_root / "census" / "acs_city_metrics.csv")
+    bls_date = _source_date(base_raw_root / "bls" / "county_unemployment.csv")
+    fbi_date = _source_date(base_raw_root / "fbi" / "county_crime.csv")
+    noaa_date = _source_date(base_raw_root / "noaa" / "county_climate.csv")
+    reddit_date = _source_date(base_raw_root / "reddit" / "city_sentiment.csv")
+
+    merged["affordability_confidence"] = merged["has_census_data"].map(
+        lambda value: "source_backed" if value else "estimated"
+    )
+    merged["affordability_source"] = "census_acs_city_metrics"
+    merged["affordability_source_date"] = census_date
+    merged["affordability_is_imputed"] = ~merged["has_census_data"]
+
+    merged["job_market_confidence"] = merged["has_bls_data"].map(
+        lambda value: "source_backed" if value else "estimated"
+    )
+    merged["job_market_source"] = "bls_county_unemployment"
+    merged["job_market_source_date"] = bls_date
+    merged["job_market_is_imputed"] = ~merged["has_bls_data"]
+
+    merged["safety_confidence"] = merged["has_fbi_data"].map(
+        lambda value: "source_backed" if value else "estimated"
+    )
+    merged["safety_source"] = "fbi_county_crime"
+    merged["safety_source_date"] = fbi_date
+    merged["safety_is_imputed"] = ~merged["has_fbi_data"]
+
+    merged["climate_confidence"] = merged["has_noaa_data"].map(
+        lambda value: "source_backed" if value else "estimated"
+    )
+    merged["climate_source"] = "noaa_county_climate"
+    merged["climate_source_date"] = noaa_date
+    merged["climate_is_imputed"] = ~merged["has_noaa_data"]
+
+    merged["social_confidence"] = merged["has_reddit_data"].map(
+        lambda value: "seeded" if value else "missing"
+    )
+    merged["social_source"] = merged["has_reddit_data"].map(
+        lambda value: "seeded_reddit_placeholder" if value else "missing_social_signal"
+    )
+    merged["social_source_date"] = reddit_date
+    merged["social_is_imputed"] = ~merged["has_reddit_data"]
+    merged["is_mvp_eligible"] = (
+        merged["affordability_confidence"].eq("source_backed")
+        & merged["job_market_confidence"].eq("source_backed")
+        & merged["safety_confidence"].eq("source_backed")
+        & merged["climate_confidence"].eq("source_backed")
+    )
+
     merged["headline"] = merged.apply(_headline_for_row, axis=1)
     merged["known_for"] = merged.apply(_known_for_row, axis=1)
 
@@ -153,6 +215,27 @@ def build_city_profiles_dataset(
         "safety_norm",
         "climate_norm",
         "social_norm",
+        "affordability_confidence",
+        "affordability_source",
+        "affordability_source_date",
+        "affordability_is_imputed",
+        "job_market_confidence",
+        "job_market_source",
+        "job_market_source_date",
+        "job_market_is_imputed",
+        "safety_confidence",
+        "safety_source",
+        "safety_source_date",
+        "safety_is_imputed",
+        "climate_confidence",
+        "climate_source",
+        "climate_source_date",
+        "climate_is_imputed",
+        "social_confidence",
+        "social_source",
+        "social_source_date",
+        "social_is_imputed",
+        "is_mvp_eligible",
         "has_simplemaps_data",
         "has_census_data",
         "has_bls_data",
@@ -167,6 +250,8 @@ def build_city_profiles_dataset(
     validated_records = validate_city_profiles_frame(processed)
     base_output_path.parent.mkdir(parents=True, exist_ok=True)
     processed.to_parquet(base_output_path, index=False)
+    report = build_city_profiles_validation_report(processed, base_output_path)
+    write_city_profiles_validation_report(report, base_report_path)
 
     return validated_records
 

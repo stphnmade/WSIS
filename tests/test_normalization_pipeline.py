@@ -6,14 +6,17 @@ from wsis.data.pipeline.city_profiles import build_city_profiles_dataset
 
 def test_city_profiles_dataset_builds_with_expected_join_keys(tmp_path: Path) -> None:
     output_path = tmp_path / "city_profiles.parquet"
+    report_path = tmp_path / "city_profiles_validation_report.json"
 
-    records = build_city_profiles_dataset(output_path=output_path)
+    records = build_city_profiles_dataset(output_path=output_path, report_path=report_path)
 
     assert output_path.exists()
+    assert report_path.exists()
     assert len(records) == 10
     assert len({record.city_slug for record in records}) == len(records)
     assert all(len(record.county_fips) == 5 for record in records)
     assert all(0 <= record.affordability_norm <= 1 for record in records)
+    assert all(record.is_mvp_eligible for record in records)
 
 
 def test_city_profiles_dataset_handles_missing_optional_source(tmp_path: Path) -> None:
@@ -28,4 +31,6 @@ def test_city_profiles_dataset_handles_missing_optional_source(tmp_path: Path) -
     by_slug = {record.city_slug: record for record in records}
 
     assert by_slug["austin-tx"].has_noaa_data is False
+    assert by_slug["austin-tx"].climate_confidence == "estimated"
+    assert by_slug["austin-tx"].is_mvp_eligible is False
     assert by_slug["austin-tx"].climate_score_raw >= 0

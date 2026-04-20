@@ -12,7 +12,7 @@ def _score_weights(
     job_market: float = Query(0.25, ge=0),
     safety: float = Query(0.15, ge=0),
     climate: float = Query(0.10, ge=0),
-    social_sentiment: float = Query(0.10, ge=0),
+    social_sentiment: float = Query(0.0, ge=0),
 ) -> ScoreWeights:
     return ScoreWeights(
         affordability=affordability,

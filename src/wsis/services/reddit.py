@@ -26,6 +26,8 @@ class _PrecomputedRedditSummary(BaseModel):
     def to_panel(self) -> RedditPanel:
         return RedditPanel(
             source="precomputed_city_sentiment",
+            confidence="seeded",
+            included_in_score=False,
             summary=self.summary,
             sentiment_score=self.sentiment_score,
             generated_at=self.generated_at,
@@ -76,6 +78,8 @@ class PrecomputedRedditSentimentService:
         )
         return RedditPanel(
             source="city_profile_fallback",
+            confidence="missing",
+            included_in_score=False,
             summary=summary,
             sentiment_score=sentiment_score,
             generated_at="unknown",
