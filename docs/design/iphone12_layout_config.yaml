@@ -1,0 +1,103 @@
+device:
+  name: "iPhone 12"
+  viewport:
+    width: 390
+    height: 844
+  safe_area:
+    top: 47
+    bottom: 34
+
+product_goal:
+  primary_user: "User 0 (David)"
+  decision_job: "Compare Chicago against candidate cities for a $70,000 job and decide whether to take the offer or keep looking."
+
+layout_mode:
+  strategy: "mobile-first stacked narrative"
+  page_order:
+    - "decision summary"
+    - "hard constraints"
+    - "city shortlist cards"
+    - "map preview"
+    - "social context"
+    - "trust and freshness"
+
+sections:
+  hero:
+    max_lines: 4
+    primary_cta: "Start with my situation"
+    secondary_cta: "Compare with Chicago"
+  decision_summary:
+    component: "single sticky verdict card"
+    fields:
+      - "recommended action"
+      - "salary fit"
+      - "rent gap vs target"
+      - "warmth fit"
+      - "downtown fit"
+      - "confidence"
+  hard_constraints:
+    component: "filter chips plus pass/fail rows"
+    rules:
+      - "max_rent"
+      - "salary_offer"
+      - "political_fit_proxy"
+      - "weather_preference"
+  shortlist:
+    card_style: "one city card per row"
+    required_fields:
+      - "city"
+      - "verdict"
+      - "median_rent"
+      - "salary_fit"
+      - "weather"
+      - "downtown_vibe_proxy"
+      - "trust_badge"
+  map:
+    mode: "collapsed preview"
+    default_height: 320
+    behavior: "expand only after shortlist or tap"
+  comparison:
+    mode: "stacked panels"
+    baseline_city: "Chicago"
+    max_cities: 2
+    rows:
+      - "overall verdict"
+      - "rent vs salary"
+      - "job market"
+      - "warmth"
+      - "downtown vibe"
+      - "social context"
+      - "trust and freshness"
+
+visual_system:
+  direction: "editorial utility, not dashboard"
+  typography:
+    headline: "high-contrast serif or humanist display"
+    body: "clean grotesk or system sans"
+  color_tokens:
+    ink: "#1d2321"
+    sand: "#f4efe7"
+    mist: "#dfe9e2"
+    clay: "#b87544"
+    pine: "#2e6153"
+    warning: "#b84f3a"
+    info: "#2c5d8a"
+  spacing:
+    page_padding: 16
+    card_radius: 20
+    section_gap: 28
+
+responsive_rules:
+  - "no side-by-side columns below 768px unless the content is purely numeric and two cells max"
+  - "convert metric grids to stacked cards"
+  - "replace wide dataframes with compact labeled rows"
+  - "keep buttons full-width on mobile"
+  - "keep hero chips to two rows max"
+  - "defer long methodology copy behind accordions"
+
+qa_checklist:
+  - "390x844 viewport renders without horizontal scroll"
+  - "top hero and primary CTA visible above first major fold"
+  - "comparison usable with one-hand thumb scrolling"
+  - "decision summary readable before map interaction"
+  - "Chicago baseline always visible in User 0 mode"
