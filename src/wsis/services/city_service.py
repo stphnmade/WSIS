@@ -80,6 +80,7 @@ def _build_highlights(city: CityMetrics, summary: CitySummary) -> list[str]:
     )
     highlights = [
         f"Median rent is about {rent_burden_pct:.0f}% of local median income, at roughly ${city.median_rent:,.0f} per month.",
+        f"HUD fair-market rent context is about ${city.fair_market_rent:,.0f}, putting local median rent at {city.rent_to_fmr_ratio:.2f}x FMR.",
         f"Median home price is about ${city.median_home_price:,.0f} ({home_price_note}), with unemployment at {city.unemployment_pct:.1f}%.",
         f"Job growth context is about {city.job_growth_pct:.1f}% ({job_growth_note}), visible for inspection but not required for the ranked MVP score.",
     ]

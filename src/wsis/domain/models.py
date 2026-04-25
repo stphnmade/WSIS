@@ -70,11 +70,19 @@ class CityMetrics(BaseModel):
     latitude: float = Field(ge=-90, le=90)
     longitude: float = Field(ge=-180, le=180)
     median_rent: float = Field(gt=0)
+    fair_market_rent: float = Field(gt=0)
+    fair_market_rent_source: str = Field(min_length=1)
+    fair_market_rent_source_date: str = Field(min_length=1)
+    fair_market_rent_is_imputed: bool = False
+    rent_to_fmr_ratio: float = Field(ge=0, le=100)
+    practical_rent_gap: float = Field(ge=-100_000, le=100_000)
     median_home_price: float = Field(gt=0)
     median_home_price_source: str = Field(min_length=1)
     median_home_price_source_date: str = Field(min_length=1)
     median_home_price_is_imputed: bool = False
     median_income: float = Field(gt=0)
+    education_bachelors_pct: float = Field(ge=0, le=100)
+    mean_commute_minutes: float = Field(ge=0, le=240)
     job_growth_pct: float = Field(ge=-100, le=100)
     job_growth_source: str = Field(min_length=1)
     job_growth_source_date: str = Field(min_length=1)
@@ -91,6 +99,10 @@ class CityMetrics(BaseModel):
     safety_trust: DimensionTrust
     climate_trust: DimensionTrust
     social_trust: DimensionTrust
+    is_warm: bool = False
+    is_affordable: bool = False
+    is_high_income: bool = False
+    is_strong_job_market: bool = False
     is_mvp_eligible: bool
     known_for: str = Field(min_length=1)
 

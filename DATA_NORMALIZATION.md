@@ -11,7 +11,7 @@ For the MVP, WSIS uses one city record anchored to one county FIPS.
 
 The ranked MVP score uses:
 
-- affordability from rent burden against local median income
+- affordability from rent burden against local median income plus HUD fair-market-rent context
 - job market from unemployment conditions
 - safety from the current crime-rate slice
 - climate from the current climate slice
@@ -28,6 +28,26 @@ Each ranked or contextual dimension carries:
 - imputation flag
 
 These fields are part of the canonical dataset, not UI-only decorations.
+
+## Core Public Reliable Feed v1
+
+Normalized raw inputs are expected in local CSV form so the app keeps running when external refreshes fail:
+
+- Census ACS 5-Year: median income, median rent, population, education, commute
+- BLS LAUS: unemployment rate
+- HUD Fair Market Rents: practical rent affordability
+- NOAA Climate Normals: climate inputs
+
+If a public feed or row is missing, the pipeline falls back to local seed/default values and marks the affected dimension or field as estimated/imputed.
+
+## Filter fields
+
+The canonical dataset materializes:
+
+- `is_warm`
+- `is_affordable`
+- `is_high_income`
+- `is_strong_job_market`
 
 ## Output artifacts
 

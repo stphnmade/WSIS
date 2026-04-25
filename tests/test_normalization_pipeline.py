@@ -17,6 +17,10 @@ def test_city_profiles_dataset_builds_with_expected_join_keys(tmp_path: Path) ->
     assert all(len(record.county_fips) == 5 for record in records)
     assert all(0 <= record.affordability_norm <= 1 for record in records)
     assert all(record.is_mvp_eligible for record in records)
+    assert all(isinstance(record.is_warm, bool) for record in records)
+    assert all(record.has_hud_fmr_data for record in records)
+    assert all(record.fair_market_rent > 0 for record in records)
+    assert any(record.education_bachelors_pct > 0 for record in records)
 
 
 def test_city_profiles_dataset_handles_missing_optional_source(tmp_path: Path) -> None:
@@ -27,6 +31,7 @@ def test_city_profiles_dataset_handles_missing_optional_source(tmp_path: Path) -
     records = build_city_profiles_dataset(
         raw_root=raw_root,
         output_path=tmp_path / "city_profiles.parquet",
+        report_path=tmp_path / "city_profiles_validation_report.json",
     )
     by_slug = {record.city_slug: record for record in records}
 
@@ -34,3 +39,21 @@ def test_city_profiles_dataset_handles_missing_optional_source(tmp_path: Path) -
     assert by_slug["austin-tx"].climate_confidence == "estimated"
     assert by_slug["austin-tx"].is_mvp_eligible is False
     assert by_slug["austin-tx"].climate_score_raw >= 0
+
+
+def test_city_profiles_dataset_handles_missing_hud_source(tmp_path: Path) -> None:
+    raw_root = tmp_path / "raw"
+    shutil.copytree(Path("data/raw"), raw_root)
+    (raw_root / "hud" / "fair_market_rents.csv").unlink()
+
+    records = build_city_profiles_dataset(
+        raw_root=raw_root,
+        output_path=tmp_path / "city_profiles.parquet",
+        report_path=tmp_path / "city_profiles_validation_report.json",
+    )
+    by_slug = {record.city_slug: record for record in records}
+
+    assert by_slug["austin-tx"].has_hud_fmr_data is False
+    assert by_slug["austin-tx"].fair_market_rent_is_imputed is True
+    assert by_slug["austin-tx"].affordability_confidence == "estimated"
+    assert by_slug["austin-tx"].is_mvp_eligible is False

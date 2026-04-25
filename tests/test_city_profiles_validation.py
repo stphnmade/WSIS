@@ -29,11 +29,19 @@ def _valid_frame() -> pd.DataFrame:
                 "population": 979882,
                 "median_income": 92000,
                 "median_rent": 1750,
+                "fair_market_rent": 1710,
+                "fair_market_rent_source": "hud_fair_market_rents_2br",
+                "fair_market_rent_source_date": "2026-04-20",
+                "fair_market_rent_is_imputed": False,
+                "rent_to_fmr_ratio": 1.0234,
+                "practical_rent_gap": 40,
                 "median_home_price": 525000,
                 "median_home_price_source": "cost_of_living_sample",
                 "median_home_price_source_date": "2026-04-20",
                 "median_home_price_is_imputed": False,
                 "unemployment_pct": 3.4,
+                "education_bachelors_pct": 58.0,
+                "mean_commute_minutes": 25.9,
                 "job_growth_pct": 4.8,
                 "job_growth_source": "jobs_sample",
                 "job_growth_source_date": "2026-04-20",
@@ -69,10 +77,15 @@ def _valid_frame() -> pd.DataFrame:
                 "social_source": "seeded_reddit_placeholder",
                 "social_source_date": "2026-04-20",
                 "social_is_imputed": False,
+                "is_warm": True,
+                "is_affordable": True,
+                "is_high_income": True,
+                "is_strong_job_market": True,
                 "is_mvp_eligible": True,
                 "has_simplemaps_data": True,
                 "has_census_data": True,
                 "has_bls_data": True,
+                "has_hud_fmr_data": True,
                 "has_fbi_data": True,
                 "has_noaa_data": True,
                 "has_reddit_data": True,
@@ -130,6 +143,8 @@ def test_validation_report_summarizes_coverage() -> None:
     assert report["row_count"] == 1
     assert report["eligible_city_count"] == 1
     assert report["dimension_confidence"]["social"]["seeded"] == 1
+    assert report["source_coverage"]["hud_fmr"] == 1
+    assert report["filter_coverage"]["is_warm"] == 1
     assert report["source_coverage"]["cost_of_living_context"] == 1
     assert report["source_coverage"]["jobs_context"] == 1
 
@@ -143,3 +158,11 @@ def test_validation_report_includes_exclusion_reasons() -> None:
 
     assert "austin-tx" in report["city_exclusion_reasons"]
     assert any("job market is estimated" in reason for reason in report["city_exclusion_reasons"]["austin-tx"])
+
+
+def test_validate_city_profiles_frame_rejects_invalid_filter_boolean() -> None:
+    frame = _valid_frame()
+    frame["is_warm"] = "yes"
+
+    with pytest.raises(CityProfilesValidationError, match="filter booleans"):
+        validate_city_profiles_frame(frame)

@@ -22,6 +22,14 @@ class CityProfilesValidationError(ValueError):
     """Raised when the canonical city_profiles dataset fails data quality checks."""
 
 
+FILTER_BOOLEAN_COLUMNS = (
+    "is_warm",
+    "is_affordable",
+    "is_high_income",
+    "is_strong_job_market",
+)
+
+
 def _raise(message: str) -> None:
     raise CityProfilesValidationError(message)
 
@@ -134,6 +142,20 @@ def _require_numeric_ranges(frame: pd.DataFrame) -> None:
         _raise("city_profiles contains out-of-range numeric values: " + "; ".join(failures))
 
 
+def _require_filter_booleans(frame: pd.DataFrame) -> None:
+    failures: list[str] = []
+    for column in FILTER_BOOLEAN_COLUMNS:
+        if column not in frame.columns:
+            failures.append(f"{column} missing")
+            continue
+        if not pd.api.types.is_bool_dtype(frame[column]):
+            examples = frame[column].astype(str).head(5).tolist()
+            failures.append(f"{column} must be boolean examples={examples}")
+
+    if failures:
+        _raise("city_profiles contains invalid filter booleans: " + "; ".join(failures))
+
+
 def _require_mvp_eligibility_consistency(frame: pd.DataFrame) -> None:
     eligible = frame[frame["is_mvp_eligible"]]
     if eligible.empty:
@@ -177,6 +199,7 @@ def _source_file_status(
         "simplemaps": (raw_root / "simplemaps" / "us_cities.csv", "has_simplemaps_data"),
         "census": (raw_root / "census" / "acs_city_metrics.csv", "has_census_data"),
         "bls": (raw_root / "bls" / "county_unemployment.csv", "has_bls_data"),
+        "hud_fmr": (raw_root / "hud" / "fair_market_rents.csv", "has_hud_fmr_data"),
         "fbi": (raw_root / "fbi" / "county_crime.csv", "has_fbi_data"),
         "noaa": (raw_root / "noaa" / "county_climate.csv", "has_noaa_data"),
         "reddit": (raw_root / "reddit" / "city_sentiment.csv", "has_reddit_data"),
@@ -260,6 +283,7 @@ def build_city_profiles_validation_report(
             "simplemaps": int(frame["has_simplemaps_data"].sum()),
             "census": int(frame["has_census_data"].sum()),
             "bls": int(frame["has_bls_data"].sum()),
+            "hud_fmr": int(frame["has_hud_fmr_data"].sum()),
             "fbi": int(frame["has_fbi_data"].sum()),
             "noaa": int(frame["has_noaa_data"].sum()),
             "reddit": int(frame["has_reddit_data"].sum()),
@@ -269,6 +293,9 @@ def build_city_profiles_validation_report(
         "source_file_status": source_status,
         "stale_sources": stale_sources,
         "partial_outages": partial_outages,
+        "filter_coverage": {
+            column: int(frame[column].sum()) for column in FILTER_BOOLEAN_COLUMNS
+        },
         "failures": [
             *[f"stale source: {source_name}" for source_name in stale_sources],
             *[f"source coverage issue: {source_name}" for source_name in partial_outages],
@@ -305,6 +332,7 @@ def validate_city_profiles_frame(frame: pd.DataFrame) -> tuple[CityProfileRecord
     _require_confidence_metadata(frame)
     _require_identifier_formats(frame)
     _require_numeric_ranges(frame)
+    _require_filter_booleans(frame)
     _require_mvp_eligibility_consistency(frame)
     return tuple(CityProfileRecord.model_validate(record) for record in frame.to_dict("records"))
 

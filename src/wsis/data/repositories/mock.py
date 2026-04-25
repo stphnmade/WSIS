@@ -32,9 +32,17 @@ def load_mock_cities() -> tuple[CityMetrics, ...]:
     for record in frame.to_dict("records"):
         enriched = {
             **record,
+            "fair_market_rent": record["median_rent"],
+            "fair_market_rent_source": "mock_city_dataset",
+            "fair_market_rent_source_date": "unknown",
+            "fair_market_rent_is_imputed": True,
+            "rent_to_fmr_ratio": 1.0,
+            "practical_rent_gap": 0.0,
             "violent_crime_per_100k": None,
             "avg_temp_f": None,
             "sunny_days": None,
+            "education_bachelors_pct": 0.0,
+            "mean_commute_minutes": 0.0,
             "affordability_trust": _mock_trust("Mock-only affordability input."),
             "job_market_trust": _mock_trust("Mock-only job-market input."),
             "safety_trust": _mock_trust("Mock-only safety input."),
@@ -46,6 +54,10 @@ def load_mock_cities() -> tuple[CityMetrics, ...]:
                 is_imputed=True,
                 note="Mock-only social context.",
             ),
+            "is_warm": False,
+            "is_affordable": False,
+            "is_high_income": False,
+            "is_strong_job_market": False,
             "is_mvp_eligible": False,
         }
         records.append(CityMetrics.model_validate(enriched))

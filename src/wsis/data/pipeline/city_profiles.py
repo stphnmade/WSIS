@@ -11,6 +11,7 @@ from wsis.data.ingestion.census_acs import load_census_acs
 from wsis.data.ingestion.common import fill_or_default, safe_min_max
 from wsis.data.ingestion.context_samples import load_cost_of_living_context, load_jobs_context
 from wsis.data.ingestion.fbi import load_fbi_crime
+from wsis.data.ingestion.hud import load_hud_fair_market_rents
 from wsis.data.ingestion.noaa import load_noaa_climate
 from wsis.data.ingestion.reddit import load_reddit_sentiment
 from wsis.data.ingestion.simplemaps import load_simplemaps_cities
@@ -72,6 +73,12 @@ def _source_date(path: Path) -> str:
     return datetime.fromtimestamp(path.stat().st_mtime, tz=timezone.utc).date().isoformat()
 
 
+def _coalesce_numeric(primary: pd.Series, fallback: pd.Series, default: float) -> pd.Series:
+    primary_numeric = pd.to_numeric(primary, errors="coerce")
+    fallback_numeric = pd.to_numeric(fallback, errors="coerce")
+    return primary_numeric.fillna(fallback_numeric).fillna(default)
+
+
 def build_city_profiles_dataset(
     raw_root: Path | None = None,
     output_path: Path | None = None,
@@ -86,6 +93,7 @@ def build_city_profiles_dataset(
     city_dimension = load_simplemaps_cities(base_raw_root)
     census = load_census_acs(base_raw_root)
     bls = load_bls_unemployment(base_raw_root)
+    hud = load_hud_fair_market_rents(base_raw_root)
     fbi = load_fbi_crime(base_raw_root)
     noaa = load_noaa_climate(base_raw_root)
     reddit = load_reddit_sentiment(base_raw_root)
@@ -95,6 +103,7 @@ def build_city_profiles_dataset(
     merged = (
         city_dimension.merge(census, on=["city_state_key", "county_fips"], how="left")
         .merge(bls, on="county_fips", how="left")
+        .merge(hud, on="county_fips", how="left")
         .merge(fbi, on="county_fips", how="left")
         .merge(noaa, on="county_fips", how="left")
         .merge(reddit, on="city_state_key", how="left")
@@ -105,6 +114,7 @@ def build_city_profiles_dataset(
     for flag in [
         "has_census_data",
         "has_bls_data",
+        "has_hud_fmr_data",
         "has_fbi_data",
         "has_noaa_data",
         "has_reddit_data",
@@ -115,8 +125,25 @@ def build_city_profiles_dataset(
             merged[flag] = False
         merged[flag] = merged[flag].map(lambda value: bool(value) if pd.notna(value) else False)
 
+    simplemaps_population = pd.to_numeric(merged["population"], errors="coerce")
+    merged["population"] = (
+        _coalesce_numeric(
+            merged.get("acs_population", pd.Series(index=merged.index, dtype="float64")),
+            simplemaps_population,
+            float(simplemaps_population.median() or 1),
+        )
+        .round(0)
+        .astype("int64")
+    )
     merged["median_income"] = fill_or_default(merged.get("median_income"), 75000)
     merged["median_rent"] = fill_or_default(merged.get("median_rent"), 1550)
+    merged["education_bachelors_pct"] = fill_or_default(merged.get("education_bachelors_pct"), 35).clip(0, 100)
+    merged["mean_commute_minutes"] = fill_or_default(merged.get("mean_commute_minutes"), 27).clip(0, 240)
+    merged["fair_market_rent"] = _coalesce_numeric(
+        merged.get("fair_market_rent", pd.Series(index=merged.index, dtype="float64")),
+        merged["median_rent"],
+        1550,
+    )
     merged["unemployment_pct"] = fill_or_default(merged.get("unemployment_pct"), 4.0)
     merged["violent_crime_per_100k"] = fill_or_default(merged.get("violent_crime_per_100k"), 380)
     merged["avg_temp_f"] = fill_or_default(merged.get("avg_temp_f"), 60)
@@ -136,9 +163,17 @@ def build_city_profiles_dataset(
 
     rent_burden = (merged["median_rent"] * 12) / merged["median_income"]
     home_price_ratio = merged["median_home_price"] / merged["median_income"]
+    rent_to_fmr_ratio = (merged["median_rent"] / merged["fair_market_rent"]).replace(
+        [float("inf"), -float("inf")],
+        pd.NA,
+    )
+    rent_to_fmr_ratio = fill_or_default(rent_to_fmr_ratio, 1.0)
+    merged["rent_to_fmr_ratio"] = rent_to_fmr_ratio.round(4)
+    merged["practical_rent_gap"] = (merged["median_rent"] - merged["fair_market_rent"]).round(0)
     merged["affordability_norm"] = (
-        (safe_min_max(rent_burden, invert=True, default=0.5) * 0.7)
-        + (safe_min_max(home_price_ratio, invert=True, default=0.5) * 0.3)
+        (safe_min_max(rent_burden, invert=True, default=0.5) * 0.55)
+        + (safe_min_max(rent_to_fmr_ratio, invert=True, default=0.5) * 0.30)
+        + (safe_min_max(home_price_ratio, invert=True, default=0.5) * 0.15)
     ).round(4)
     merged["job_market_norm"] = (
         safe_min_max(merged["job_growth_pct"], invert=False, default=0.5) * 0.55
@@ -150,18 +185,30 @@ def build_city_profiles_dataset(
 
     census_date = _source_date(base_raw_root / "census" / "acs_city_metrics.csv")
     bls_date = _source_date(base_raw_root / "bls" / "county_unemployment.csv")
+    hud_date = _source_date(base_raw_root / "hud" / "fair_market_rents.csv")
     fbi_date = _source_date(base_raw_root / "fbi" / "county_crime.csv")
     noaa_date = _source_date(base_raw_root / "noaa" / "county_climate.csv")
     reddit_date = _source_date(base_raw_root / "reddit" / "city_sentiment.csv")
     cost_context_date = _source_date(base_source_samples_root / "cost_of_living.csv")
     jobs_context_date = _source_date(base_source_samples_root / "jobs.csv")
 
-    merged["affordability_confidence"] = merged["has_census_data"].map(
+    has_affordability_feed = merged["has_census_data"] & merged["has_hud_fmr_data"]
+    merged["affordability_confidence"] = has_affordability_feed.map(
         lambda value: "source_backed" if value else "estimated"
     )
-    merged["affordability_source"] = "census_acs_city_metrics"
+    merged["affordability_source"] = has_affordability_feed.map(
+        lambda value: "census_acs_5yr_hud_fmr" if value else "census_acs_5yr_with_seed_fallback"
+    )
     merged["affordability_source_date"] = census_date
-    merged["affordability_is_imputed"] = ~merged["has_census_data"]
+    merged["affordability_is_imputed"] = ~has_affordability_feed
+
+    merged["fair_market_rent_source"] = merged["has_hud_fmr_data"].map(
+        lambda value: "hud_fair_market_rents_2br" if value else "median_rent_seed_fallback"
+    )
+    merged["fair_market_rent_source_date"] = merged["has_hud_fmr_data"].map(
+        lambda value: hud_date if value else census_date
+    )
+    merged["fair_market_rent_is_imputed"] = ~merged["has_hud_fmr_data"]
 
     merged["job_market_confidence"] = merged["has_bls_data"].map(
         lambda value: "source_backed" if value else "estimated"
@@ -206,6 +253,13 @@ def build_city_profiles_dataset(
         lambda value: jobs_context_date if value else bls_date
     )
     merged["job_growth_is_imputed"] = ~merged["has_jobs_context"]
+
+    merged["is_warm"] = (merged["avg_temp_f"] >= 65) | (merged["climate_norm"] >= 0.70)
+    merged["is_affordable"] = (rent_burden <= 0.25) | (merged["rent_to_fmr_ratio"] <= 1.0)
+    merged["is_high_income"] = merged["median_income"] >= 85_000
+    merged["is_strong_job_market"] = (merged["unemployment_pct"] <= 3.5) | (
+        merged["job_market_norm"] >= 0.70
+    )
     merged["is_mvp_eligible"] = (
         merged["affordability_confidence"].eq("source_backed")
         & merged["job_market_confidence"].eq("source_backed")
@@ -231,11 +285,19 @@ def build_city_profiles_dataset(
         "population",
         "median_income",
         "median_rent",
+        "fair_market_rent",
+        "fair_market_rent_source",
+        "fair_market_rent_source_date",
+        "fair_market_rent_is_imputed",
+        "rent_to_fmr_ratio",
+        "practical_rent_gap",
         "median_home_price",
         "median_home_price_source",
         "median_home_price_source_date",
         "median_home_price_is_imputed",
         "unemployment_pct",
+        "education_bachelors_pct",
+        "mean_commute_minutes",
         "job_growth_pct",
         "job_growth_source",
         "job_growth_source_date",
@@ -271,10 +333,15 @@ def build_city_profiles_dataset(
         "social_source",
         "social_source_date",
         "social_is_imputed",
+        "is_warm",
+        "is_affordable",
+        "is_high_income",
+        "is_strong_job_market",
         "is_mvp_eligible",
         "has_simplemaps_data",
         "has_census_data",
         "has_bls_data",
+        "has_hud_fmr_data",
         "has_fbi_data",
         "has_noaa_data",
         "has_reddit_data",

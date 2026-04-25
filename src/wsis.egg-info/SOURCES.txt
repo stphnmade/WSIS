@@ -19,6 +19,7 @@ src/wsis/data/ingestion/bls.py
 src/wsis/data/ingestion/census_acs.py
 src/wsis/data/ingestion/common.py
 src/wsis/data/ingestion/fbi.py
+src/wsis/data/ingestion/hud.py
 src/wsis/data/ingestion/noaa.py
 src/wsis/data/ingestion/reddit.py
 src/wsis/data/ingestion/simplemaps.py
