@@ -32,6 +32,7 @@ from wsis.ui.homepage import (
     standout_attribute,
     strongest_dimensions,
 )
+from wsis.ui.theme import inject_theme
 from wsis.ui.trust import city_core_freshness_summary, freshness_badge
 
 
@@ -92,33 +93,38 @@ def filtered_county_geojson(state_fips_prefixes: tuple[str, ...]) -> dict[str, o
 
 
 def inject_styles() -> None:
+    inject_theme()
     st.markdown(
         """
         <style>
         .wsis-eyebrow {
             text-transform: uppercase;
-            letter-spacing: 0.14em;
+            letter-spacing: 0.09em;
             font-size: 0.78rem;
-            color: #7f674f;
-            font-weight: 700;
+            color: #12a594;
+            font-weight: 850;
         }
         .wsis-hero {
-            background: linear-gradient(135deg, #f4efe6 0%, #e6efe9 55%, #d8e6ea 100%);
-            border: 1px solid rgba(104, 89, 70, 0.18);
+            background:
+                linear-gradient(120deg, rgba(223, 248, 238, 0.96), rgba(232, 244, 255, 0.92) 58%, rgba(255, 240, 184, 0.82));
+            border: 1px solid rgba(18, 165, 148, 0.18);
             border-radius: 24px;
-            padding: 1.2rem 1.3rem;
-            margin-bottom: 0.65rem;
+            box-shadow: 0 20px 56px rgba(23, 33, 43, 0.08);
+            padding: 1.15rem 1.25rem;
+            margin-bottom: 0.75rem;
         }
         .wsis-hero h1 {
-            font-size: 2.35rem;
-            line-height: 1.02;
+            font-family: "Fraunces", "Plus Jakarta Sans", serif;
+            font-size: clamp(2rem, 4vw, 3.7rem);
+            line-height: 0.98;
             margin: 0.2rem 0 0.55rem 0;
-            color: #1f2b28;
+            color: #17212b;
         }
         .wsis-hero p {
-            font-size: 0.98rem;
-            color: #31403c;
+            font-size: 1rem;
+            color: #51606b;
             margin-bottom: 0.3rem;
+            max-width: 58rem;
         }
         .wsis-chip-row {
             display: flex;
@@ -128,74 +134,280 @@ def inject_styles() -> None:
         }
         .wsis-chip {
             display: inline-block;
-            padding: 0.26rem 0.62rem;
+            padding: 0.32rem 0.68rem;
             border-radius: 999px;
-            background: #f3f0ea;
-            border: 1px solid rgba(70, 66, 57, 0.12);
-            color: #3a3d38;
+            background: rgba(255, 255, 255, 0.78);
+            border: 1px solid rgba(18, 165, 148, 0.2);
+            color: #21413d;
             font-size: 0.8rem;
-            font-weight: 600;
+            font-weight: 750;
         }
         .wsis-note {
-            border-left: 3px solid #b98652;
+            border-left: 3px solid #ff7a6b;
             padding-left: 0.75rem;
             margin-top: 0.55rem;
-            color: #4b514b;
+            color: #51606b;
         }
         .wsis-placeholder {
-            border: 1px dashed rgba(84, 96, 97, 0.35);
-            border-radius: 18px;
+            border: 1px dashed rgba(85, 119, 255, 0.34);
+            border-radius: 16px;
             padding: 1rem;
-            background: rgba(244, 241, 235, 0.6);
+            background: rgba(255, 255, 255, 0.68);
             min-height: 150px;
         }
         .wsis-placeholder h4 {
             margin: 0 0 0.45rem 0;
-            color: #23302c;
+            color: #17212b;
         }
         .wsis-placeholder p {
-            color: #505953;
+            color: #56616c;
             margin-bottom: 0.65rem;
         }
         .wsis-mini {
             font-size: 0.86rem;
-            color: #6b726d;
+            color: #66717d;
         }
         .wsis-section-space {
             padding-top: 0.15rem;
         }
         .wsis-map-shell {
-            border: 1px solid rgba(90, 101, 100, 0.18);
+            border: 1px solid rgba(85, 119, 255, 0.14);
             border-radius: 22px;
-            background: linear-gradient(180deg, rgba(250,248,243,0.92) 0%, rgba(245,248,246,0.9) 100%);
+            background: rgba(255,255,255,0.78);
+            box-shadow: 0 16px 40px rgba(23, 33, 43, 0.06);
             padding: 0.85rem;
         }
         .wsis-tray {
-            border: 1px solid rgba(84, 96, 97, 0.2);
+            border: 1px solid rgba(18, 165, 148, 0.18);
             border-radius: 18px;
-            background: rgba(255,255,255,0.7);
+            background: rgba(255,255,255,0.82);
             padding: 0.8rem;
         }
         .wsis-tray-compact {
-            border: 1px solid rgba(84, 96, 97, 0.18);
+            border: 1px solid rgba(85, 119, 255, 0.16);
             border-radius: 16px;
-            background: rgba(248, 247, 242, 0.94);
+            background: rgba(248, 252, 255, 0.94);
             padding: 0.7rem 0.8rem;
             margin-top: 0.55rem;
         }
         .wsis-state-bar {
-            border: 1px solid rgba(84, 96, 97, 0.14);
+            border: 1px solid rgba(18, 165, 148, 0.14);
             border-radius: 16px;
-            background: rgba(255, 255, 255, 0.72);
+            background: rgba(255, 255, 255, 0.82);
             padding: 0.75rem 0.85rem;
             margin-bottom: 0.7rem;
         }
         .wsis-selected-callout {
-            border: 1px solid rgba(185, 134, 82, 0.28);
-            background: linear-gradient(135deg, rgba(249, 243, 232, 0.95) 0%, rgba(247, 250, 248, 0.9) 100%);
+            border: 1px solid rgba(255, 122, 107, 0.28);
+            background: linear-gradient(135deg, rgba(255, 240, 184, 0.72), rgba(232, 244, 255, 0.84));
             border-radius: 16px;
             padding: 0.8rem;
             margin-bottom: 0.8rem;
+        }
+        .wsis-decision-cta {
+            align-items: center;
+            background: rgba(255,255,255,0.82);
+            border: 1px solid rgba(18, 165, 148, 0.18);
+            border-radius: 18px;
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            margin: 0.75rem 0 0.25rem;
+            padding: 0.85rem 1rem;
+        }
+        .wsis-decision-cta strong {
+            color: #17212b;
+        }
+        .wsis-decision-cta span {
+            color: #66717d;
+            display: block;
+            font-size: 0.9rem;
+        }
+        .wsis-compact-card {
+            background: rgba(255,255,255,0.82);
+            border: 1px solid rgba(18, 165, 148, 0.18);
+            border-radius: 18px;
+            box-shadow: 0 14px 34px rgba(23, 33, 43, 0.06);
+            margin-bottom: 0.6rem;
+            padding: 0.9rem;
+        }
+        .wsis-card-rank {
+            color: #66717d;
+            font-size: 0.78rem;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+        .wsis-card-title {
+            color: #17212b;
+            font-size: clamp(1.35rem, 2.4vw, 2rem);
+            font-weight: 850;
+            line-height: 1.08;
+            margin: 0.18rem 0 0.55rem;
+        }
+        .wsis-stat-row {
+            display: grid;
+            gap: 0.5rem;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            margin: 0.7rem 0;
+        }
+        .wsis-stat {
+            background: #f8fcff;
+            border: 1px solid rgba(85, 119, 255, 0.12);
+            border-radius: 12px;
+            padding: 0.55rem 0.6rem;
+        }
+        .wsis-stat-label {
+            color: #66717d;
+            font-size: 0.68rem;
+            font-weight: 850;
+            text-transform: uppercase;
+        }
+        .wsis-stat-value {
+            color: #17212b;
+            font-size: 1.05rem;
+            font-weight: 850;
+            margin-top: 0.08rem;
+        }
+        .wsis-card-copy {
+            color: #26323d;
+            font-size: 0.94rem;
+            line-height: 1.45;
+            margin: 0.55rem 0 0;
+        }
+        .wsis-muted-copy {
+            color: #66717d;
+            font-size: 0.88rem;
+            line-height: 1.45;
+            margin-top: 0.35rem;
+        }
+        .wsis-side-note {
+            color: #66717d;
+            font-size: 0.94rem;
+            line-height: 1.5;
+            margin: 0.4rem 0 0.65rem;
+        }
+        div.stButton > button,
+        div[data-testid="stBaseButton-secondary"],
+        div[data-testid="stPopover"] button,
+        div[data-testid="stPageLink"] a {
+            background: #ffffff !important;
+            border: 1px solid rgba(18, 165, 148, 0.28) !important;
+            border-radius: 999px !important;
+            color: #12322f !important;
+            font-weight: 800 !important;
+            line-height: 1.15 !important;
+            min-height: 2.75rem !important;
+            overflow-wrap: normal !important;
+            white-space: nowrap !important;
+        }
+        div.stButton > button:disabled {
+            background: #f3f7f8 !important;
+            color: #70808b !important;
+            opacity: 1 !important;
+        }
+        div[data-testid="stPopover"] button p,
+        div.stButton > button p {
+            color: inherit !important;
+            overflow-wrap: normal !important;
+            white-space: nowrap !important;
+        }
+        @media (max-width: 720px) {
+            .block-container {
+                padding-left: 0.85rem;
+                padding-right: 0.85rem;
+            }
+            .wsis-hero {
+                border-radius: 18px;
+                padding: 0.95rem;
+            }
+            .wsis-hero h1 {
+                font-size: clamp(1.85rem, 10vw, 2.45rem);
+                line-height: 1.02;
+            }
+            .wsis-hero p {
+                font-size: 0.95rem;
+            }
+            .wsis-chip-row {
+                gap: 0.38rem;
+            }
+            .wsis-chip {
+                max-width: 100%;
+                overflow-wrap: anywhere;
+                padding: 0.34rem 0.58rem;
+            }
+            .wsis-note {
+                padding-left: 0.6rem;
+            }
+            .wsis-map-shell {
+                border-radius: 16px;
+                padding: 0.55rem;
+            }
+            .wsis-tray,
+            .wsis-tray-compact,
+            .wsis-state-bar,
+            .wsis-selected-callout,
+            .wsis-decision-cta {
+                border-radius: 14px;
+                padding: 0.7rem;
+            }
+            .wsis-tray-compact {
+                margin-top: 0.45rem;
+            }
+            .wsis-placeholder {
+                min-height: 0;
+                padding: 0.85rem;
+            }
+            .wsis-decision-cta {
+                align-items: stretch;
+                flex-direction: column;
+                gap: 0.65rem;
+            }
+            .wsis-stat-row {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+            div[data-testid="stButton"] button,
+            div[data-testid="stBaseButton-secondary"] button,
+            div[data-testid="stPopover"] button {
+                min-height: 2.75rem;
+                white-space: nowrap;
+                line-height: 1.18;
+            }
+            div[data-testid="stMetric"] {
+                overflow-wrap: anywhere;
+            }
+            div[data-testid="stPlotlyChart"] {
+                max-width: 100%;
+                overflow: hidden;
+            }
+            div[data-testid="stPlotlyChart"] .js-plotly-plot,
+            div[data-testid="stPlotlyChart"] .plot-container,
+            div[data-testid="stPlotlyChart"] .svg-container {
+                height: 390px !important;
+                min-height: 390px !important;
+            }
+            div[data-testid="stPlotlyChart"] .main-svg {
+                height: 390px !important;
+                max-width: 100% !important;
+            }
+        }
+        @media (max-width: 390px) {
+            .block-container {
+                padding-left: 0.7rem;
+                padding-right: 0.7rem;
+            }
+            .wsis-hero {
+                padding: 0.85rem;
+            }
+            .wsis-map-shell {
+                padding: 0.45rem;
+            }
+            div[data-testid="stPlotlyChart"] .js-plotly-plot,
+            div[data-testid="stPlotlyChart"] .plot-container,
+            div[data-testid="stPlotlyChart"] .svg-container,
+            div[data-testid="stPlotlyChart"] .main-svg {
+                height: 345px !important;
+                min-height: 345px !important;
+            }
         }
         </style>
         """,
@@ -247,6 +459,20 @@ def placeholder_card(title: str, body: str, footer: str) -> None:
         """,
         unsafe_allow_html=True,
     )
+
+
+def compact_stats_html(items: list[tuple[str, str]]) -> str:
+    cells = []
+    for label, value in items[:3]:
+        cells.append(
+            f"""
+            <div class="wsis-stat">
+              <div class="wsis-stat-label">{html.escape(label)}</div>
+              <div class="wsis-stat-value">{html.escape(value)}</div>
+            </div>
+            """
+        )
+    return '<div class="wsis-stat-row">' + "".join(cells) + "</div>"
 
 
 def open_profile(slug: str) -> None:
@@ -364,11 +590,20 @@ def build_map(
             locationmode="USA-states",
             text=state_frame["state"],
             customdata=state_frame[["top_city", "city_count"]],
-            colorscale="YlGnBu",
+            colorscale=[
+                [0.0, "#fff0b8"],
+                [0.42, "#8ee6d6"],
+                [0.72, "#5bb6ff"],
+                [1.0, "#7d5fff"],
+            ],
             zmin=0,
             zmax=10,
             showscale=True,
-            colorbar={"title": "Best places to start"},
+            colorbar={
+                "title": "Start",
+                "len": 0.68,
+                "thickness": 14,
+            },
             marker_line_color="rgba(255,255,255,0.92)",
             marker_line_width=1.35,
             hovertemplate=(
@@ -418,7 +653,12 @@ def build_map(
             marker={
                 "size": [base_marker_size + (score * 1.1) for score in city_frame["start_score"]],
                 "color": city_frame["start_score"],
-                "colorscale": "YlGnBu",
+                "colorscale": [
+                    [0.0, "#ffcf70"],
+                    [0.45, "#12a594"],
+                    [0.75, "#5577ff"],
+                    [1.0, "#ff7a6b"],
+                ],
                 "cmin": 0,
                 "cmax": 10,
                 "opacity": 0.92,
@@ -456,7 +696,11 @@ def build_map(
         height=640,
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
         clickmode="event+select",
+        font={"color": "#17212b", "family": "Plus Jakarta Sans, Arial, sans-serif"},
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="rgba(0,0,0,0)",
         showlegend=False,
+        template="plotly_white",
     )
     figure.update_geos(
         scope="usa",
@@ -478,27 +722,20 @@ def build_map(
 
 def render_map_state_bar(detail: CityDetail | None, compare_details: list[CityDetail], visible_count: int) -> None:
     st.markdown('<div class="wsis-state-bar">', unsafe_allow_html=True)
-    columns = st.columns([1.5, 1.2, 0.8, 0.8])
+    columns = st.columns([1.7, 1.1, 1.1])
     stage_title, stage_body = interaction_stage_copy(detail, compare_details)
     with columns[0]:
-        st.caption("Inspection state")
         st.write(stage_title)
         st.caption(stage_body)
     with columns[1]:
-        st.caption("Map layers")
-        chips = [f"{visible_count} cities visible"]
-        chips.append("State starter score")
-        chips.append("County lines")
+        chips = [f"{visible_count} visible", "Starter score"]
         if compare_details:
-            chips.append(f"{len(compare_details)} in compare tray")
+            chips.append(f"{len(compare_details)} compared")
         render_badges(chips)
     with columns[2]:
-        st.caption("Selection")
         if st.button("Clear selection", key="map_clear_selection", width="stretch", disabled=detail is None):
             clear_selected_city()
             st.rerun()
-    with columns[3]:
-        st.caption("Reset")
         if st.button("Reset discovery", key="map_reset_discovery", width="stretch"):
             reset_discovery_tray()
             st.rerun()
@@ -507,18 +744,15 @@ def render_map_state_bar(detail: CityDetail | None, compare_details: list[CityDe
 
 def render_filter_tray() -> None:
     st.markdown('<div class="wsis-tray-compact">', unsafe_allow_html=True)
-    tray_columns = st.columns([1.2, 1.4, 0.9])
+    tray_columns = st.columns([1.1, 1.4, 0.9])
     with tray_columns[0]:
-        st.caption("Filter tray")
         st.selectbox("Region", ["All", "South", "West", "Midwest", "Northeast"], key="home_region")
     with tray_columns[1]:
-        st.caption("Active quick filters")
         if st.session_state["home_selected_filters"]:
             render_badges(st.session_state["home_selected_filters"])
         else:
-            st.caption("No quick filters active yet.")
+            st.caption("No quick filters")
     with tray_columns[2]:
-        st.caption("Controls")
         with st.popover("Adjust filters"):
             st.multiselect(
                 "Quick filters",
@@ -553,12 +787,13 @@ def render_filter_tray() -> None:
 
 
 def render_side_panel_intro(weights: ScoreWeights, visible_count: int, total_count: int) -> None:
-    st.markdown("### Explore the map")
-    st.caption("Read the state shading first, then click a city when something looks worth a closer inspection.")
+    st.markdown("### Explore")
+    st.markdown(
+        '<div class="wsis-side-note">Click a city for the short read. Use Decision when you need a yes/no verdict.</div>',
+        unsafe_allow_html=True,
+    )
     render_badges([f"{visible_count} visible", f"{total_count} tracked"])
-    st.write("County lines give geographic context, state color shows the starter score, and city labels tighten as you move from discovery into inspection.")
     st.caption(ranking_explanation(weights))
-    st.info("Ranked discovery currently uses only source-backed affordability, job market, safety, and climate data.")
 
 
 def render_selected_compare_links(compare_details: list[CityDetail]) -> None:
@@ -705,38 +940,44 @@ def render_top_match_card(detail: CityDetail, rank: int, available_slugs: set[st
     compare_slugs = current_compare_selection(available_slugs)
     compare_label = "Remove from Compare" if detail.summary.slug in compare_slugs else "Compare"
     is_selected = st.session_state.get("selected_city_slug", "") == detail.summary.slug
+    status_labels = []
+    if is_selected:
+        status_labels.append("Active")
+    if detail.summary.slug in compare_slugs:
+        status_labels.append("Comparing")
+    badges = status_labels + badge_labels(detail)[:2]
+    stats = [
+        ("WSIS", f"{detail.summary.overall_score:.1f}"),
+        ("Start", f"{best_places_to_start_score(detail, current_weights()):.1f}"),
+        ("Rent", f"${detail.metrics.median_rent:,.0f}"),
+    ]
+    badge_html = "".join(f'<span class="wsis-chip">{html.escape(label)}</span>' for label in badges)
+    st.markdown(
+        f"""
+        <div class="wsis-compact-card">
+          <div class="wsis-card-rank">Top match #{rank}</div>
+          <div class="wsis-card-title">{html.escape(detail.summary.name)}, {html.escape(detail.summary.state_code)}</div>
+          <div class="wsis-chip-row">{badge_html}</div>
+          {compact_stats_html(stats)}
+          <div class="wsis-card-copy">{html.escape(detail.summary.headline)}</div>
+          <div class="wsis-muted-copy">{html.escape(city_reason_snippet(detail, current_weights()))}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
-    with st.container(border=True):
-        st.caption(f"Top match #{rank}")
-        st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
-        status_labels = []
-        if is_selected:
-            status_labels.append("Active inspection")
-        if detail.summary.slug in compare_slugs:
-            status_labels.append("In compare tray")
-        if status_labels:
-            render_badges(status_labels)
-        metric_columns = st.columns(2)
-        metric_columns[0].metric("WSIS", detail.summary.overall_score)
-        metric_columns[1].metric("Start", f"{best_places_to_start_score(detail, current_weights()):.1f}")
-        render_badges(badge_labels(detail))
-        st.write(detail.summary.headline)
-        st.caption(city_reason_snippet(detail, current_weights()))
-        st.caption("Inspect here first, then move deeper into the profile or compare tray.")
-
-        action_columns = st.columns(3)
-        with action_columns[0]:
-            inspect_label = "Inspecting" if is_selected else "Inspect"
-            if st.button(inspect_label, key=f"card_detail_{detail.summary.slug}", width="stretch", disabled=is_selected):
-                update_selected_city(detail.summary.slug)
-                st.rerun()
-        with action_columns[1]:
-            if st.button("Profile", key=f"card_profile_{detail.summary.slug}", width="stretch"):
-                open_profile(detail.summary.slug)
-        with action_columns[2]:
-            if st.button(compare_label, key=f"card_compare_{detail.summary.slug}", width="stretch"):
-                toggle_compare_city(detail.summary.slug, available_slugs)
-                st.rerun()
+    action_columns = st.columns(2)
+    with action_columns[0]:
+        inspect_label = "Inspecting" if is_selected else "Inspect"
+        if st.button(inspect_label, key=f"card_detail_{detail.summary.slug}", width="stretch", disabled=is_selected):
+            update_selected_city(detail.summary.slug)
+            st.rerun()
+    with action_columns[1]:
+        if st.button("Profile", key=f"card_profile_{detail.summary.slug}", width="stretch"):
+            open_profile(detail.summary.slug)
+    if st.button(compare_label, key=f"card_compare_{detail.summary.slug}", width="stretch"):
+        toggle_compare_city(detail.summary.slug, available_slugs)
+        st.rerun()
 
 
 inject_styles()
@@ -790,7 +1031,6 @@ st.markdown(
       <h1>Explore where you could move before you commit to the wrong city.</h1>
       <p>Browse the market, inspect one city at a time, and narrow to a few realistic options before deeper research.</p>
       <div class="wsis-chip-row">
-        <span class="wsis-chip">Source: {html.escape(source)}</span>
         <span class="wsis-chip">{len(filtered_details)} cities in play</span>
         <span class="wsis-chip">Top score: {top_detail.summary.name}, {top_detail.summary.state_code}</span>
         <span class="wsis-chip">Average fit: {score_average}</span>
@@ -800,6 +1040,19 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+st.markdown(
+    """
+    <div class="wsis-decision-cta">
+      <div>
+        <strong>Need a verdict instead of browsing?</strong>
+        <span>Use the Decision workspace for offer salary, rent ceiling, and Sarah's evidence checks.</span>
+      </div>
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+st.page_link("pages/0_Decision.py", label="Open Decision workspace")
 
 render_section_header(
     "Discovery Map",
@@ -842,89 +1095,47 @@ with main_columns[1]:
 render_section_header(
     "Top Matches",
     "Shortlist",
-    "Shortlist cards help you move from broad exploration to a few plausible options without losing the map-first feel.",
+    "Three candidates, enough signal to choose what deserves inspection.",
 )
 top_cards = st.columns(min(3, len(filtered_details)))
 for index, detail in enumerate(filtered_details[:3]):
     with top_cards[index]:
         render_top_match_card(detail, index + 1, available_slugs)
 
-render_section_header(
-    "Why These Cities",
-    "Readable logic",
-    "Translate the ranking model into product language so the shortlist feels understandable instead of opaque.",
-)
-reason_columns = st.columns([1.05, 1.2])
-with reason_columns[0]:
-    with st.container(border=True):
-        st.markdown("### Why the ranking looks like this")
-        st.write(ranking_explanation(weights))
-        st.caption(top_detail.summary.score_context.explanation)
-        focus_detail = selected_detail or top_detail
-        strongest = strongest_dimensions(focus_detail.summary)[:3]
-        st.caption(f"{focus_detail.summary.name} currently leads on " + ", ".join(label.lower() for label, _ in strongest) + ".")
-        for label, score in strongest:
-            st.markdown(f"**{label}**")
-            st.progress(min(score / 10, 1.0))
-            st.caption(f"{label} is currently scoring {score}/10.")
-with reason_columns[1]:
-    with st.container(border=True):
-        st.markdown("### City-level read")
-        for detail in filtered_details[:3]:
+with st.expander("Why these cities surfaced"):
+    focus_detail = selected_detail or top_detail
+    strongest = strongest_dimensions(focus_detail.summary)[:3]
+    st.write(ranking_explanation(weights))
+    st.caption(
+        f"{focus_detail.summary.name} is strongest on "
+        + ", ".join(label.lower() for label, _ in strongest)
+        + "."
+    )
+    reason_columns = st.columns(min(3, len(filtered_details)))
+    for index, detail in enumerate(filtered_details[:3]):
+        with reason_columns[index]:
             st.markdown(f"**{detail.summary.name}, {detail.summary.state_code}**")
-            st.write(city_reason_snippet(detail, weights))
             render_badges(badge_labels(detail))
-            st.caption(detail.summary.headline)
+            st.caption(city_reason_snippet(detail, weights))
 
-render_section_header(
-    "Social Reality",
-    "What it actually feels like",
-    "Keep the social read lightweight but intentional: sentiment score, a couple of themes, and a short excerpt that feels more human than a pure metric. This section does not affect the ranked score.",
-)
-social_columns = st.columns(3)
-for index, column in enumerate(social_columns):
-    with column:
-        if index < len(filtered_details[:3]):
-            detail = filtered_details[index]
-            with st.container(border=True):
-                st.markdown(f"### {detail.summary.name}, {detail.summary.state_code}")
-                st.metric("Sentiment", detail.reddit_panel.sentiment_score)
-                render_badges(social_themes(detail))
-                st.caption(
-                    f"{detail.reddit_panel.posts_analyzed} posts analyzed | {detail.reddit_panel.lookback_days}-day lookback"
-                )
-                st.caption("Context only for MVP ranking.")
-                st.write(detail.reddit_panel.summary)
-                st.markdown(f"**{social_preview_title(detail)}**")
-                st.write(social_excerpt(detail))
-        else:
-            placeholder_card(
-                "Social preview loading",
-                "As richer city-level social summaries arrive, this area can expand into a fuller what-it's-like panel directly on Home.",
-                "Current version intentionally stays lightweight and structured.",
+with st.expander("Social context"):
+    social_columns = st.columns(min(3, len(filtered_details)))
+    for index, detail in enumerate(filtered_details[:3]):
+        with social_columns[index]:
+            stats = [
+                ("Sentiment", f"{detail.reddit_panel.sentiment_score:.1f}"),
+                ("Posts", str(detail.reddit_panel.posts_analyzed)),
+                ("Days", str(detail.reddit_panel.lookback_days)),
+            ]
+            st.markdown(
+                f"""
+                <div class="wsis-compact-card">
+                  <div class="wsis-card-title">{html.escape(detail.summary.name)}, {html.escape(detail.summary.state_code)}</div>
+                  {compact_stats_html(stats)}
+                  <div class="wsis-chip-row">{"".join(f'<span class="wsis-chip">{html.escape(label)}</span>' for label in social_themes(detail))}</div>
+                  <div class="wsis-card-copy">{html.escape(detail.reddit_panel.summary)}</div>
+                  <div class="wsis-muted-copy">Context only. Social sentiment does not change the rank.</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
-
-render_section_header(
-    "Future Watchlist",
-    "Coming soon",
-    "These placeholders make the future product shape obvious without pretending persistence or auth already exist.",
-)
-watchlist_columns = st.columns(3)
-with watchlist_columns[0]:
-    placeholder_card(
-        "Saved cities",
-        "Build a personal shortlist and return to the same markets after your priorities change.",
-        "Placeholder for watchlist persistence and saved city actions.",
-    )
-with watchlist_columns[1]:
-    placeholder_card(
-        "Alerts and refreshes",
-        "Track when a city's score meaningfully changes because rent, unemployment, or social sentiment moves.",
-        "Placeholder for refresh jobs and score-change monitoring.",
-    )
-with watchlist_columns[2]:
-    placeholder_card(
-        "Weight presets",
-        "Save modes like budget-first or strong-jobs so discovery feels reusable instead of one-off.",
-        "Placeholder for saved preference profiles and onboarding flows.",
-    )

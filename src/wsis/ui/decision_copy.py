@@ -137,8 +137,16 @@ def evidence_issues(decision: RelocationDecision) -> tuple[EvidenceIssue, ...]:
     return tuple(deduped.values())
 
 
-def rent_match_count(details: Iterable[CityDetail], max_rent: float) -> int:
-    return sum(1 for detail in details if detail.metrics.median_rent <= max_rent)
+def rent_match_count(
+    details: Iterable[CityDetail],
+    max_rent: float,
+    baseline_slug: str | None = None,
+) -> int:
+    return sum(
+        1
+        for detail in details
+        if detail.summary.slug != baseline_slug and detail.metrics.median_rent <= max_rent
+    )
 
 
 def build_decision_summary(
@@ -168,7 +176,7 @@ def build_decision_summary(
     )
     verdict = verdict_kind(decision.verdict)
     headline, subhead = verdict_copy(verdict, candidate)
-    no_rent_match = rent_match_count(details, max_rent) == 0
+    no_rent_match = rent_match_count(details, max_rent, baseline.summary.slug) == 0
     return DecisionSummary(
         verdict=verdict,
         headline=headline,
