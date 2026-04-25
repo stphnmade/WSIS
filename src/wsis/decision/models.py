@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Literal
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
@@ -12,6 +12,7 @@ class DecisionInputs(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True)
 
     baseline_city_slug: str = Field(min_length=1)
+    candidate_city_slugs: list[Annotated[str, Field(min_length=1)]] | None = None
     offer_salary: float = Field(gt=0)
     max_rent: float = Field(gt=0)
     require_warmer_than_baseline: bool = False

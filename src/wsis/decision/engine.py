@@ -29,7 +29,7 @@ def build_relocation_decisions(
     if baseline is None:
         raise ValueError(f"Baseline city not found: {inputs.baseline_city_slug}")
 
-    candidates = [city for city in metrics if city.slug != inputs.baseline_city_slug]
+    candidates = _candidate_cities(metrics, by_slug, inputs)
     count_for_flags = dataset_count if dataset_count is not None else len(metrics)
     decisions = [
         _build_city_decision(
@@ -48,6 +48,27 @@ def build_relocation_decisions(
         candidate_count=len(candidates),
         decisions=decisions,
     )
+
+
+def _candidate_cities(
+    metrics: list[CityMetrics],
+    by_slug: dict[str, CityMetrics],
+    inputs: DecisionInputs,
+) -> list[CityMetrics]:
+    if inputs.candidate_city_slugs is None:
+        return [city for city in metrics if city.slug != inputs.baseline_city_slug]
+
+    requested_slugs = list(dict.fromkeys(inputs.candidate_city_slugs))
+    if inputs.baseline_city_slug in requested_slugs:
+        raise ValueError(
+            f"Baseline city cannot also be a candidate: {inputs.baseline_city_slug}"
+        )
+
+    missing = [slug for slug in requested_slugs if slug not in by_slug]
+    if missing:
+        raise ValueError(f"Candidate cities not found: {', '.join(missing)}")
+
+    return [by_slug[slug] for slug in requested_slugs]
 
 
 def _as_metrics(city: CityMetrics | CityDetail) -> CityMetrics:

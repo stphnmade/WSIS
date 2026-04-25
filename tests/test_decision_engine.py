@@ -20,6 +20,7 @@ def _city(
     median_rent: float = 1800,
     avg_temp_f: float = 70,
     social_confidence: str = "source_backed",
+    safety_source_date: str = "2026-01-01",
     job_confidence: str = "source_backed",
     job_source_date: str = "2026-01-01",
 ) -> CityMetrics:
@@ -52,7 +53,7 @@ def _city(
         social_sentiment_raw=0.2,
         affordability_trust=_trust(),
         job_market_trust=_trust(job_confidence, job_source_date),
-        safety_trust=_trust(),
+        safety_trust=_trust(source_date=safety_source_date),
         climate_trust=_trust(),
         social_trust=_trust(social_confidence),
         is_mvp_eligible=True,
@@ -85,6 +86,31 @@ def test_david_hard_rent_target_fails_when_no_candidate_meets_it() -> None:
     assert all("median rent vs $2,000 max rent" in decision.constraints[0].evidence for decision in run.decisions)
 
 
+def test_candidate_failing_max_rent_cannot_receive_take_it() -> None:
+    baseline = _city("chicago-il", median_rent=980, avg_temp_f=51)
+    candidate = _city("warm-city", median_rent=1100, avg_temp_f=70)
+    inputs = DecisionInputs(
+        baseline_city_slug="chicago-il",
+        candidate_city_slugs=["warm-city"],
+        offer_salary=70000,
+        max_rent=980,
+        require_warmer_than_baseline=True,
+    )
+
+    run = build_relocation_decisions(
+        [baseline, candidate],
+        inputs,
+        dataset_count=20,
+        as_of=date(2026, 4, 24),
+    )
+
+    decision = run.decisions[0]
+    rent_check = next(check for check in decision.constraints if check.key == "max_rent")
+    assert rent_check.passed is False
+    assert decision.verdict != "Take it"
+    assert decision.verdict == "Keep looking"
+
+
 def test_sarah_flags_seeded_proxy_and_limited_data() -> None:
     baseline = _city("baseline-tx", median_rent=1500, avg_temp_f=62)
     candidate = _city(
@@ -92,6 +118,7 @@ def test_sarah_flags_seeded_proxy_and_limited_data() -> None:
         median_rent=1700,
         avg_temp_f=70,
         social_confidence="seeded",
+        safety_source_date="2023-01-01",
         job_confidence="estimated",
         job_source_date="unknown",
     )
@@ -117,4 +144,28 @@ def test_sarah_flags_seeded_proxy_and_limited_data() -> None:
     assert "seeded_social" in flag_keys
     assert "proxy_job_market" in flag_keys
     assert "proxy_job_growth" in flag_keys
+    assert "stale_safety_source_date" in flag_keys
     assert "unknown_job_market_source_date" in flag_keys
+    assert "unknown_job_growth_date" in flag_keys
+
+
+def test_decision_engine_limits_run_to_requested_candidates() -> None:
+    baseline = _city("chicago-il")
+    requested = _city("tampa-fl")
+    omitted = _city("denver-co")
+    inputs = DecisionInputs(
+        baseline_city_slug="chicago-il",
+        candidate_city_slugs=["tampa-fl"],
+        offer_salary=70000,
+        max_rent=980,
+        require_warmer_than_baseline=True,
+    )
+
+    run = build_relocation_decisions(
+        [baseline, requested, omitted],
+        inputs,
+        dataset_count=20,
+    )
+
+    assert run.candidate_count == 1
+    assert [decision.city_slug for decision in run.decisions] == ["tampa-fl"]

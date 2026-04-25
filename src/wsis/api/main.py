@@ -3,8 +3,14 @@ from __future__ import annotations
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 
+from wsis.decision import DecisionInputs, DecisionRun
 from wsis.domain.models import CityDetail, CitySummary, ScoreWeights
 from wsis.services.city_service import CityNotFoundError, CityService, get_city_service
+from wsis.services.decision_service import (
+    DecisionRequestError,
+    DecisionService,
+    get_decision_service,
+)
 
 
 def _score_weights(
@@ -80,3 +86,14 @@ def compare_cities(
         return city_service.compare_cities(slugs, weights)
     except CityNotFoundError as error:
         raise HTTPException(status_code=404, detail=f"City not found: {error}") from error
+
+
+@app.post("/api/v1/decisions", response_model=DecisionRun)
+def run_decision(
+    inputs: DecisionInputs,
+    decision_service: DecisionService = Depends(get_decision_service),
+) -> DecisionRun:
+    try:
+        return decision_service.run_decision(inputs)
+    except DecisionRequestError as error:
+        raise HTTPException(status_code=404, detail=str(error)) from error

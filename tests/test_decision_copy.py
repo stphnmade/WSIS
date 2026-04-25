@@ -150,9 +150,10 @@ def test_decision_keeps_looking_when_candidate_exceeds_rent_ceiling() -> None:
     assert summary.verdict == "keep_looking"
     assert summary.no_rent_match is True
     assert any(issue.flag == "seeded" for issue in summary.evidence_issues)
+    assert next(check for check in summary.checks if check.label == "Rent target").status == "fail"
 
 
-def test_decision_can_pass_current_hard_checks_but_still_show_missing_evidence() -> None:
+def test_decision_uses_engine_flags_for_risky_verdict() -> None:
     chicago = _detail("chicago-il", "Chicago", 1680, 51)
     candidate = _detail("pittsburgh-pa", "Pittsburgh", 900, 58)
 
@@ -165,9 +166,32 @@ def test_decision_can_pass_current_hard_checks_but_still_show_missing_evidence()
         require_warmer=True,
     )
 
-    assert summary.verdict == "take"
+    assert summary.verdict == "risky"
     assert summary.no_rent_match is False
-    assert {issue.title for issue in summary.evidence_issues} >= {
-        "Civic-fit proxy",
-        "Downtown-vibe proxy",
-    }
+    assert "Sarah" not in summary.headline
+    assert all(check.status == "pass" for check in summary.checks)
+    assert any(issue.title == "Seeded social" for issue in summary.evidence_issues)
+    assert "$900 median rent" in summary.proof_points
+
+
+def test_civic_and_downtown_toggles_add_failed_decision_constraints() -> None:
+    chicago = _detail("chicago-il", "Chicago", 1680, 51, reddit_confidence="source_backed")
+    candidate = _detail("pittsburgh-pa", "Pittsburgh", 900, 58, reddit_confidence="source_backed")
+
+    summary = build_decision_summary(
+        candidate=candidate,
+        baseline=chicago,
+        all_details=[chicago, candidate],
+        offer_salary=70_000,
+        max_rent=980,
+        require_warmer=True,
+        require_civic_fit=True,
+        require_downtown_fit=True,
+    )
+
+    checks_by_label = {check.label: check for check in summary.checks}
+
+    assert summary.verdict == "keep_looking"
+    assert checks_by_label["Civic fit"].status == "fail"
+    assert checks_by_label["Civic fit"].value == "Not wired yet"
+    assert checks_by_label["Downtown fit"].status == "fail"

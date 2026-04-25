@@ -11,7 +11,6 @@ from wsis.ui.decision_copy import (
     DecisionSummary,
     build_decision_summary,
     city_label,
-    money,
     signed_money,
 )
 
@@ -48,6 +47,9 @@ def inject_styles() -> None:
     st.markdown(
         """
         <style>
+        div[data-testid="stHorizontalBlock"] {
+            gap: 0.75rem;
+        }
         .decision-step {
             color: #5f6f69;
             font-size: 0.78rem;
@@ -74,7 +76,7 @@ def inject_styles() -> None:
             color: #4d5b56;
             font-size: 0.92rem;
         }
-        .check-card, .evidence-card, .baseline-card {
+        .check-card, .evidence-card, .context-card {
             border: 1px solid rgba(82, 96, 91, 0.16);
             border-radius: 8px;
             padding: 0.72rem 0.8rem;
@@ -87,7 +89,7 @@ def inject_styles() -> None:
             font-weight: 700;
             text-transform: uppercase;
         }
-        .check-card strong, .evidence-card strong, .baseline-card strong {
+        .check-card strong, .evidence-card strong, .context-card strong {
             display: block;
             color: #202c28;
             margin-top: 0.08rem;
@@ -106,6 +108,14 @@ def inject_styles() -> None:
             padding-left: 0.7rem;
             font-size: 0.9rem;
             margin: 0.4rem 0 0.75rem;
+        }
+        @media (max-width: 640px) {
+            .verdict, .check-card, .evidence-card, .context-card {
+                padding: 0.7rem;
+            }
+            .verdict h3 {
+                font-size: 1.05rem;
+            }
         }
         </style>
         """,
@@ -154,7 +164,7 @@ def render_check_cards(summary: DecisionSummary) -> None:
         )
 
 
-def render_baseline(candidate: CityDetail, baseline: CityDetail, source: str) -> None:
+def render_context(candidate: CityDetail, baseline: CityDetail, source: str) -> None:
     rent_delta = candidate.metrics.median_rent - baseline.metrics.median_rent
     temp_detail = "Missing temperature"
     if candidate.metrics.avg_temp_f is not None and baseline.metrics.avg_temp_f is not None:
@@ -163,11 +173,11 @@ def render_baseline(candidate: CityDetail, baseline: CityDetail, source: str) ->
 
     st.markdown(
         f"""
-        <div class="baseline-card">
-          <div class="card-kicker">Baseline</div>
-          <strong>{html.escape(city_label(baseline))} stays in the comparison.</strong>
+        <div class="context-card">
+          <div class="card-kicker">Context only</div>
+          <strong>Chicago baseline stays fixed.</strong>
           <div class="card-detail">
-            Candidate rent delta: {html.escape(signed_money(rent_delta))} / mo · {html.escape(temp_detail)}
+            {html.escape(city_label(candidate))}: {html.escape(signed_money(rent_delta))} / mo vs Chicago · {html.escape(temp_detail)}
           </div>
           <div class="card-detail">Data path: {html.escape(source)}</div>
         </div>
@@ -177,11 +187,24 @@ def render_baseline(candidate: CityDetail, baseline: CityDetail, source: str) ->
 
 
 def render_evidence(summary: DecisionSummary) -> None:
+    if not summary.evidence_issues:
+        st.markdown(
+            """
+            <div class="evidence-card">
+              <div class="card-kicker status-pass">Sarah</div>
+              <strong>No skeptic flags for this run.</strong>
+              <div class="card-detail">Still verify sources before acting on the offer.</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+        return
+
     for issue in summary.evidence_issues:
         st.markdown(
             f"""
             <div class="evidence-card">
-              <div class="card-kicker">{html.escape(issue.flag)}</div>
+              <div class="card-kicker">Sarah · {html.escape(issue.flag)}</div>
               <strong>{html.escape(issue.title)}</strong>
               <div class="card-detail">{html.escape(issue.detail)}</div>
             </div>
@@ -208,28 +231,35 @@ if not candidate_options:
 
 st.title("Decision")
 
-render_step("1. Situation")
-candidate_slug = st.selectbox(
-    "Candidate city",
-    [detail.summary.slug for detail in candidate_options],
-    index=0,
-    format_func=lambda slug: city_label(details_by_slug[slug]),
-)
-offer_salary = st.number_input(
-    "Offer salary",
-    min_value=0,
-    max_value=500_000,
-    value=DEFAULT_OFFER_SALARY,
-    step=2_500,
-)
-max_rent = st.number_input(
-    "Max rent",
-    min_value=0,
-    max_value=10_000,
-    value=DEFAULT_MAX_RENT,
-    step=50,
-)
-require_warmer = st.toggle("Must be warmer than Chicago", value=True)
+with st.container():
+    render_step("1. Situation")
+    st.caption("Baseline: Chicago, IL")
+    candidate_slug = st.selectbox(
+        "Candidate",
+        [detail.summary.slug for detail in candidate_options],
+        index=0,
+        format_func=lambda slug: city_label(details_by_slug[slug]),
+    )
+    left, right = st.columns(2)
+    with left:
+        offer_salary = st.number_input(
+            "Offer salary",
+            min_value=1,
+            max_value=500_000,
+            value=DEFAULT_OFFER_SALARY,
+            step=2_500,
+        )
+    with right:
+        max_rent = st.number_input(
+            "Max rent",
+            min_value=1,
+            max_value=10_000,
+            value=DEFAULT_MAX_RENT,
+            step=50,
+        )
+    require_warmer = st.toggle("Warmer than Chicago", value=True)
+    require_civic_fit = st.toggle("Civic fit required", value=False)
+    require_downtown_fit = st.toggle("Downtown fit required", value=False)
 
 candidate = details_by_slug[candidate_slug]
 decision = build_decision_summary(
@@ -239,12 +269,18 @@ decision = build_decision_summary(
     offer_salary=float(offer_salary),
     max_rent=float(max_rent),
     require_warmer=require_warmer,
+    require_civic_fit=require_civic_fit,
+    require_downtown_fit=require_downtown_fit,
 )
 
 render_step("2. Verdict")
 render_verdict(decision)
 render_check_cards(decision)
-render_baseline(candidate, baseline, source)
+render_context(candidate, baseline, source)
 
-render_step("3. Evidence")
+render_step("3. Sarah checks")
 render_evidence(decision)
+
+with st.expander("Evidence used"):
+    for point in decision.proof_points:
+        st.write(f"- {point}")

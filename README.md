@@ -1,31 +1,42 @@
 # WSIS
 
-WSIS (Where Should I Start) is a trust-first relocation exploration tool for recent grads and first-job movers in the United States.
+WSIS (Where Should I Start) is a trust-first relocation decision triage tool for recent grads and first-job movers in the United States.
 
-The current MVP helps users narrow a shortlist honestly. It does not claim to produce a definitive “best city” ranking.
+The current MVP helps users evaluate a concrete move, not browse a generic “best city” list. The product flow is `Situation -> Verdict -> Evidence -> Next Action`.
 
 ## MVP promise
 
-- Explore a balanced-middle city set with a map, profile view, and comparison flow
-- Rank cities only when affordability, job market, safety, and climate are source-backed
-- Show social sentiment as context only
+- Evaluate David's relocation situation against a baseline city, starting with Chicago
+- Apply hard constraints before any score or soft preference
+- Return a clear verdict: `Take the job`, `Viable but risky`, or `Keep looking`
+- Show evidence, skeptic notes, and next actions behind the verdict
+- Treat social sentiment as context only
 - Surface confidence and provenance so users can tell what is source-backed, estimated, seeded, or missing
 - Emit a machine-readable validation report on every dataset build
 
-## What the current score includes
+## Canonical users
 
-The ranked MVP score includes:
+- David is the decision user: an early-career mover evaluating a real offer, hard budget constraints, and soft preferences against a current city.
+- Sarah is the built-in skeptic and quality gate: every verdict must answer what evidence is strong, weak, stale, proxy-only, seeded, or missing.
+
+## What the decision engine includes
+
+The MVP decision engine may use:
 
 - Affordability
 - Job market
 - Safety
 - Climate
+- Civic-fit proxy when sourced and labeled
+- Downtown-vibe proxy when sourced and labeled
 
-The ranked MVP score does not include:
+The MVP decision engine does not use:
 
 - Social sentiment
+- Hardcoded civic leaning
+- Unlabeled proxy, seeded, stale, or missing evidence
 
-Social sentiment stays visible in the product as a seeded beta context panel and does not change rank order.
+Social sentiment stays visible in the product as a context panel and must not decide verdicts or rank order.
 
 ## Trust model
 
@@ -39,6 +50,13 @@ Confidence labels used across the dataset, API, and UI:
 The UI also surfaces source freshness from file dates so stale but still source-backed slices are visible as an honesty signal without changing the ranking policy.
 
 See [DATA_STANDARDS.md](/Users/steph/WSIS/DATA_STANDARDS.md:1) for the full policy.
+
+## Product guardrails
+
+- The decision engine is the source of truth for verdicts.
+- Hard constraints dominate aggregate scores.
+- Map-first browsing, generic ranking claims, radar-first comparison, and decisive Social Buzz are de-emphasized for MVP.
+- If evidence is insufficient, the product says what is missing and gives a next action instead of forcing confidence.
 
 ## Project structure
 
@@ -133,6 +151,7 @@ python3 -m pytest -q
 ## Reference docs
 
 - [PRD.md](/Users/steph/WSIS/PRD.md:1)
+- [MVP_REBUILD_SPEC.md](/Users/steph/WSIS/docs/product/MVP_REBUILD_SPEC.md:1)
 - [UX_SPEC.md](/Users/steph/WSIS/UX_SPEC.md:1)
 - [IMPLEMENTATION_PLAN.md](/Users/steph/WSIS/IMPLEMENTATION_PLAN.md:1)
 - [CITY_PROFILES_SCHEMA.md](/Users/steph/WSIS/CITY_PROFILES_SCHEMA.md:1)

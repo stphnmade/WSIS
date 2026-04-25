@@ -1,6 +1,6 @@
 # David API And Data Plan
 
-This plan defines the missing APIs and datasets needed for WSIS to serve User 0 (David) honestly.
+This plan defines the missing APIs and datasets needed for WSIS to serve User 0 (David) honestly as a relocation decision triage product.
 
 David's decision:
 
@@ -18,6 +18,18 @@ David's decision:
 - there is no independent civic-fit proxy
 - there is no downtown-vibe proxy
 - there is no decision verdict comparing a candidate city against Chicago
+- seeded, proxy, stale, and missing evidence are not yet consistently visible in the decision surface
+
+## Decision API target
+
+The MVP API should return one decision object shaped around:
+
+- Situation: offer, baseline city, candidate city, hard constraints, and soft preferences
+- Verdict: `Take the job`, `Viable but risky`, or `Keep looking`
+- Evidence: sourced values, confidence labels, freshness, and Sarah-style skeptic notes
+- Next Action: specific follow-up such as verify rent, negotiate salary, inspect commute, or reject the city
+
+The decision engine is the source of truth. UI components may summarize it, but must not recalculate or override verdicts.
 
 ## Must-have integrations
 
@@ -159,6 +171,11 @@ Needed checks:
 - civic-fit threshold
 - downtown-vibe minimum
 
+Rules:
+- hard constraints dominate aggregate scores
+- failed hard constraints must be visible in the verdict
+- insufficient evidence must produce a lower-confidence verdict or next action, not a hidden pass
+
 ### Verdict layer
 
 Needed outputs:
@@ -170,6 +187,16 @@ The app must also say:
 - when no city satisfies David's rent target
 - when a city is warmer but still unaffordable
 - when a city beats Chicago on some soft preferences but fails the core budget test
+- when civic fit is hardcoded, proxy-only, stale, missing, or otherwise not real evidence
+
+### Sarah quality gate
+
+Every verdict should include skeptic checks:
+- what evidence is source-backed
+- what evidence is seeded or proxy-only
+- what evidence is stale or missing
+- what assumption would most likely change the verdict
+- whether Social Buzz is being treated only as context
 
 ## Priority order
 
