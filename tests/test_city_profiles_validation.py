@@ -46,6 +46,13 @@ def _valid_frame() -> pd.DataFrame:
                 "job_growth_source": "jobs_sample",
                 "job_growth_source_date": "2026-04-20",
                 "job_growth_is_imputed": False,
+                "newgrad_job_post_count": 2,
+                "newgrad_job_board_count": 1,
+                "newgrad_job_city_page_url": "https://www.newgrad-jobs.com/entry-level-jobs/austin",
+                "newgrad_jobs_source": "newgrad_jobs_local_seed",
+                "newgrad_jobs_source_date": "2026-04-20",
+                "newgrad_jobs_confidence": "seeded",
+                "newgrad_jobs_is_imputed": True,
                 "violent_crime_per_100k": 420,
                 "safety_score_raw": 66,
                 "avg_temp_f": 69,
@@ -91,6 +98,7 @@ def _valid_frame() -> pd.DataFrame:
                 "has_reddit_data": True,
                 "has_cost_of_living_context": True,
                 "has_jobs_context": True,
+                "has_newgrad_jobs_context": True,
                 "headline": "Austin combines job resilience and positive social sentiment for early-career movers.",
                 "known_for": "south, 979,882 residents, Travis County",
             }
@@ -147,6 +155,7 @@ def test_validation_report_summarizes_coverage() -> None:
     assert report["filter_coverage"]["is_warm"] == 1
     assert report["source_coverage"]["cost_of_living_context"] == 1
     assert report["source_coverage"]["jobs_context"] == 1
+    assert report["source_coverage"]["newgrad_jobs_context"] == 1
 
 
 def test_validation_report_includes_exclusion_reasons() -> None:

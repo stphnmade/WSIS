@@ -87,6 +87,13 @@ class CityMetrics(BaseModel):
     job_growth_source: str = Field(min_length=1)
     job_growth_source_date: str = Field(min_length=1)
     job_growth_is_imputed: bool = False
+    newgrad_job_post_count: int = Field(default=0, ge=0)
+    newgrad_job_board_count: int = Field(default=0, ge=0)
+    newgrad_job_city_page_url: str = ""
+    newgrad_jobs_source: str = ""
+    newgrad_jobs_source_date: str = ""
+    newgrad_jobs_confidence: ConfidenceLabel = "seeded"
+    newgrad_jobs_is_imputed: bool = True
     unemployment_pct: float = Field(ge=0, le=100)
     violent_crime_per_100k: float | None = Field(default=None, ge=0)
     safety_score_raw: float = Field(ge=0, le=100)

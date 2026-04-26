@@ -27,6 +27,7 @@ FILTER_BOOLEAN_COLUMNS = (
     "is_affordable",
     "is_high_income",
     "is_strong_job_market",
+    "has_newgrad_jobs_context",
 )
 
 
@@ -208,6 +209,10 @@ def _source_file_status(
             "has_cost_of_living_context",
         ),
         "jobs_context": (source_samples_root / "jobs.csv", "has_jobs_context"),
+        "newgrad_jobs_context": (
+            source_samples_root / "newgrad_jobs.csv",
+            "has_newgrad_jobs_context",
+        ),
     }
     status: dict[str, dict[str, object]] = {}
     row_count = max(len(frame), 1)
@@ -289,6 +294,7 @@ def build_city_profiles_validation_report(
             "reddit": int(frame["has_reddit_data"].sum()),
             "cost_of_living_context": int(frame["has_cost_of_living_context"].sum()),
             "jobs_context": int(frame["has_jobs_context"].sum()),
+            "newgrad_jobs_context": int(frame["has_newgrad_jobs_context"].sum()),
         },
         "source_file_status": source_status,
         "stale_sources": stale_sources,

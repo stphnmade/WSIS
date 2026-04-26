@@ -1,0 +1,11 @@
+city_slug,county_fips,newgrad_job_post_count,newgrad_job_board_count,newgrad_job_city_page_url
+austin-tx,48453,2,1,https://www.newgrad-jobs.com/entry-level-jobs/austin
+raleigh-nc,37183,1,0,
+pittsburgh-pa,42003,1,0,
+denver-co,08031,2,1,https://www.newgrad-jobs.com/entry-level-jobs/denver
+minneapolis-mn,27053,1,0,
+chicago-il,17031,2,1,https://www.newgrad-jobs.com/entry-level-jobs/chicago
+charlotte-nc,37119,1,0,
+madison-wi,55025,1,0,
+tampa-fl,12057,1,0,
+seattle-wa,53033,3,1,https://www.newgrad-jobs.com/entry-level-jobs/seattle

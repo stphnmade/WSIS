@@ -44,6 +44,7 @@
   "eligible_city_count": 10,
   "failures": [],
   "filter_coverage": {
+    "has_newgrad_jobs_context": 10,
     "is_affordable": 10,
     "is_high_income": 4,
     "is_strong_job_market": 7,
@@ -59,13 +60,14 @@
     "fbi": 10,
     "hud_fmr": 10,
     "jobs_context": 10,
+    "newgrad_jobs_context": 10,
     "noaa": 10,
     "reddit": 10,
     "simplemaps": 10
   },
   "source_file_status": {
     "bls": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -75,7 +77,7 @@
       "status": "healthy"
     },
     "census": {
-      "age_days": 0,
+      "age_days": 1,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -85,7 +87,7 @@
       "status": "healthy"
     },
     "cost_of_living_context": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -95,7 +97,7 @@
       "status": "healthy"
     },
     "fbi": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -105,7 +107,7 @@
       "status": "healthy"
     },
     "hud_fmr": {
-      "age_days": 0,
+      "age_days": 1,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -115,7 +117,7 @@
       "status": "healthy"
     },
     "jobs_context": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -124,8 +126,18 @@
       "source_date": "2026-03-16",
       "status": "healthy"
     },
+    "newgrad_jobs_context": {
+      "age_days": 0,
+      "coverage_count": 10,
+      "coverage_pct": 100.0,
+      "exists": true,
+      "freshness": "current",
+      "path": "/Users/steph/WSIS/data/source_samples/newgrad_jobs.csv",
+      "source_date": "2026-04-26",
+      "status": "healthy"
+    },
     "noaa": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -135,7 +147,7 @@
       "status": "healthy"
     },
     "reddit": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -145,7 +157,7 @@
       "status": "healthy"
     },
     "simplemaps": {
-      "age_days": 40,
+      "age_days": 41,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,

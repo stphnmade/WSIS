@@ -48,17 +48,21 @@ Filter-ready fields:
 - `is_affordable`
 - `is_high_income`
 - `is_strong_job_market`
+- `has_newgrad_jobs_context`
 
 Public-feed v1 context fields:
 
 - `fair_market_rent`, `rent_to_fmr_ratio`, `practical_rent_gap`
 - `education_bachelors_pct`, `mean_commute_minutes`
 - `fair_market_rent_*` source and imputation metadata
+- `newgrad_job_post_count`, `newgrad_job_board_count`, `newgrad_job_city_page_url`
+- `newgrad_jobs_source`, `newgrad_jobs_source_date`, `newgrad_jobs_confidence`, `newgrad_jobs_is_imputed`
 
 ## Current semantics
 
 - `social_confidence` is currently `seeded` when local placeholder social data exists
 - `is_mvp_eligible` is based only on the four ranked core dimensions
 - `affordability_confidence` requires both ACS rent/income and HUD FMR coverage
+- NewGrad Jobs is context-only and does not change BLS-backed `job_market_confidence`
 - ACS population overrides the city dimension population when present; SimpleMaps remains the geography fallback
 - the validation report for each build is written to `data/processed/city_profiles_validation_report.json`

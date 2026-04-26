@@ -234,6 +234,30 @@ def inject_styles() -> None:
         div[data-testid="stToggle"] {
             width: 100%;
         }
+        div[data-testid="stSelectbox"] label,
+        div[data-testid="stNumberInput"] label,
+        div[data-testid="stToggle"] label,
+        div[data-testid="stCheckbox"] label,
+        div[data-testid="stSelectbox"] label p,
+        div[data-testid="stNumberInput"] label p,
+        div[data-testid="stToggle"] label p,
+        div[data-testid="stCheckbox"] label p {
+            color: #24303a !important;
+            font-size: 0.92rem !important;
+            font-weight: 650 !important;
+            line-height: 1.35 !important;
+            opacity: 1 !important;
+        }
+        div[data-testid="stSelectbox"] [aria-label],
+        div[data-testid="stNumberInput"] [aria-label],
+        div[data-testid="stToggle"] [aria-label],
+        div[data-testid="stCheckbox"] [aria-label] {
+            color: #24303a !important;
+        }
+        div[data-testid="stWidgetLabel"] p,
+        div[data-testid="stMarkdownContainer"] p {
+            color: #56616c;
+        }
         div[data-testid="stSelectbox"] > div,
         div[data-testid="stNumberInput"] > div {
             width: 100%;
@@ -481,9 +505,21 @@ def render_inputs(candidate_options: list[CityDetail], details_by_slug: dict[str
         value=DEFAULT_MAX_RENT,
         step=50,
     )
-    require_warmer = st.toggle("Warmer than Chicago", value=True)
-    require_civic_fit = st.toggle("Civic fit required", value=False)
-    require_downtown_fit = st.toggle("Downtown fit required", value=False)
+    require_warmer = st.toggle(
+        "Warmer than Chicago",
+        value=True,
+        help="Require the candidate city to have a warmer average temperature than Chicago.",
+    )
+    require_civic_fit = st.toggle(
+        "Civic fit required",
+        value=False,
+        help="Require the candidate city to pass the civic-fit evidence check.",
+    )
+    require_downtown_fit = st.toggle(
+        "Downtown fit required",
+        value=False,
+        help="Require the candidate city to pass the downtown-fit evidence check.",
+    )
     return candidate_slug, offer_salary, max_rent, require_warmer, require_civic_fit, require_downtown_fit
 
 

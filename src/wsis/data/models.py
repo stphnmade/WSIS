@@ -37,6 +37,13 @@ CITY_PROFILE_REQUIRED_COLUMNS = (
     "job_growth_source",
     "job_growth_source_date",
     "job_growth_is_imputed",
+    "newgrad_job_post_count",
+    "newgrad_job_board_count",
+    "newgrad_job_city_page_url",
+    "newgrad_jobs_source",
+    "newgrad_jobs_source_date",
+    "newgrad_jobs_confidence",
+    "newgrad_jobs_is_imputed",
     "violent_crime_per_100k",
     "safety_score_raw",
     "avg_temp_f",
@@ -82,6 +89,7 @@ CITY_PROFILE_REQUIRED_COLUMNS = (
     "has_reddit_data",
     "has_cost_of_living_context",
     "has_jobs_context",
+    "has_newgrad_jobs_context",
     "headline",
     "known_for",
 )
@@ -102,6 +110,8 @@ CITY_PROFILE_RANGE_RULES = {
     "education_bachelors_pct": (0, 100),
     "mean_commute_minutes": (0, 240),
     "job_growth_pct": (-100, 100),
+    "newgrad_job_post_count": (0, 1_000_000),
+    "newgrad_job_board_count": (0, 1_000),
     "violent_crime_per_100k": (0, 100_000),
     "safety_score_raw": (0, 100),
     "avg_temp_f": (-50, 150),
@@ -139,6 +149,9 @@ CITY_PROFILE_NON_EMPTY_STRING_COLUMNS = (
     "median_home_price_source_date",
     "job_growth_source",
     "job_growth_source_date",
+    "newgrad_jobs_source",
+    "newgrad_jobs_source_date",
+    "newgrad_jobs_confidence",
     "safety_confidence",
     "safety_source",
     "safety_source_date",
@@ -183,6 +196,13 @@ class CityProfileRecord(BaseModel):
     job_growth_source: str = Field(min_length=1)
     job_growth_source_date: str = Field(min_length=1)
     job_growth_is_imputed: bool
+    newgrad_job_post_count: int = Field(ge=0)
+    newgrad_job_board_count: int = Field(ge=0)
+    newgrad_job_city_page_url: str = ""
+    newgrad_jobs_source: str = Field(min_length=1)
+    newgrad_jobs_source_date: str = Field(min_length=1)
+    newgrad_jobs_confidence: str = Field(min_length=1)
+    newgrad_jobs_is_imputed: bool
     violent_crime_per_100k: float = Field(ge=0)
     safety_score_raw: float = Field(ge=0, le=100)
     avg_temp_f: float = Field(ge=-50, le=150)
@@ -228,6 +248,7 @@ class CityProfileRecord(BaseModel):
     has_reddit_data: bool
     has_cost_of_living_context: bool
     has_jobs_context: bool
+    has_newgrad_jobs_context: bool
     headline: str = Field(min_length=1)
     known_for: str = Field(min_length=1)
 
@@ -280,6 +301,13 @@ class CityProfileRecord(BaseModel):
             job_growth_source=self.job_growth_source,
             job_growth_source_date=self.job_growth_source_date,
             job_growth_is_imputed=self.job_growth_is_imputed,
+            newgrad_job_post_count=self.newgrad_job_post_count,
+            newgrad_job_board_count=self.newgrad_job_board_count,
+            newgrad_job_city_page_url=self.newgrad_job_city_page_url,
+            newgrad_jobs_source=self.newgrad_jobs_source,
+            newgrad_jobs_source_date=self.newgrad_jobs_source_date,
+            newgrad_jobs_confidence=self.newgrad_jobs_confidence,
+            newgrad_jobs_is_imputed=self.newgrad_jobs_is_imputed,
             unemployment_pct=self.unemployment_pct,
             violent_crime_per_100k=self.violent_crime_per_100k,
             safety_score_raw=self.safety_score_raw,

@@ -19,6 +19,8 @@ class Settings:
     reddit_sentiment_summaries_path: str
     mapbox_token: str
     request_timeout_seconds: float
+    newgrad_jobs_base_url: str
+    newgrad_jobs_timeout_seconds: float
     source_stale_after_days: int
 
 
@@ -75,5 +77,7 @@ def get_settings() -> Settings:
         reddit_sentiment_summaries_path=str(reddit_sentiment_summaries_path),
         mapbox_token=os.getenv("WSIS_MAPBOX_TOKEN", ""),
         request_timeout_seconds=float(os.getenv("WSIS_REQUEST_TIMEOUT_SECONDS", "3")),
+        newgrad_jobs_base_url=os.getenv("WSIS_NEWGRAD_JOBS_BASE_URL", "https://www.newgrad-jobs.com"),
+        newgrad_jobs_timeout_seconds=float(os.getenv("WSIS_NEWGRAD_JOBS_TIMEOUT_SECONDS", "5")),
         source_stale_after_days=int(os.getenv("WSIS_SOURCE_STALE_AFTER_DAYS", "540")),
     )

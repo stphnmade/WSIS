@@ -12,6 +12,7 @@ from wsis.data.ingestion.common import fill_or_default, safe_min_max
 from wsis.data.ingestion.context_samples import load_cost_of_living_context, load_jobs_context
 from wsis.data.ingestion.fbi import load_fbi_crime
 from wsis.data.ingestion.hud import load_hud_fair_market_rents
+from wsis.data.ingestion.newgrad_jobs import load_newgrad_jobs_context
 from wsis.data.ingestion.noaa import load_noaa_climate
 from wsis.data.ingestion.reddit import load_reddit_sentiment
 from wsis.data.ingestion.simplemaps import load_simplemaps_cities
@@ -81,12 +82,13 @@ def _coalesce_numeric(primary: pd.Series, fallback: pd.Series, default: float) -
 
 def build_city_profiles_dataset(
     raw_root: Path | None = None,
+    source_samples_root: Path | None = None,
     output_path: Path | None = None,
     report_path: Path | None = None,
 ) -> tuple[CityProfileRecord, ...]:
     settings = get_settings()
     base_raw_root = raw_root or Path(settings.raw_data_dir)
-    base_source_samples_root = Path(settings.source_samples_dir)
+    base_source_samples_root = source_samples_root or Path(settings.source_samples_dir)
     base_output_path = output_path or Path(settings.processed_city_profiles_path)
     base_report_path = report_path or Path(settings.city_profiles_validation_report_path)
 
@@ -99,6 +101,7 @@ def build_city_profiles_dataset(
     reddit = load_reddit_sentiment(base_raw_root)
     cost_context = load_cost_of_living_context(base_source_samples_root)
     jobs_context = load_jobs_context(base_source_samples_root)
+    newgrad_jobs_context = load_newgrad_jobs_context(base_raw_root, base_source_samples_root)
 
     merged = (
         city_dimension.merge(census, on=["city_state_key", "county_fips"], how="left")
@@ -109,6 +112,7 @@ def build_city_profiles_dataset(
         .merge(reddit, on="city_state_key", how="left")
         .merge(cost_context, on="county_fips", how="left")
         .merge(jobs_context, on="county_fips", how="left")
+        .merge(newgrad_jobs_context, on=["city_slug", "county_fips"], how="left")
     )
 
     for flag in [
@@ -120,6 +124,7 @@ def build_city_profiles_dataset(
         "has_reddit_data",
         "has_cost_of_living_context",
         "has_jobs_context",
+        "has_newgrad_jobs_context",
     ]:
         if flag not in merged.columns:
             merged[flag] = False
@@ -191,6 +196,7 @@ def build_city_profiles_dataset(
     reddit_date = _source_date(base_raw_root / "reddit" / "city_sentiment.csv")
     cost_context_date = _source_date(base_source_samples_root / "cost_of_living.csv")
     jobs_context_date = _source_date(base_source_samples_root / "jobs.csv")
+    newgrad_jobs_context_date = _source_date(base_source_samples_root / "newgrad_jobs.csv")
 
     has_affordability_feed = merged["has_census_data"] & merged["has_hud_fmr_data"]
     merged["affordability_confidence"] = has_affordability_feed.map(
@@ -254,6 +260,39 @@ def build_city_profiles_dataset(
     )
     merged["job_growth_is_imputed"] = ~merged["has_jobs_context"]
 
+    merged["newgrad_job_post_count"] = (
+        fill_or_default(merged.get("newgrad_job_post_count"), 0)
+        .clip(lower=0)
+        .round(0)
+        .astype("int64")
+    )
+    merged["newgrad_job_board_count"] = (
+        fill_or_default(merged.get("newgrad_job_board_count"), 0)
+        .clip(lower=0)
+        .round(0)
+        .astype("int64")
+    )
+    merged["newgrad_job_city_page_url"] = merged.get(
+        "newgrad_job_city_page_url",
+        pd.Series(index=merged.index, dtype="string"),
+    ).fillna("")
+    merged["newgrad_jobs_source"] = merged.get(
+        "newgrad_jobs_source",
+        pd.Series(index=merged.index, dtype="string"),
+    ).fillna("newgrad_jobs_local_seed")
+    merged["newgrad_jobs_source_date"] = merged.get(
+        "newgrad_jobs_source_date",
+        pd.Series(index=merged.index, dtype="string"),
+    ).fillna(newgrad_jobs_context_date)
+    merged["newgrad_jobs_confidence"] = merged.get(
+        "newgrad_jobs_confidence",
+        pd.Series(index=merged.index, dtype="string"),
+    ).fillna("seeded")
+    merged["newgrad_jobs_is_imputed"] = merged.get(
+        "newgrad_jobs_is_imputed",
+        pd.Series([True] * len(merged), index=merged.index, dtype="bool"),
+    ).fillna(True)
+
     merged["is_warm"] = (merged["avg_temp_f"] >= 65) | (merged["climate_norm"] >= 0.70)
     merged["is_affordable"] = (rent_burden <= 0.25) | (merged["rent_to_fmr_ratio"] <= 1.0)
     merged["is_high_income"] = merged["median_income"] >= 85_000
@@ -302,6 +341,13 @@ def build_city_profiles_dataset(
         "job_growth_source",
         "job_growth_source_date",
         "job_growth_is_imputed",
+        "newgrad_job_post_count",
+        "newgrad_job_board_count",
+        "newgrad_job_city_page_url",
+        "newgrad_jobs_source",
+        "newgrad_jobs_source_date",
+        "newgrad_jobs_confidence",
+        "newgrad_jobs_is_imputed",
         "violent_crime_per_100k",
         "safety_score_raw",
         "avg_temp_f",
@@ -347,6 +393,7 @@ def build_city_profiles_dataset(
         "has_reddit_data",
         "has_cost_of_living_context",
         "has_jobs_context",
+        "has_newgrad_jobs_context",
         "headline",
         "known_for",
     ]

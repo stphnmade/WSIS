@@ -36,6 +36,13 @@
   join: `county_fips`
   note: proxy `job_growth_pct` remains visible as context and does not determine MVP eligibility
 
+- `newgrad_job_*`, `newgrad_jobs_*`, `has_newgrad_jobs_context`
+  source: `https://www.newgrad-jobs.com/entry-level-jobs` and `https://www.newgrad-jobs.com/sitemap.xml`
+  local fallback: `data/source_samples/newgrad_jobs.csv`
+  role: supplemental early-career job-market context only
+  join: `city_slug` plus `county_fips`
+  caveat: NewGrad Jobs is a public third-party listing/index page with city pages and Airtable embeds; WSIS treats it as a volatile market signal, not a ranked eligibility source. BLS LAUS remains the ranked job-market source.
+
 - `safety_*`
   source: `data/raw/fbi/county_crime.csv`
   current ranked input: county crime slice mapped by `county_fips`
@@ -56,6 +63,8 @@
   derived from median income
 - `is_strong_job_market`
   derived from unemployment rate or normalized job-market score
+- `has_newgrad_jobs_context`
+  true when NewGrad Jobs scrape or local seed has a city-level early-career jobs signal
 
 ## Context-only social dimension
 
@@ -72,6 +81,7 @@
 
 - `median_home_price` is still a rent-derived proxy
 - `job_growth_pct` is still an unemployment-derived proxy
+- NewGrad Jobs context is scrape-backed when reachable and seed-backed otherwise; it should not be used as a source-backed public labor statistic
 - these proxy fields remain visible, but they are not what makes a city eligible for ranked MVP discovery
 - no live external downloader is part of this milestone; local normalized seed files keep the app runnable if public-feed refreshes fail
 - no OAuth, AWS deployment, live Reddit, or choropleth work is included in this data milestone
