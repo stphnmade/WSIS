@@ -9,7 +9,7 @@ import streamlit as st
 from wsis.core.weights import score_weights_from_state
 from wsis.domain.models import CityDetail
 from wsis.services.api_client import ApiCityClient
-from wsis.ui.theme import inject_theme, render_metric_strip, render_page_header, render_pills
+from wsis.ui.theme import inject_theme, render_page_header, render_pills
 from wsis.ui.trust import freshness_badge
 
 
@@ -70,29 +70,39 @@ def inject_comparison_styles() -> None:
         }
         .mini-row {
             border-bottom: 1px solid #e5ecef;
-            display: grid;
-            grid-template-columns: minmax(0, 1fr) minmax(0, 0.8fr);
+            display: flex;
+            flex-wrap: wrap;
             gap: 0.7rem;
+            justify-content: space-between;
             padding: 0.58rem 0;
             min-width: 0;
         }
         .mini-row span {
             color: #66717d;
-            min-width: 0;
-            overflow-wrap: anywhere;
+            flex: 1 1 6.5rem;
+            min-width: 6.5rem;
+            overflow-wrap: normal;
+            word-break: normal;
         }
         .mini-row strong {
             color: #17212b;
-            min-width: 0;
-            overflow-wrap: anywhere;
+            flex: 0 0 auto;
+            min-width: max-content;
+            overflow-wrap: normal;
             text-align: right;
+            white-space: nowrap;
         }
-        @media (max-width: 760px) {
+        div[data-testid="stDataFrame"] {
+            border-radius: 14px;
+            overflow: hidden;
+        }
+        @media (max-width: 900px) {
             [data-testid="stHorizontalBlock"] {
+                flex-direction: column !important;
                 flex-wrap: wrap;
                 gap: 1rem;
             }
-            [data-testid="column"] {
+            [data-testid="stColumn"] {
                 flex: 1 1 100% !important;
                 min-width: 0 !important;
                 width: 100% !important;
@@ -149,7 +159,7 @@ def city_name(detail: CityDetail) -> str:
 
 
 def render_city_card(detail: CityDetail) -> None:
-    st.markdown(
+    st.html(
         f"""
         <div class="compare-card">
           <h3>{html.escape(city_name(detail))}</h3>
@@ -161,11 +171,10 @@ def render_city_card(detail: CityDetail) -> None:
             <div class="mini-row"><span>Median rent</span><strong>${detail.metrics.median_rent:,.0f}</strong></div>
             <div class="mini-row"><span>Median income</span><strong>${detail.metrics.median_income:,.0f}</strong></div>
             <div class="mini-row"><span>Unemployment</span><strong>{detail.metrics.unemployment_pct:.1f}%</strong></div>
-            <div class="mini-row"><span>Confidence</span><strong>{html.escape(detail.summary.score_context.overall_confidence)}</strong></div>
+            <div class="mini-row"><span>Confidence</span><strong>{html.escape(detail.summary.score_context.overall_confidence.replace("_", " "))}</strong></div>
           </div>
         </div>
         """,
-        unsafe_allow_html=True,
     )
 
 
@@ -204,6 +213,31 @@ def trust_rows(details: list[CityDetail]) -> pd.DataFrame:
                 ),
             }
             for detail in details
+        ]
+    )
+
+
+def quick_read_rows(details: list[CityDetail]) -> pd.DataFrame:
+    top_city = max(details, key=lambda detail: detail.summary.overall_score)
+    lowest_rent = min(details, key=lambda detail: detail.metrics.median_rent)
+    strongest_job = min(details, key=lambda detail: detail.metrics.unemployment_pct)
+    return pd.DataFrame(
+        [
+            {
+                "Signal": "Top score",
+                "City": city_name(top_city),
+                "Value": f"{top_city.summary.overall_score:.1f}",
+            },
+            {
+                "Signal": "Lowest rent",
+                "City": city_name(lowest_rent),
+                "Value": f"${lowest_rent.metrics.median_rent:,.0f}",
+            },
+            {
+                "Signal": "Strong jobs",
+                "City": city_name(strongest_job),
+                "Value": f"{strongest_job.metrics.unemployment_pct:.1f}%",
+            },
         ]
     )
 
@@ -274,31 +308,30 @@ with chart_left:
         )
 
     radar.update_layout(
-        polar={"radialaxis": {"visible": True, "range": [0, 10]}},
+        polar={
+            "angularaxis": {"tickfont": {"color": "#22313d", "size": 12}},
+            "radialaxis": {
+                "visible": True,
+                "range": [0, 10],
+                "tickfont": {"color": "#22313d", "size": 11},
+                "gridcolor": "rgba(34,49,61,0.22)",
+                "linecolor": "rgba(34,49,61,0.42)",
+            },
+        },
         showlegend=True,
         height=400,
         paper_bgcolor="rgba(0,0,0,0)",
-        font={"family": "Plus Jakarta Sans"},
+        font={"family": "Plus Jakarta Sans", "color": "#22313d"},
         margin={"l": 10, "r": 10, "t": 10, "b": 12},
-        legend={"orientation": "h", "y": -0.08},
+        legend={"orientation": "h", "y": -0.08, "font": {"color": "#22313d", "size": 11}},
     )
     st.plotly_chart(radar, width="stretch")
 
 with chart_right:
-    st.markdown('<div class="wsis-soft-band">', unsafe_allow_html=True)
-    st.subheader("Quick read")
-    top_city = max(details, key=lambda detail: detail.summary.overall_score)
-    lowest_rent = min(details, key=lambda detail: detail.metrics.median_rent)
-    strongest_job = min(details, key=lambda detail: detail.metrics.unemployment_pct)
-    render_metric_strip(
-        [
-            ("Top score", city_name(top_city)),
-            ("Lowest rent", city_name(lowest_rent)),
-            ("Lowest unemployment", city_name(strongest_job)),
-        ]
-    )
-    st.caption("This read is a comparison aid, not a recommendation verdict.")
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("Quick read")
+        st.dataframe(quick_read_rows(details), width="stretch", hide_index=True)
+        st.caption("This read is a comparison aid, not a recommendation verdict.")
 
 with st.expander("Cost and market table", expanded=True):
     st.dataframe(comparison_rows(details), width="stretch", hide_index=True)

@@ -93,6 +93,26 @@ def inject_theme() -> None:
             font-weight: 800;
         }
 
+        div[data-baseweb="select"] > div {
+            background: #fffdf8 !important;
+            border-color: #dbcfc5 !important;
+            color: var(--wsis-ink) !important;
+        }
+
+        div[data-baseweb="select"] span[data-baseweb="tag"] {
+            background: #dff8ee !important;
+            color: #173d38 !important;
+            border: 1px solid rgba(18, 165, 148, 0.24) !important;
+            border-radius: 10px !important;
+            font-weight: 750 !important;
+        }
+
+        div[data-baseweb="select"] span[data-baseweb="tag"] span,
+        div[data-baseweb="select"] span[data-baseweb="tag"] svg {
+            color: #173d38 !important;
+            fill: #173d38 !important;
+        }
+
         div.stButton > button, div[data-testid="stBaseButton-secondary"] {
             border: 1px solid rgba(18, 165, 148, 0.28);
             border-radius: 999px;
@@ -240,7 +260,7 @@ def inject_theme() -> None:
             white-space: normal;
         }
 
-        @media (max-width: 720px) {
+        @media (max-width: 900px) {
             .block-container {
                 padding-left: 1rem;
                 padding-right: 1rem;
@@ -253,10 +273,11 @@ def inject_theme() -> None:
             }
 
             div[data-testid="stHorizontalBlock"] {
+                flex-direction: column !important;
                 gap: 0.75rem;
             }
 
-            div[data-testid="stHorizontalBlock"] > div[data-testid="column"] {
+            div[data-testid="stHorizontalBlock"] > div[data-testid="stColumn"] {
                 flex: 1 1 100% !important;
                 min-width: 0 !important;
                 width: 100% !important;
@@ -292,9 +313,11 @@ def render_pills(labels: list[str]) -> None:
 
 
 def render_metric_strip(items: list[tuple[str, str]]) -> None:
-    cells = "".join(
-        f'<div class="wsis-mini-cell"><div class="wsis-mini-label">{html.escape(label)}</div>'
-        f'<div class="wsis-mini-value">{html.escape(value)}</div></div>'
-        for label, value in items
-    )
-    st.html(f'<div class="wsis-mini-grid">{cells}</div>')
+    if not items:
+        return
+    columns = st.columns(min(len(items), 4))
+    for column, (label, value) in zip(columns * ((len(items) // len(columns)) + 1), items):
+        with column:
+            with st.container(border=True):
+                st.caption(label)
+                st.markdown(f"**{value}**")

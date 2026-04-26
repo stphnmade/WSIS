@@ -90,12 +90,13 @@ def inject_profile_styles() -> None:
             max-width: 100%;
             overflow-wrap: anywhere;
         }
-        @media (max-width: 760px) {
+        @media (max-width: 900px) {
             [data-testid="stHorizontalBlock"] {
+                flex-direction: column !important;
                 flex-wrap: wrap;
                 gap: 1rem;
             }
-            [data-testid="column"] {
+            [data-testid="stColumn"] {
                 flex: 1 1 100% !important;
                 min-width: 0 !important;
                 width: 100% !important;
@@ -164,13 +165,13 @@ def trust_rows(detail: CityDetail) -> None:
             </div>
             """
         )
-    st.markdown("".join(rows), unsafe_allow_html=True)
+    st.html("".join(rows))
 
 
 def profile_badges(detail: CityDetail) -> list[str]:
     return [
         detail.summary.region,
-        f"{detail.summary.score_context.overall_confidence} confidence",
+        f"{detail.summary.score_context.overall_confidence.replace('_', ' ')} confidence",
         "Social context only",
     ]
 
@@ -193,7 +194,7 @@ st.session_state["selected_city_slug"] = selected_slug
 
 detail, source = client.get_city(selected_slug, current_weights())
 
-st.markdown(
+st.html(
     f"""
     <div class="profile-hero">
       <div class="wsis-page-kicker">City Profile</div>
@@ -201,7 +202,6 @@ st.markdown(
       <div class="profile-copy">{html.escape(detail.summary.headline)}</div>
     </div>
     """,
-    unsafe_allow_html=True,
 )
 render_pills(profile_badges(detail))
 render_metric_strip(
@@ -245,40 +245,52 @@ with left:
         height=340,
         paper_bgcolor="rgba(0,0,0,0)",
         plot_bgcolor="rgba(0,0,0,0)",
-        font={"family": "Plus Jakarta Sans"},
+        font={"family": "Plus Jakarta Sans", "color": "#22313d", "size": 13},
         margin={"l": 8, "r": 8, "t": 16, "b": 28},
-        xaxis={"tickangle": -25, "automargin": True},
-        yaxis={"automargin": True},
+        legend={
+            "font": {"color": "#22313d", "size": 12},
+            "title": {"font": {"color": "#22313d", "size": 12}},
+        },
+        xaxis={
+            "tickangle": -25,
+            "automargin": True,
+            "tickfont": {"color": "#22313d", "size": 12},
+            "title": {"font": {"color": "#22313d", "size": 12}},
+        },
+        yaxis={
+            "automargin": True,
+            "gridcolor": "rgba(34,49,61,0.22)",
+            "linecolor": "rgba(34,49,61,0.38)",
+            "tickfont": {"color": "#22313d", "size": 12},
+            "title": {"font": {"color": "#22313d", "size": 12}},
+        },
     )
     st.plotly_chart(chart, width="stretch")
 
-    st.markdown('<div class="wsis-panel">', unsafe_allow_html=True)
-    st.subheader("Why it might fit")
-    for highlight in detail.highlights:
-        st.write(f"- {highlight}")
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("Why it might fit")
+        for highlight in detail.highlights:
+            st.write(f"- {highlight}")
 
 with right:
-    st.markdown('<div class="wsis-soft-band">', unsafe_allow_html=True)
-    st.subheader("Social reality")
-    st.metric("Sentiment", detail.reddit_panel.sentiment_score)
-    st.caption(f"Confidence: {detail.reddit_panel.confidence} · Included in score: No")
-    st.write(detail.reddit_panel.summary)
-    render_metric_strip(
-        [
-            ("Posts", f"{detail.reddit_panel.posts_analyzed}"),
-            ("Lookback", f"{detail.reddit_panel.lookback_days} days"),
-            ("Generated", detail.reddit_panel.generated_at),
-        ]
-    )
-    if detail.reddit_panel.posts:
-        st.markdown('<div class="social-quote">', unsafe_allow_html=True)
-        for post in detail.reddit_panel.posts[:2]:
-            st.markdown(f"**{post.title}**")
-            st.write(post.excerpt)
-            st.caption(f"{post.sentiment} · {post.subreddit}")
-        st.markdown("</div>", unsafe_allow_html=True)
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("Social reality")
+        st.metric("Sentiment", detail.reddit_panel.sentiment_score)
+        st.caption(f"Confidence: {detail.reddit_panel.confidence} · Included in score: No")
+        st.write(detail.reddit_panel.summary)
+        render_metric_strip(
+            [
+                ("Posts", f"{detail.reddit_panel.posts_analyzed}"),
+                ("Lookback", f"{detail.reddit_panel.lookback_days} days"),
+                ("Generated", detail.reddit_panel.generated_at),
+            ]
+        )
+        if detail.reddit_panel.posts:
+            for post in detail.reddit_panel.posts[:2]:
+                with st.container(border=True):
+                    st.markdown(f"**{post.title}**")
+                    st.write(post.excerpt)
+                    st.caption(f"{post.sentiment} · {post.subreddit}")
 
 st.markdown("---")
 trust_left, trust_right = st.columns([1.25, 0.75], gap="large")
@@ -290,9 +302,8 @@ with trust_left:
     )
     trust_rows(detail)
 with trust_right:
-    st.markdown('<div class="wsis-panel">', unsafe_allow_html=True)
-    st.subheader("Core freshness")
-    for item in city_core_freshness_summary(detail):
-        st.write(f"- {item}")
-    st.caption("Source names and dates stay in the ledger so the main profile stays readable.")
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        st.subheader("Core freshness")
+        for item in city_core_freshness_summary(detail):
+            st.write(f"- {item}")
+        st.caption("Source names and dates stay in the ledger so the main profile stays readable.")

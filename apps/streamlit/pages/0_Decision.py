@@ -238,7 +238,7 @@ def inject_styles() -> None:
         div[data-testid="stNumberInput"] > div {
             width: 100%;
         }
-        @media (max-width: 760px) {
+        @media (max-width: 900px) {
             .block-container {
                 max-width: 100%;
                 padding-top: 1rem;
@@ -363,7 +363,7 @@ def render_case_header(
     offer_salary: float,
     max_rent: float,
 ) -> None:
-    st.markdown(
+    st.html(
         f"""
         <div class="decision-topline">WSIS decision case</div>
         <div class="decision-title">Move decision, not city ranking.</div>
@@ -387,25 +387,20 @@ def render_case_header(
           </div>
         </div>
         """,
-        unsafe_allow_html=True,
     )
 
 
 def render_verdict(summary: DecisionSummary) -> None:
-    st.markdown(
+    st.html(
         f"""
         <div class="verdict-band {html.escape(summary.verdict)}">
           <h2>{html.escape(summary.headline)}</h2>
           <p>{html.escape(summary.subhead)}</p>
         </div>
         """,
-        unsafe_allow_html=True,
     )
     if summary.no_rent_match:
-        st.markdown(
-            '<div class="decision-note">No candidate city in the current dataset meets this rent ceiling.</div>',
-            unsafe_allow_html=True,
-        )
+        st.html('<div class="decision-note">No candidate city in the current dataset meets this rent ceiling.</div>')
 
 
 def render_constraint_ledger(summary: DecisionSummary) -> None:
@@ -421,7 +416,7 @@ def render_constraint_ledger(summary: DecisionSummary) -> None:
             </div>
             """
         )
-    st.markdown(f'<div class="ledger">{"".join(rows)}</div>', unsafe_allow_html=True)
+    st.html(f'<div class="ledger">{"".join(rows)}</div>')
 
 
 def render_context(candidate: CityDetail, baseline: CityDetail) -> None:
@@ -431,23 +426,19 @@ def render_context(candidate: CityDetail, baseline: CityDetail) -> None:
         temp_delta = candidate.metrics.avg_temp_f - baseline.metrics.avg_temp_f
         temp_detail = f"{temp_delta:+.0f}F average temperature"
 
-    st.markdown(
+    st.html(
         f"""
         <div class="context-line">
           <strong>Baseline stays fixed:</strong>
           {html.escape(city_label(candidate))} is {html.escape(signed_money(rent_delta))} / mo vs Chicago and {html.escape(temp_detail)}.
         </div>
         """,
-        unsafe_allow_html=True,
     )
 
 
 def render_evidence(summary: DecisionSummary) -> None:
     if not summary.evidence_issues:
-        st.markdown(
-            '<div class="empty-evidence">No skeptic flags for this run. Verify sources before acting.</div>',
-            unsafe_allow_html=True,
-        )
+        st.html('<div class="empty-evidence">No skeptic flags for this run. Verify sources before acting.</div>')
         return
 
     rows = []
@@ -461,11 +452,11 @@ def render_evidence(summary: DecisionSummary) -> None:
             </div>
             """
         )
-    st.markdown(f'<div class="ledger">{"".join(rows)}</div>', unsafe_allow_html=True)
+    st.html(f'<div class="ledger">{"".join(rows)}</div>')
 
 
 def render_section_label(label: str) -> None:
-    st.markdown(f'<div class="section-label">{html.escape(label)}</div>', unsafe_allow_html=True)
+    st.html(f'<div class="section-label">{html.escape(label)}</div>')
 
 
 def render_inputs(candidate_options: list[CityDetail], details_by_slug: dict[str, CityDetail]):
@@ -515,16 +506,15 @@ if not candidate_options:
 input_column, output_column = st.columns([0.76, 1.24], gap="large")
 
 with input_column:
-    st.markdown('<div class="input-rail">', unsafe_allow_html=True)
-    (
-        candidate_slug,
-        offer_salary,
-        max_rent,
-        require_warmer,
-        require_civic_fit,
-        require_downtown_fit,
-    ) = render_inputs(candidate_options, details_by_slug)
-    st.markdown("</div>", unsafe_allow_html=True)
+    with st.container(border=True):
+        (
+            candidate_slug,
+            offer_salary,
+            max_rent,
+            require_warmer,
+            require_civic_fit,
+            require_downtown_fit,
+        ) = render_inputs(candidate_options, details_by_slug)
 
 candidate = details_by_slug[candidate_slug]
 decision = build_decision_summary(
