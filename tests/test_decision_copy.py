@@ -163,6 +163,7 @@ def test_decision_keeps_looking_when_candidate_exceeds_rent_ceiling() -> None:
     assert summary.no_rent_match is True
     assert any(issue.flag == "seeded" for issue in summary.evidence_issues)
     assert next(check for check in summary.checks if check.label == "Rent target").status == "fail"
+    assert any("Raise the rent ceiling" in action for action in summary.pass_actions)
 
 
 def test_decision_uses_engine_flags_for_risky_verdict() -> None:
@@ -184,6 +185,9 @@ def test_decision_uses_engine_flags_for_risky_verdict() -> None:
     assert all(check.status == "pass" for check in summary.checks)
     assert any(issue.title == "Seeded social" for issue in summary.evidence_issues)
     assert "$900 median rent" in summary.proof_points
+    assert summary.pass_actions == (
+        "Replace seeded or proxy evidence with source-backed data before treating this as a clean yes.",
+    )
 
 
 def test_civic_and_downtown_toggles_add_failed_decision_constraints() -> None:
@@ -207,3 +211,5 @@ def test_civic_and_downtown_toggles_add_failed_decision_constraints() -> None:
     assert checks_by_label["Civic fit"].status == "fail"
     assert checks_by_label["Civic fit"].value == "Not wired yet"
     assert checks_by_label["Downtown fit"].status == "fail"
+    assert any("civic-fit signal" in action for action in summary.pass_actions)
+    assert any("downtown access data" in action for action in summary.pass_actions)

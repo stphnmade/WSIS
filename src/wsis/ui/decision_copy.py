@@ -33,6 +33,7 @@ class DecisionSummary:
     subhead: str
     checks: tuple[CheckResult, ...]
     evidence_issues: tuple[EvidenceIssue, ...]
+    pass_actions: tuple[str, ...]
     proof_points: tuple[str, ...]
     no_rent_match: bool
 
@@ -137,6 +138,45 @@ def evidence_issues(decision: RelocationDecision) -> tuple[EvidenceIssue, ...]:
     return tuple(deduped.values())
 
 
+def pass_actions_for(
+    checks: tuple[CheckResult, ...],
+    issues: tuple[EvidenceIssue, ...],
+    candidate: CityDetail,
+    offer_salary: float,
+    max_rent: float,
+    no_rent_match: bool,
+) -> tuple[str, ...]:
+    actions: list[str] = []
+    failed_checks = {check.label: check for check in checks if check.status == "fail"}
+
+    if "Rent target" in failed_checks:
+        rent_gap = candidate.metrics.median_rent - max_rent
+        actions.append(
+            f"Raise the rent ceiling by about {money(rent_gap)} or pick a city below {money(max_rent)}."
+        )
+    if "Rent burden on offer" in failed_checks:
+        required_salary = (candidate.metrics.median_rent * 12) / 0.30
+        if rent_share_of_salary(candidate.metrics.median_rent, offer_salary) is not None:
+            actions.append(
+                f"Verify an offer near {money(required_salary)} or better to keep rent under 30% of pay."
+            )
+    if "Warmer than baseline" in failed_checks:
+        actions.append("Turn off the warmer-than-baseline constraint or choose a warmer candidate city.")
+    if "Civic fit" in failed_checks:
+        actions.append("Add a sourced civic-fit signal before requiring civic fit as a hard constraint.")
+    if "Downtown fit" in failed_checks:
+        actions.append("Add commute/downtown access data before requiring downtown fit as a hard constraint.")
+    if no_rent_match and "Rent target" not in failed_checks:
+        actions.append("Relax the rent ceiling; no non-baseline city currently meets it.")
+
+    if not actions and issues:
+        actions.append("Replace seeded or proxy evidence with source-backed data before treating this as a clean yes.")
+    if not actions:
+        actions.append("Hard checks pass; next step is outside validation of offer details and neighborhood fit.")
+
+    return tuple(dict.fromkeys(actions[:4]))
+
+
 def rent_match_count(
     details: Iterable[CityDetail],
     max_rent: float,
@@ -174,6 +214,7 @@ def build_decision_summary(
         check_from_constraint(check.key, check.label, check.passed, check.evidence)
         for check in decision.constraints
     )
+    issues = evidence_issues(decision)
     verdict = verdict_kind(decision.verdict)
     headline, subhead = verdict_copy(verdict, candidate)
     no_rent_match = rent_match_count(details, max_rent, baseline.summary.slug) == 0
@@ -182,7 +223,8 @@ def build_decision_summary(
         headline=headline,
         subhead=subhead,
         checks=checks,
-        evidence_issues=evidence_issues(decision),
+        evidence_issues=issues,
+        pass_actions=pass_actions_for(checks, issues, candidate, offer_salary, max_rent, no_rent_match),
         proof_points=tuple(decision.evidence),
         no_rent_match=no_rent_match,
     )

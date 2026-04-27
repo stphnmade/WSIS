@@ -67,7 +67,7 @@
   },
   "source_file_status": {
     "bls": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -77,7 +77,7 @@
       "status": "healthy"
     },
     "census": {
-      "age_days": 1,
+      "age_days": 2,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -87,7 +87,7 @@
       "status": "healthy"
     },
     "cost_of_living_context": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -97,7 +97,7 @@
       "status": "healthy"
     },
     "fbi": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -107,7 +107,7 @@
       "status": "healthy"
     },
     "hud_fmr": {
-      "age_days": 1,
+      "age_days": 2,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -117,7 +117,7 @@
       "status": "healthy"
     },
     "jobs_context": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -127,7 +127,7 @@
       "status": "healthy"
     },
     "newgrad_jobs_context": {
-      "age_days": 0,
+      "age_days": 1,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -137,7 +137,7 @@
       "status": "healthy"
     },
     "noaa": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -147,7 +147,7 @@
       "status": "healthy"
     },
     "reddit": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,
@@ -157,7 +157,7 @@
       "status": "healthy"
     },
     "simplemaps": {
-      "age_days": 41,
+      "age_days": 42,
       "coverage_count": 10,
       "coverage_pct": 100.0,
       "exists": true,

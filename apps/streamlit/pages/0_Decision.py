@@ -219,6 +219,24 @@ def inject_styles() -> None:
             color: #56616c;
             padding: 0.72rem 0;
         }
+        .pass-plan {
+            border: 1px solid #dce5e8;
+            border-radius: 14px;
+            background: rgba(255,255,255,0.78);
+            box-shadow: 0 12px 32px rgba(23, 33, 43, 0.04);
+            margin: 0 0 0.9rem;
+            padding: 0.72rem 0.82rem;
+        }
+        .pass-plan ol {
+            margin: 0;
+            padding-left: 1.15rem;
+        }
+        .pass-plan li {
+            color: #24303a;
+            font-size: 0.9rem;
+            line-height: 1.45;
+            margin: 0.32rem 0;
+        }
         div[data-testid="stForm"] {
             border: 0;
             padding: 0;
@@ -319,7 +337,8 @@ def inject_styles() -> None:
             .verdict-band p,
             .decision-note,
             .context-line,
-            .empty-evidence {
+            .empty-evidence,
+            .pass-plan li {
                 font-size: 0.86rem;
             }
             .ledger-row {
@@ -479,6 +498,11 @@ def render_evidence(summary: DecisionSummary) -> None:
     st.html(f'<div class="ledger">{"".join(rows)}</div>')
 
 
+def render_pass_plan(summary: DecisionSummary) -> None:
+    items = "".join(f"<li>{html.escape(action)}</li>" for action in summary.pass_actions)
+    st.html(f'<div class="pass-plan"><ol>{items}</ol></div>')
+
+
 def render_section_label(label: str) -> None:
     st.html(f'<div class="section-label">{html.escape(label)}</div>')
 
@@ -570,6 +594,8 @@ with output_column:
     render_verdict(decision)
     render_section_label("Constraints")
     render_constraint_ledger(decision)
+    render_section_label("What would make this pass?")
+    render_pass_plan(decision)
     render_context(candidate, baseline)
     render_section_label("Sarah checks")
     render_evidence(decision)
