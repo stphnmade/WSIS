@@ -499,7 +499,12 @@ def render_evidence(summary: DecisionSummary) -> None:
 
 
 def render_pass_plan(summary: DecisionSummary) -> None:
-    items = "".join(f"<li>{html.escape(action)}</li>" for action in summary.pass_actions)
+    actions = getattr(
+        summary,
+        "pass_actions",
+        ("Refresh the Decision workspace so the latest decision guidance can load.",),
+    )
+    items = "".join(f"<li>{html.escape(action)}</li>" for action in actions)
     st.html(f'<div class="pass-plan"><ol>{items}</ol></div>')
 
 
