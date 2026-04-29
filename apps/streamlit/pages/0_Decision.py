@@ -280,6 +280,43 @@ def inject_styles() -> None:
         div[data-testid="stNumberInput"] > div {
             width: 100%;
         }
+        div[data-testid="stNumberInput"] div[data-baseweb="input"],
+        div[data-testid="stNumberInput"] div[data-baseweb="base-input"] {
+            background: #fffdf8 !important;
+            border-color: #c9d4d7 !important;
+            color: #17212b !important;
+        }
+        div[data-testid="stNumberInput"] div[data-baseweb="input"] {
+            border: 1.5px solid #c9d4d7 !important;
+            border-radius: 12px !important;
+            box-shadow: none !important;
+            overflow: hidden;
+        }
+        div[data-testid="stNumberInput"] div[data-baseweb="input"]:focus-within {
+            border-color: #128475 !important;
+            box-shadow: 0 0 0 3px rgba(18, 132, 117, 0.2) !important;
+        }
+        div[data-testid="stNumberInput"] input {
+            background: #fffdf8 !important;
+            color: #17212b !important;
+            -webkit-text-fill-color: #17212b !important;
+            caret-color: #128475 !important;
+            font-weight: 750 !important;
+            opacity: 1 !important;
+        }
+        div[data-testid="stNumberInput"] button {
+            background: #f7efe8 !important;
+            border-left: 1px solid #d8cbc2 !important;
+            color: #17212b !important;
+        }
+        div[data-testid="stNumberInput"] button svg {
+            color: #17212b !important;
+            fill: #17212b !important;
+        }
+        div[data-testid="stNumberInput"] button:hover {
+            background: #e2f6ee !important;
+            color: #0f5f56 !important;
+        }
         @media (max-width: 900px) {
             .block-container {
                 max-width: 100%;
