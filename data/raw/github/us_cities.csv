@@ -1,0 +1,11 @@
+city,state_id,state_name,county_fips,county_name,lat,lng,population,timezone,github_city_id,github_updated_at,geography_source
+Austin,TX,Texas,48453,Travis,30.26715,-97.74306,974447,America/Chicago,111668,2025-12-02T14:39:31,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Raleigh,NC,North Carolina,37183,Wake,35.7721,-78.63861,482295,America/New_York,124831,2025-12-02T14:39:31,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Pittsburgh,PA,Pennsylvania,42003,Allegheny,40.44062,-79.99589,304391,America/New_York,124296,2025-12-02T14:39:31,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Denver,CO,Colorado,08031,Denver,39.73915,-104.9847,715522,America/Denver,115253,2025-12-02T14:38:56,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Minneapolis,MN,Minnesota,27053,Hennepin,44.97997,-93.26384,429954,America/Chicago,121951,2025-12-02T14:38:56,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Chicago,IL,Illinois,17031,Cook,41.85003,-87.65005,2746388,America/Chicago,113931,2025-12-02T14:38:56,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Charlotte,NC,North Carolina,37119,Mecklenburg,35.22709,-80.84313,911311,America/New_York,113776,2025-12-02T14:39:31,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Madison,WI,Wisconsin,55025,Dane,43.07305,-89.40123,280305,America/Chicago,120999,2025-12-02T14:39:31,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Tampa,FL,Florida,12057,Hillsborough,27.94752,-82.45843,414547,America/New_York,127407,2025-12-02T14:39:31,github:dr5hn/countries-states-cities-database/contributions/cities/US.json
+Seattle,WA,Washington,53033,King,47.60621,-122.33207,737015,America/Los_Angeles,126104,2025-12-02T14:38:56,github:dr5hn/countries-states-cities-database/contributions/cities/US.json

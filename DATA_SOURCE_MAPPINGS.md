@@ -3,8 +3,9 @@
 ## Identity and geography
 
 - `city_slug`, `city_name`, `state_code`, `state_name`, `county_fips`, `county_name`, `latitude`, `longitude`, `population`
-  source: `data/raw/simplemaps/us_cities.csv`
-  caveat: SimpleMaps remains the city anchor and fallback geography file; ACS may override `population` when present.
+  primary normalized source: `data/raw/github/us_cities.csv`, refreshed through the GitHub Contents API from `dr5hn/countries-states-cities-database`
+  fallback: `data/raw/simplemaps/us_cities.csv`
+  caveat: GitHub refreshes city/state identity, coordinates, population, and timezone. County name/FIPS remain pinned to the canonical crosswalk because the GitHub source does not contain county FIPS; ACS may override `population` when present.
 
 ## Core Public Reliable Feed v1
 
@@ -16,7 +17,8 @@
   current ranked input: median rent, median income, and HUD FMR practical rent context
   added fields: `education_bachelors_pct`, `mean_commute_minutes`
   join: `city_state_key` plus `county_fips`
-  caveat: current file is a local normalized seed in the ACS target shape; external API/download failures should preserve this file and mark missing rows as estimated.
+  refresh: `python3 -m wsis.data.refresh --source census` with `CENSUS_API_KEY`
+  caveat: the current file remains the last-known-good normalized input when a refresh is unavailable.
 
 - `fair_market_rent_*`, `rent_to_fmr_ratio`, `practical_rent_gap`
   source: `data/raw/hud/fair_market_rents.csv`
@@ -37,7 +39,10 @@
   note: proxy `job_growth_pct` remains visible as context and does not determine MVP eligibility
 
 - `newgrad_job_*`, `newgrad_jobs_*`, `has_newgrad_jobs_context`
-  source: `https://www.newgrad-jobs.com/entry-level-jobs` and `https://www.newgrad-jobs.com/sitemap.xml`
+  primary source: GitHub Contents API for `SimplifyJobs/New-Grad-Positions/.github/scripts/listings.json`
+  normalized file: `data/raw/github/newgrad_jobs.csv`
+  listing-level file: `data/raw/github/newgrad_job_listings.csv` (company, title, URL, category, location, posting dates, and sponsorship signal)
+  fallback source: `https://www.newgrad-jobs.com/entry-level-jobs` and its sitemap
   local fallback: `data/source_samples/newgrad_jobs.csv`
   role: supplemental early-career job-market context only
   join: `city_slug` plus `county_fips`
@@ -83,5 +88,5 @@
 - `job_growth_pct` is still an unemployment-derived proxy
 - NewGrad Jobs context is scrape-backed when reachable and seed-backed otherwise; it should not be used as a source-backed public labor statistic
 - these proxy fields remain visible, but they are not what makes a city eligible for ranked MVP discovery
-- no live external downloader is part of this milestone; local normalized seed files keep the app runnable if public-feed refreshes fail
+- live GitHub geography, GitHub job listings, BLS, and credentialed Census refreshers are implemented; last-known-good raw files keep the app runnable when a feed fails
 - no OAuth, AWS deployment, live Reddit, or choropleth work is included in this data milestone

@@ -67,6 +67,7 @@ def test_city_profiles_dataset_uses_newgrad_seed_when_scrape_fails(tmp_path: Pat
     source_root = tmp_path / "source_samples"
     shutil.copytree(Path("data/raw"), raw_root)
     shutil.copytree(Path("data/source_samples"), source_root)
+    shutil.rmtree(raw_root / "github", ignore_errors=True)
     monkeypatch.setenv("WSIS_NEWGRAD_JOBS_BASE_URL", "https://127.0.0.1:1")
     monkeypatch.setenv("WSIS_NEWGRAD_JOBS_TIMEOUT_SECONDS", "0.1")
     get_settings.cache_clear()

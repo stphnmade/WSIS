@@ -211,6 +211,19 @@ def _fallback_or_fill(scraped: pd.DataFrame, seed: pd.DataFrame) -> pd.DataFrame
 
 
 def load_newgrad_jobs_context(raw_root: Path, source_root: Path) -> pd.DataFrame:
+    github = load_raw_csv(
+        raw_root / "github" / "newgrad_jobs.csv",
+        dtype={"county_fips": str, "city_slug": str},
+    )
+    if not github.empty:
+        github["county_fips"] = github["county_fips"].astype("string").str.zfill(5)
+        github["has_newgrad_jobs_context"] = github["has_newgrad_jobs_context"].astype(str).str.lower().eq("true")
+        github["newgrad_jobs_is_imputed"] = github["newgrad_jobs_is_imputed"].astype(str).str.lower().eq("true")
+        return github[[
+            "city_slug", "county_fips", "newgrad_job_post_count", "newgrad_job_board_count",
+            "newgrad_job_city_page_url", "newgrad_jobs_source", "newgrad_jobs_source_date",
+            "newgrad_jobs_confidence", "newgrad_jobs_is_imputed", "has_newgrad_jobs_context",
+        ]]
     seed = _seed_rows(source_root)
     try:
         scraped = _scrape_newgrad_rows(
