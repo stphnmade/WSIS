@@ -2,9 +2,11 @@ import { useEffect, useMemo, useState, type ComponentType } from "react";
 import {
   ArrowLeft, ArrowRight, Bell, BriefcaseBusiness, Building2, Check, ChevronRight,
   CircleDollarSign, Compass, GitCompareArrows, Heart, Home, Map as MapIcon, MapPin,
-  Search, ShieldCheck, SlidersHorizontal, Sparkles, Trees, Users,
+  LogOut, Search, ShieldCheck, SlidersHorizontal, Sparkles, Trees, UserRound, Users,
 } from "lucide-react";
 import { fetchCity, fetchExplore, fetchJobs, fetchProfiles } from "./api";
+import { AuthDialog } from "./AuthDialog";
+import { currentUser, signOut, subscribeToAuth } from "./auth";
 import type { CityDetail, CitySummary, ExploreCity, IntentId, JobListing, UserProfile } from "./types";
 
 type View = "intent" | "questions" | "results" | "explore" | "detail" | "tradeoffs" | "saved";
@@ -31,11 +33,11 @@ function confidence(city: ExploreCity, profile?: CitySummary) {
   return city.active_listing_count >= 10 ? "Good job coverage" : "Limited job coverage";
 }
 
-function AppHeader({ view, onNavigate }: { view: View; onNavigate: (view: View) => void }) {
+function AppHeader({ view, onNavigate, authEmail, onSignIn, onSignOut }: { view: View; onNavigate: (view: View) => void; authEmail: string; onSignIn: () => void; onSignOut: () => void }) {
   return (
     <header className="site-header">
       <button className="wordmark" onClick={() => onNavigate("intent")} aria-label="WSIS home">
-        <span>W</span> WSIS
+        <span>W</span> <strong>wsis</strong>
       </button>
       <nav aria-label="Main navigation">
         <button className={view === "results" ? "active" : ""} onClick={() => onNavigate("results")}>Matches</button>
@@ -43,7 +45,7 @@ function AppHeader({ view, onNavigate }: { view: View; onNavigate: (view: View) 
         <button className={view === "tradeoffs" ? "active" : ""} onClick={() => onNavigate("tradeoffs")}>Tradeoffs</button>
         <button className={view === "saved" ? "active" : ""} onClick={() => onNavigate("saved")}>Saved</button>
       </nav>
-      <button className="sign-in-button">Sign in to save</button>
+      <button className="sign-in-button" onClick={authEmail ? onSignOut : onSignIn} aria-label={authEmail ? `Sign out ${authEmail}` : "Sign in to save"}>{authEmail ? <><UserRound size={17}/><span>{authEmail.split("@")[0]}</span><LogOut size={15}/></> : "Sign in to save"}</button>
     </header>
   );
 }
@@ -158,13 +160,15 @@ export function App() {
   const [profile,setProfile]=useState<UserProfile>(EMPTY_PROFILE); const [cities,setCities]=useState<ExploreCity[]>([]); const [profiles,setProfiles]=useState<CitySummary[]>([]);
   const [selected,setSelected]=useState<ExploreCity|null>(null); const [detail,setDetail]=useState<CityDetail|null>(null); const [jobs,setJobs]=useState<JobListing[]>([]); const [loading,setLoading]=useState(true); const [error,setError]=useState("");
   const [saved,setSaved]=useState<Set<string>>(()=>new Set(JSON.parse(localStorage.getItem("wsis:saved")??"[]") as string[]));
+  const [authEmail,setAuthEmail]=useState(""); const [authOpen,setAuthOpen]=useState(false);
   const loadData=()=>{setLoading(true);setError("");Promise.all([fetchExplore(449),fetchProfiles()]).then(([places,cityProfiles])=>{setCities(places);setProfiles(cityProfiles)}).catch(err=>setError(err instanceof Error?err.message:"Unable to load data")).finally(()=>setLoading(false));};
   useEffect(loadData,[]);
+  useEffect(()=>{let unsubscribe:()=>void=()=>undefined;void currentUser().then(user=>setAuthEmail(user?.email??""));void subscribeToAuth(user=>setAuthEmail(user?.email??"")).then(cleanup=>{unsubscribe=cleanup});return()=>unsubscribe()},[]);
   const selectIntent=(intent:IntentId)=>{setProfile({...EMPTY_PROFILE,intent}); if(intent==="explore")setView("explore");else setView("questions")};
   const openCity=(city:ExploreCity)=>{setPreviousView(view);setSelected(city);setView("detail");setDetail(null);setJobs([]);setLoading(true);const hasProfile=profiles.some(item=>item.slug===city.slug);Promise.all([fetchJobs(city.place_geoid,50),hasProfile?fetchCity(city.slug):Promise.resolve(null)]).then(([cityJobs,cityDetail])=>{setJobs(cityJobs);setDetail(cityDetail)}).catch(err=>setError(err instanceof Error?err.message:"Unable to load city details")).finally(()=>setLoading(false));};
   const toggleSaved=(city:ExploreCity)=>setSaved(current=>{const next=new Set(current);if(next.has(city.place_geoid))next.delete(city.place_geoid);else next.add(city.place_geoid);localStorage.setItem("wsis:saved",JSON.stringify([...next]));return next});
   const savedCities=cities.filter(city=>saved.has(city.place_geoid));
   if(view==="intent")return <IntentScreen onSelect={selectIntent}/>;
   if(view==="questions")return <QuestionsScreen profile={profile} cities={cities} onChange={setProfile} onBack={()=>setView("intent")} onComplete={()=>{if(profile.role.trim()){setLoading(true);fetchExplore(449,profile.role).then(matches=>setCities(matches.length?matches:cities)).catch(err=>setError(err instanceof Error?err.message:"Unable to match roles")).finally(()=>setLoading(false));}setView("results")}}/>;
-  return <div className="product-shell"><AppHeader view={view} onNavigate={setView}/>{error?<div className="error-banner"><span>{error}</span><button onClick={loadData}>Retry</button></div>:null}{view==="results"?<ResultsScreen profile={profile} cities={cities} profiles={profiles} onOpen={openCity} onExplore={()=>setView("explore")} saved={saved} toggleSaved={toggleSaved}/>:null}{view==="explore"?<ExploreScreen cities={cities} profiles={profiles} onOpen={openCity}/>:null}{view==="detail"&&selected?<DetailScreen city={selected} detail={detail} jobs={jobs} loading={loading} onBack={()=>setView(previousView)} saved={saved.has(selected.place_geoid)} onSave={()=>toggleSaved(selected)} onTradeoffs={()=>setView("tradeoffs")}/>:null}{view==="tradeoffs"?<TradeoffsScreen profile={profile} onChange={setProfile} cities={cities} onOpen={openCity}/>:null}{view==="saved"?<SavedScreen savedCities={savedCities} onOpen={openCity}/>:null}<MobileNav view={view} onNavigate={setView}/></div>;
+  return <div className="product-shell"><AppHeader view={view} onNavigate={setView} authEmail={authEmail} onSignIn={()=>setAuthOpen(true)} onSignOut={()=>void signOut().then(()=>setAuthEmail(""))}/>{error?<div className="error-banner"><span>{error}</span><button onClick={loadData}>Retry</button></div>:null}{view==="results"?<ResultsScreen profile={profile} cities={cities} profiles={profiles} onOpen={openCity} onExplore={()=>setView("explore")} saved={saved} toggleSaved={toggleSaved}/>:null}{view==="explore"?<ExploreScreen cities={cities} profiles={profiles} onOpen={openCity}/>:null}{view==="detail"&&selected?<DetailScreen city={selected} detail={detail} jobs={jobs} loading={loading} onBack={()=>setView(previousView)} saved={saved.has(selected.place_geoid)} onSave={()=>toggleSaved(selected)} onTradeoffs={()=>setView("tradeoffs")}/>:null}{view==="tradeoffs"?<TradeoffsScreen profile={profile} onChange={setProfile} cities={cities} onOpen={openCity}/>:null}{view==="saved"?<SavedScreen savedCities={savedCities} onOpen={openCity}/>:null}<MobileNav view={view} onNavigate={setView}/><AuthDialog open={authOpen} onClose={()=>setAuthOpen(false)}/></div>;
 }

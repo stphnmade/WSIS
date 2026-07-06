@@ -12,7 +12,7 @@ beforeEach(() => {
   localStorage.clear();
   vi.stubGlobal("fetch", vi.fn(async (input: RequestInfo | URL) => {
     const url = String(input);
-    const payload = url.includes("/api/v1/explore") ? [PLACE] : [];
+    const payload = url.includes("/api/v1/explore") ? [PLACE] : url.includes("/api/auth/config") ? { enabled: false, supabase_url: "", publishable_key: "" } : [];
     return { ok: true, json: async () => payload } as Response;
   }));
 });
@@ -38,7 +38,7 @@ describe("WSIS responsive product flow", () => {
     fireEvent.click(screen.getByRole("button", { name: /Show my five places/ }));
 
     expect(await screen.findByRole("heading", { name: "Places where work and life can fit." })).toBeVisible();
-    expect(screen.getByRole("heading", { name: "San Jose" })).toBeVisible();
+    expect(await screen.findByRole("heading", { name: "San Jose" })).toBeVisible();
   });
 
   it("allows anonymous exploration without onboarding", async () => {
@@ -47,5 +47,16 @@ describe("WSIS responsive product flow", () => {
 
     expect(await screen.findByRole("heading", { name: "Explore beyond your first five." })).toBeVisible();
     expect(screen.getAllByRole("button", { name: /San Jose, CA/ })).toHaveLength(2);
+  });
+
+  it("opens secure sign-in choices without blocking exploration", async () => {
+    render(<App />);
+    fireEvent.click(screen.getByRole("button", { name: "Explore without a plan" }));
+    expect(await screen.findAllByRole("button", { name: /San Jose, CA/ })).toHaveLength(2);
+    fireEvent.click(screen.getByRole("button", { name: "Sign in to save" }));
+
+    expect(screen.getByRole("dialog", { name: "Save your shortlist." })).toBeVisible();
+    expect(screen.getByRole("button", { name: "Continue with Google" })).toBeVisible();
+    expect(screen.getByRole("textbox", { name: "Email address" })).toBeVisible();
   });
 });

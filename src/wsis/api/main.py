@@ -3,12 +3,13 @@ from __future__ import annotations
 import os
 from pathlib import Path
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+from fastapi import Depends, FastAPI, Header, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from fastapi.staticfiles import StaticFiles
 
 from wsis.decision import DecisionInputs, DecisionRun
+from wsis.auth import AuthConfigurationError, AuthTokenError, SupabaseAuthSettings, SupabaseTokenVerifier
 from wsis.domain.models import CityDetail, CitySummary, ScoreWeights
 from wsis.services.city_service import CityNotFoundError, CityService, get_city_service
 from wsis.services.decision_service import (
@@ -61,6 +62,37 @@ PROJECT_ROOT = Path(
     os.getenv("WSIS_PROJECT_ROOT", str(Path(__file__).resolve().parents[3]))
 ).resolve()
 WEB_DIST = PROJECT_ROOT / "apps" / "web" / "dist"
+
+
+@app.get("/api/auth/config")
+def auth_config() -> dict[str, str | bool]:
+    url = os.getenv("WSIS_SUPABASE_URL", "").rstrip("/")
+    publishable_key = os.getenv("WSIS_SUPABASE_PUBLISHABLE_KEY", "")
+    return {
+        "enabled": bool(url and publishable_key),
+        "supabase_url": url,
+        "publishable_key": publishable_key,
+    }
+
+
+@app.get("/api/auth/me")
+def authenticated_user(authorization: str | None = Header(None)) -> dict[str, str | bool | None]:
+    if not authorization or not authorization.startswith("Bearer "):
+        raise HTTPException(status_code=401, detail="Bearer token required")
+    try:
+        verifier = SupabaseTokenVerifier(SupabaseAuthSettings.from_env())
+        principal = verifier.verify(authorization.removeprefix("Bearer ").strip())
+    except AuthConfigurationError as error:
+        raise HTTPException(status_code=503, detail="Authentication is not configured") from error
+    except AuthTokenError as error:
+        raise HTTPException(status_code=401, detail=str(error)) from error
+    return {
+        "subject": principal.subject,
+        "email": principal.email,
+        "email_verified": principal.email_verified,
+        "assurance_level": principal.assurance_level,
+        "role": principal.role,
+    }
 
 
 @app.get("/api/status")
