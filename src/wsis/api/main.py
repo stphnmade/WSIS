@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+import os
+from pathlib import Path
+
 from fastapi import Depends, FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 
 from wsis.decision import DecisionInputs, DecisionRun
 from wsis.domain.models import CityDetail, CitySummary, ScoreWeights
@@ -11,6 +16,7 @@ from wsis.services.decision_service import (
     DecisionService,
     get_decision_service,
 )
+from wsis.services.explore_service import ExploreCity, ExploreService, PublicJobListing, get_explore_service
 
 
 def _score_weights(
@@ -37,14 +43,24 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:8501"],
+    allow_origins=[
+        origin.strip()
+        for origin in os.getenv(
+            "WSIS_FRONTEND_ORIGINS",
+            "http://localhost:5173,http://127.0.0.1:5173,http://localhost:8501",
+        ).split(",")
+        if origin.strip()
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-@app.get("/")
+WEB_DIST = Path(__file__).resolve().parents[3] / "apps" / "web" / "dist"
+
+
+@app.get("/api/status")
 def read_root() -> dict[str, str]:
     return {"product": "WSIS", "status": "ok"}
 
@@ -60,6 +76,26 @@ def list_cities(
     city_service: CityService = Depends(get_city_service),
 ) -> list[CitySummary]:
     return city_service.list_cities(weights)
+
+
+@app.get("/api/v1/explore", response_model=list[ExploreCity])
+def explore_places(
+    limit: int = Query(100, ge=1, le=750),
+    q: str | None = Query(None, min_length=1, max_length=100),
+    state: str | None = Query(None, min_length=2, max_length=2),
+    role: str | None = Query(None, min_length=2, max_length=100),
+    explore_service: ExploreService = Depends(get_explore_service),
+) -> list[ExploreCity]:
+    return explore_service.list_places(limit=limit, query=q, state_code=state, role=role)
+
+
+@app.get("/api/v1/jobs", response_model=list[PublicJobListing])
+def list_jobs(
+    place_geoid: str = Query(..., pattern=r"^\d{7}$"),
+    limit: int = Query(50, ge=1, le=100),
+    explore_service: ExploreService = Depends(get_explore_service),
+) -> list[PublicJobListing]:
+    return explore_service.list_jobs(place_geoid=place_geoid, limit=limit)
 
 
 @app.get("/api/v1/cities/{slug}", response_model=CityDetail)
@@ -97,3 +133,15 @@ def run_decision(
         return decision_service.run_decision(inputs)
     except DecisionRequestError as error:
         raise HTTPException(status_code=404, detail=str(error)) from error
+
+
+if WEB_DIST.exists():
+    app.mount("/assets", StaticFiles(directory=WEB_DIST / "assets"), name="web-assets")
+
+    @app.get("/")
+    def web_index() -> FileResponse:
+        return FileResponse(WEB_DIST / "index.html")
+
+    @app.get("/{path:path}")
+    def web_fallback(path: str) -> FileResponse:
+        return FileResponse(WEB_DIST / "index.html")

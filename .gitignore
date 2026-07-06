@@ -7,4 +7,12 @@ __pycache__/
 *.pyc
 *.pyo
 *.pyd
-
+node_modules/
+dist/
+tmp/
+.playwright-mcp/
+*.tsbuildinfo
+apps/web/vite.config.js
+apps/web/vite.config.d.ts
+wsis-*-results.png
+wsis-*-detail.png

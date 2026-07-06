@@ -1,0 +1,172 @@
+{
+  "generated_at": "2026-07-06T18:28:22.180287+00:00",
+  "census_place_count": 32350,
+  "active_source_listing_count": 1987,
+  "parseable_us_location_count": 1700,
+  "matched_place_count": 422,
+  "matched_listing_assignments": 1638,
+  "unmatched_location_count": 62,
+  "top_unmatched_locations": [
+    {
+      "location": "Annapolis Junction, MD",
+      "count": 12
+    },
+    {
+      "location": "Dulles, VA",
+      "count": 4
+    },
+    {
+      "location": "Jackson Township, NJ",
+      "count": 3
+    },
+    {
+      "location": "Simsbury, CT",
+      "count": 2
+    },
+    {
+      "location": "Halethorpe, MD",
+      "count": 2
+    },
+    {
+      "location": "Brooklyn, NY",
+      "count": 2
+    },
+    {
+      "location": "Lafayette, KS",
+      "count": 2
+    },
+    {
+      "location": "Queens, NY",
+      "count": 2
+    },
+    {
+      "location": "Augusta, GA",
+      "count": 2
+    },
+    {
+      "location": "Research Triangle Park, NC",
+      "count": 1
+    },
+    {
+      "location": "Winnipeg, MN",
+      "count": 1
+    },
+    {
+      "location": "Vermontville, NY",
+      "count": 1
+    },
+    {
+      "location": "Lexington, KY",
+      "count": 1
+    },
+    {
+      "location": "Bridgewater Township, NJ",
+      "count": 1
+    },
+    {
+      "location": "Berkeley Springs, WV",
+      "count": 1
+    },
+    {
+      "location": "Clifton Park, NY",
+      "count": 1
+    },
+    {
+      "location": "Westchester County, NY",
+      "count": 1
+    },
+    {
+      "location": "Bluemont, VA",
+      "count": 1
+    },
+    {
+      "location": "Waukesha, WI",
+      "count": 1
+    },
+    {
+      "location": "Paso Robles, CA",
+      "count": 1
+    },
+    {
+      "location": "Holmdel, NJ",
+      "count": 1
+    },
+    {
+      "location": "Hollywood, LA",
+      "count": 1
+    },
+    {
+      "location": "Franklin, MA",
+      "count": 1
+    },
+    {
+      "location": "Wilton, CT",
+      "count": 1
+    },
+    {
+      "location": "Malta, NY",
+      "count": 1
+    },
+    {
+      "location": "Amherst, MA",
+      "count": 1
+    },
+    {
+      "location": "North Hollywood, LA",
+      "count": 1
+    },
+    {
+      "location": "Cranberry Twp, PA",
+      "count": 1
+    },
+    {
+      "location": "Stafford, VA",
+      "count": 1
+    },
+    {
+      "location": "Boxborough, MA",
+      "count": 1
+    },
+    {
+      "location": "Bozrah, CT",
+      "count": 1
+    },
+    {
+      "location": "Hamilton Township, NJ",
+      "count": 1
+    },
+    {
+      "location": "Cypress, TX",
+      "count": 1
+    },
+    {
+      "location": "Wayne, NJ",
+      "count": 1
+    },
+    {
+      "location": "Westford, MA",
+      "count": 1
+    },
+    {
+      "location": "Fort Bragg, NC",
+      "count": 1
+    },
+    {
+      "location": "Athens, GA",
+      "count": 1
+    },
+    {
+      "location": "Somerset County, NJ",
+      "count": 1
+    },
+    {
+      "location": "Montclair, NJ",
+      "count": 1
+    },
+    {
+      "location": "Sparks, MD",
+      "count": 1
+    }
+  ],
+  "caveat": "Listings are a partial early-career technology feed. Counts show source coverage, not total labor demand; government labor statistics remain authoritative."
+}
