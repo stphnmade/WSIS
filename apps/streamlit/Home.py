@@ -532,6 +532,83 @@ def clear_compare_selection() -> None:
     st.session_state["home_compare_slugs"] = []
 
 
+def _focus_city_frame(
+    city_frame: pd.DataFrame,
+    label_slugs: set[str],
+    focus_mode: str,
+) -> pd.DataFrame:
+    if city_frame.empty:
+        return city_frame
+
+    if focus_mode in {"inspect", "compare"}:
+        return city_frame.copy()
+
+    if focus_mode == "region":
+        population_cutoff = city_frame["population"].quantile(0.55)
+        return city_frame[
+            (city_frame["population"] >= population_cutoff)
+            | city_frame["slug"].isin(label_slugs)
+        ].copy()
+
+    return city_frame[city_frame["slug"].isin(label_slugs)].copy()
+
+
+def _label_city_frame(
+    focus_frame: pd.DataFrame,
+    label_slugs: set[str],
+    focus_mode: str,
+) -> pd.DataFrame:
+    if focus_frame.empty:
+        return focus_frame
+
+    if focus_mode in {"inspect", "compare"}:
+        population_cutoff = focus_frame["population"].quantile(0.6)
+        labeled = focus_frame[
+            (focus_frame["population"] >= population_cutoff)
+            | focus_frame["slug"].isin(label_slugs)
+        ].copy()
+        labeled.loc[labeled["label"] == "", "label"] = (
+            labeled["city"] + ", " + labeled["state_code"]
+        )
+        return labeled
+
+    return focus_frame[focus_frame["slug"].isin(label_slugs)].copy()
+
+
+def _glimmer_sizes(city_frame: pd.DataFrame, focus_mode: str) -> list[float]:
+    if city_frame.empty:
+        return []
+
+    min_population = float(city_frame["population"].min())
+    max_population = float(city_frame["population"].max())
+    population_span = max(max_population - min_population, 1.0)
+    mode_boost = {
+        "national": 0.0,
+        "region": 1.3,
+        "compare": 2.4,
+        "inspect": 2.8,
+    }.get(focus_mode, 0.0)
+
+    sizes: list[float] = []
+    for row in city_frame.itertuples():
+        population_ratio = (float(row.population) - min_population) / population_span
+        sizes.append(round(7.0 + (population_ratio * 9.5) + (float(row.start_score) * 0.22) + mode_boost, 2))
+    return sizes
+
+
+def _focus_marker_sizes(city_frame: pd.DataFrame, focus_mode: str) -> list[float]:
+    if city_frame.empty:
+        return []
+
+    base_size = {
+        "national": 8.5,
+        "region": 10.5,
+        "compare": 13.0,
+        "inspect": 14.5,
+    }.get(focus_mode, 10.0)
+    return [round(base_size + (float(score) * 0.75), 2) for score in city_frame["start_score"]]
+
+
 def build_map(
     details: list[CityDetail],
     weights: ScoreWeights,
@@ -549,6 +626,7 @@ def build_map(
     )
     state_rows = aggregate_state_start_scores(details, weights)
     state_frame = pd.DataFrame(state_rows)
+    focus_mode = str(focus["mode"])
     city_frame = pd.DataFrame(
         [
             {
@@ -556,6 +634,7 @@ def build_map(
                 "city": detail.summary.name,
                 "state": detail.summary.state,
                 "state_code": detail.summary.state_code,
+                "population": detail.summary.population,
                 "score": detail.summary.overall_score,
                 "start_score": best_places_to_start_score(detail, weights),
                 "latitude": detail.summary.latitude,
@@ -568,17 +647,21 @@ def build_map(
             for detail in details
         ]
     )
-    county_state_fips = tuple(
-        sorted(
-            county_overlay_state_fips(
-                details,
-                selected_region,
-                selected_detail,
-                compare_details,
+    county_state_fips = ()
+    if focus_mode in {"inspect", "compare"}:
+        county_state_fips = tuple(
+            sorted(
+                county_overlay_state_fips(
+                    details,
+                    selected_region,
+                    selected_detail,
+                    compare_details,
+                )
             )
         )
-    )
     county_geojson = filtered_county_geojson(county_state_fips)
+    focus_frame = _focus_city_frame(city_frame, label_slugs, focus_mode).reset_index(drop=True)
+    labeled_frame = _label_city_frame(focus_frame, label_slugs, focus_mode)
     figure = go.Figure()
     figure.add_trace(
         go.Choropleth(
@@ -634,12 +717,7 @@ def build_map(
 
     selected_slug = selected_detail.summary.slug if selected_detail is not None else None
     selected_points = city_frame.index[city_frame["slug"] == selected_slug].tolist() if selected_slug else []
-    base_marker_size = {
-        "national": 11,
-        "region": 13,
-        "compare": 15,
-        "inspect": 17,
-    }.get(str(focus["mode"]), 12)
+    halo_sizes = _glimmer_sizes(city_frame, focus_mode)
     figure.add_trace(
         go.Scattergeo(
             lat=city_frame["latitude"],
@@ -648,33 +726,81 @@ def build_map(
             customdata=city_frame[["slug", "state", "start_score", "score", "standout"]],
             mode="markers",
             marker={
-                "size": [base_marker_size + (score * 1.1) for score in city_frame["start_score"]],
-                "color": city_frame["start_score"],
-                "colorscale": [
-                    [0.0, "#ffcf70"],
-                    [0.45, "#12a594"],
-                    [0.75, "#5577ff"],
-                    [1.0, "#ff7a6b"],
-                ],
-                "cmin": 0,
-                "cmax": 10,
-                "opacity": 0.92,
-                "line": {"color": "rgba(255,255,255,0.95)", "width": 1.1},
+                "size": halo_sizes,
+                "color": "rgba(18, 165, 148, 0.18)",
+                "opacity": 1.0,
+                "line": {"color": "rgba(18, 165, 148, 0.0)", "width": 0},
                 "showscale": False,
             },
             selectedpoints=selected_points or None,
-            selected={"marker": {"opacity": 1.0, "size": base_marker_size + 13, "color": "#0f766e"}},
-            unselected={"marker": {"opacity": 0.42}},
+            selected={"marker": {"opacity": 1.0, "size": max(halo_sizes or [10]) + 4, "color": "rgba(18, 165, 148, 0.36)"}},
+            unselected={"marker": {"opacity": 1.0}},
             hovertemplate=(
                 "<b>%{hovertext}</b><br>"
-                "Best places to start: %{customdata[2]:.1f}/10<br>"
-                "WSIS score: %{customdata[3]:.1f}/10<br>"
-                "Standout: %{customdata[4]}"
+                "Potential fit glimmer: %{customdata[2]:.1f}/10<br>"
+                "Tap to inspect this city"
                 "<extra></extra>"
             ),
+            showlegend=False,
         )
     )
-    labeled_frame = city_frame[city_frame["label"] != ""].copy()
+    figure.add_trace(
+        go.Scattergeo(
+            lat=city_frame["latitude"],
+            lon=city_frame["longitude"],
+            hoverinfo="skip",
+            mode="markers",
+            marker={
+                "size": [round(size * 0.44, 2) for size in halo_sizes],
+                "color": "rgba(255,255,255,0.86)",
+                "opacity": 1.0,
+                "line": {"color": "rgba(255,255,255,0.0)", "width": 0},
+                "showscale": False,
+            },
+            showlegend=False,
+        )
+    )
+    if not focus_frame.empty:
+        focus_selected_points = (
+            focus_frame.index[focus_frame["slug"] == selected_slug].tolist() if selected_slug else []
+        )
+        focus_sizes = _focus_marker_sizes(focus_frame, focus_mode)
+        figure.add_trace(
+            go.Scattergeo(
+                lat=focus_frame["latitude"],
+                lon=focus_frame["longitude"],
+                hovertext=[f"{row.city}, {row.state}" for row in focus_frame.itertuples()],
+                customdata=focus_frame[["slug", "state", "start_score", "score", "standout"]],
+                mode="markers",
+                marker={
+                    "size": focus_sizes,
+                    "color": focus_frame["start_score"],
+                    "colorscale": [
+                        [0.0, "#ffcf70"],
+                        [0.45, "#12a594"],
+                        [0.75, "#5577ff"],
+                        [1.0, "#ff7a6b"],
+                    ],
+                    "cmin": 0,
+                    "cmax": 10,
+                    "opacity": 0.96,
+                    "line": {"color": "rgba(255,255,255,0.95)", "width": 1.15},
+                    "showscale": False,
+                },
+                selectedpoints=focus_selected_points or None,
+                selected={"marker": {"opacity": 1.0, "size": max(focus_sizes or [11]) + 4, "color": "#0f766e"}},
+                unselected={"marker": {"opacity": 0.78 if focus_mode in {"inspect", "compare"} else 0.64}},
+                hovertemplate=(
+                    "<b>%{hovertext}</b><br>"
+                    "Best places to start: %{customdata[2]:.1f}/10<br>"
+                    "WSIS score: %{customdata[3]:.1f}/10<br>"
+                    "Standout: %{customdata[4]}"
+                    "<extra></extra>"
+                ),
+                showlegend=False,
+            )
+        )
+
     if not labeled_frame.empty:
         figure.add_trace(
             go.Scattergeo(
@@ -683,14 +809,31 @@ def build_map(
                 text=labeled_frame["label"],
                 mode="text",
                 textposition="top center",
-                textfont={"size": 10, "color": "#1f2b28"},
+                textfont={
+                    "size": 10 if focus_mode in {"inspect", "compare"} else 9,
+                    "color": "#1f2b28",
+                },
                 hoverinfo="skip",
                 showlegend=False,
             )
         )
 
+    figure.add_annotation(
+        x=0.014,
+        y=0.03,
+        xref="paper",
+        yref="paper",
+        text="Glimmers hint at city potential. Bigger signals appear as you inspect more closely.",
+        showarrow=False,
+        font={"size": 11, "color": "#5b666a"},
+        align="left",
+        bgcolor="rgba(255,255,255,0.72)",
+        bordercolor="rgba(91,102,106,0.12)",
+        borderpad=6,
+    )
+
     figure.update_layout(
-        height=640,
+        height=610 if focus_mode == "national" else 640,
         margin={"l": 0, "r": 0, "t": 0, "b": 0},
         clickmode="event+select",
         font={"color": "#17212b", "family": "Plus Jakarta Sans, Arial, sans-serif"},

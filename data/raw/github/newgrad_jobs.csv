@@ -1,0 +1,11 @@
+city_slug,county_fips,newgrad_job_post_count,newgrad_job_board_count,newgrad_job_city_page_url,newgrad_jobs_source,newgrad_jobs_source_date,newgrad_jobs_confidence,newgrad_jobs_is_imputed,has_newgrad_jobs_context
+austin-tx,48453,66,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-03,source_backed,False,True
+raleigh-nc,37183,9,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-02,source_backed,False,True
+pittsburgh-pa,42003,11,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-03,source_backed,False,True
+denver-co,08031,12,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-02,source_backed,False,True
+minneapolis-mn,27053,6,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-06-23,source_backed,False,True
+chicago-il,17031,51,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-03,source_backed,False,True
+charlotte-nc,37119,15,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-02,source_backed,False,True
+madison-wi,55025,5,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-06-18,source_backed,False,True
+tampa-fl,12057,6,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-03,source_backed,False,True
+seattle-wa,53033,49,1,https://github.com/SimplifyJobs/New-Grad-Positions,github_simplify_new_grad_positions,2026-07-03,source_backed,False,True

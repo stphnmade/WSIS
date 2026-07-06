@@ -1,0 +1,423 @@
+place_geoid,place_name,state_code,lsad_code,functional_status,land_area_sqm,water_area_sqm,latitude,longitude,source_vintage,source_url,active_listing_count,latest_listing_date
+0668000,San Jose city,CA,25,A,460869253,8091031,37.296011,-121.814552,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,91,2026-07-04
+4805000,Austin city,TX,25,A,841779281,16983143,30.298622,-97.754134,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,71,2026-07-04
+1714000,Chicago city,IL,25,A,589864490,17575510,41.837045,-87.684939,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,63,2026-07-06
+5363000,Seattle city,WA,25,A,217623548,150342251,47.619335,-122.351538,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,58,2026-07-04
+1304000,Atlanta city,GA,25,A,350365525,2788718,33.762909,-84.422675,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,40,2026-07-03
+2507000,Boston city,MA,25,A,125203166,106897561,42.338551,-71.018253,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,33,2026-07-04
+1150000,Washington city,DC,25,N,158318961,18706999,38.904243,-77.016524,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,31,2026-07-04
+5357535,Redmond city,WA,25,A,42979343,1732419,47.677924,-122.115336,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,29,2026-07-04
+4835000,Houston city,TX,25,A,1659712399,80864235,29.785743,-95.388806,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,25,2026-07-06
+4819000,Dallas city,TX,25,A,879780729,113870750,32.793333,-96.766513,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,22,2026-07-03
+5305210,Bellevue city,WA,25,A,86702563,10433380,47.597837,-122.15648,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,22,2026-07-04
+0666000,San Diego city,CA,25,A,844408062,42068473,32.830391,-117.120923,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,21,2026-07-05
+0669084,Santa Clara city,CA,25,A,47335931,0,37.364621,-121.967973,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,21,2026-07-02
+0655282,Palo Alto city,CA,25,A,62291998,4940291,37.39652,-122.143088,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,20,2026-07-03
+0677000,Sunnyvale city,CA,25,A,57135715,1858933,37.385797,-122.026316,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,20,2026-07-04
+0455000,Phoenix city,AZ,25,A,1342709867,2566810,33.572154,-112.090132,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,16,2026-07-02
+3915000,Cincinnati city,OH,25,A,201797482,4457951,39.140183,-84.505829,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,16,2026-06-30
+0649670,Mountain View city,CA,25,A,30971477,719719,37.399686,-122.079269,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,15,2026-07-03
+1245000,Miami city,FL,25,A,93231940,51996472,25.775163,-80.208615,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,15,2026-07-06
+4260000,Philadelphia city,PA,25,A,347900745,20969567,40.009376,-75.133346,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,13,2026-06-29
+5167000,Richmond city,VA,25,A,155205068,6849165,37.531399,-77.476009,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,13,2026-07-06
+0137000,Huntsville city,AL,25,A,583591066,3951422,34.69772,-86.67667,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,12,2026-07-02
+0609066,Burlingame city,CA,25,A,11378235,4261690,37.589952,-122.363342,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,12,2026-07-04
+0636770,Irvine city,CA,25,A,169946118,794805,33.678399,-117.771254,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,12,2026-07-01
+2511000,Cambridge city,MA,25,A,16567881,1831962,42.376043,-71.11868,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,12,2026-06-27
+3712000,Charlotte city,NC,25,A,808332406,5149772,35.209045,-80.83099,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,12,2026-07-02
+0617610,Cupertino city,CA,25,A,29370038,2520,37.3194,-122.044957,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,11,2026-07-02
+0684116,West Athens CDP,CA,57,S,3462635,0,33.923453,-118.303301,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,11,2026-07-02
+0820000,Denver city,CO,25,A,396460153,4275563,39.76185,-104.881105,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,11,2026-07-02
+0647766,Milpitas city,CA,25,A,34915446,99377,37.433136,-121.890934,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,10,2026-07-03
+2458300,Odenton CDP,MD,57,S,38366929,0,39.066257,-76.693793,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,10,2026-07-02
+2603000,Ann Arbor city,MI,25,A,73546149,2252076,42.276147,-83.73086,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,10,2026-06-25
+4967000,Salt Lake City city,UT,25,A,287205577,1163131,40.776928,-111.930991,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,10,2026-06-29
+0622412,El Segundo city,CA,25,A,14113054,13722008,33.910367,-118.425079,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,9,2026-07-02
+1235000,Jacksonville city,FL,25,A,1935575054,329261650,30.336864,-81.661603,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,9,2026-07-03
+3755000,Raleigh city,NC,25,A,394359593,2779434,35.831868,-78.641042,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,9,2026-07-02
+0626000,Fremont city,CA,25,A,202285903,26263069,37.49446,-121.94115,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,8,2026-07-02
+0816000,Colorado Springs city,CO,25,A,523773251,911488,38.867255,-104.760749,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,8,2026-07-06
+4202896,Ardmore CDP,PA,57,S,5092328,0,40.003242,-75.294739,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,8,2026-07-02
+4261000,Pittsburgh city,PA,25,A,143414838,7705629,40.439936,-79.975676,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,8,2026-07-03
+4858016,Plano city,TX,25,A,185692556,922129,33.050769,-96.747944,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,8,2026-07-06
+0541000,Little Rock city,AR,25,A,314018103,7655127,34.725393,-92.358556,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-06-30
+0667000,San Francisco city,CA,25,A,120913550,479701988,37.727239,-123.032229,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-06-16
+1243975,Melbourne city,FL,25,A,114502258,15073147,28.110438,-80.662717,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-02
+1921000,Des Moines city,IA,25,A,228332305,6608904,41.57259,-93.610243,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-06-30
+2743000,Minneapolis city,MN,25,A,139858482,9083548,44.963324,-93.26832,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-04
+2965000,St. Louis city,MO,25,A,159847393,11534970,38.635699,-90.244582,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-06-24
+3918000,Columbus city,OH,25,A,574796511,15172442,39.985531,-82.985594,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-01
+3921000,Dayton city,OH,25,A,144486433,2988000,39.784743,-84.199632,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-01
+4805864,Bastrop city,TX,25,A,25490045,454467,30.111067,-97.320934,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-06-19
+5101000,Alexandria city,VA,25,A,38682331,1069028,38.819251,-77.08367,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-02
+5103000,Arlington CDP,VA,57,S,67332992,273562,38.878337,-77.100703,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-06
+5148376,McLean CDP,VA,57,S,64224681,265287,38.943545,-77.192913,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,7,2026-07-06
+0641992,Livermore city,CA,25,A,68816613,9862,37.686977,-121.759781,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-06-29
+0653000,Oakland city,CA,25,A,144943635,57160794,37.769846,-122.22569,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-02
+0668252,San Mateo city,CA,25,A,31381617,9667656,37.56031,-122.3106,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-02
+0933690,Greenwich CDP,CT,57,S,12540942,839236,41.027773,-73.626931,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-06
+1271000,Tampa city,FL,25,A,296520245,164657229,27.970086,-82.479673,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-03
+2102368,Ashland city,KY,25,A,27804366,83246,38.459492,-82.645081,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-01-25
+2404000,Baltimore city,MD,25,A,209649327,28758743,39.300032,-76.610476,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-02
+3240000,Las Vegas city,NV,25,A,367428873,138524,36.233499,-115.264037,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-03
+3663000,Rochester city,NY,25,A,92621742,3650730,43.169927,-77.616891,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-06-22
+4105350,Beaverton city,OR,25,A,51173936,0,45.478054,-122.817075,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-06-01
+4837000,Irving city,TX,25,A,173475847,2568679,32.857748,-96.970022,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-02
+4865000,San Antonio city,TX,25,A,1292348820,14854213,29.462809,-98.524635,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-03
+5166672,Reston CDP,VA,57,S,39737231,839108,38.949762,-77.346244,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-06-30
+5548000,Madison city,WI,25,A,218116057,55508446,43.087815,-89.429856,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,6,2026-07-04
+0505320,Bentonville city,AR,25,A,91921832,538013,36.352662,-94.231181,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-07-03
+0412000,Chandler city,AZ,25,A,170169512,182489,33.282765,-111.851819,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-06-12
+0651182,Newport Beach city,CA,25,A,61719506,5792265,33.626595,-117.865392,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-06-24
+0665070,San Carlos city,CA,25,A,14017265,2037,37.499034,-122.267572,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-07-01
+1253000,Orlando city,FL,25,A,335664599,21649307,28.472818,-81.320242,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-07-02
+1919000,Davenport city,IA,25,A,166299901,5501429,41.55682,-90.603948,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-06-30
+3260600,Reno city,NV,25,A,283081084,7331473,39.549097,-119.849907,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-06-30
+3651000,New York city,NY,25,A,778246264,445342854,40.662712,-73.938677,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-05-01
+4134100,Hillsboro city,OR,25,A,68486731,31207,45.526798,-122.935395,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-06-22
+4159000,Portland city,OR,25,A,345723593,29835838,45.536951,-122.649971,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-07-02
+4273808,State College borough,PA,21,A,11858006,0,40.791039,-77.856813,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-07-06
+5553000,Milwaukee city,WI,25,A,249085987,1664088,43.063348,-87.966695,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,5,2026-07-04
+0446000,Mesa city,AZ,25,A,367677026,1589995,33.399355,-111.715968,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+0611530,Carson city,CA,25,A,48513002,612009,33.840367,-118.249574,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+0643000,Long Beach city,CA,25,A,131240389,70390689,33.780791,-118.16818,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-02
+0646870,Menlo Park city,CA,25,A,25873981,19152744,37.479731,-122.148055,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-24
+0830835,Golden city,CO,25,A,24969974,239970,39.742483,-105.210561,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-25
+2622000,Detroit city,MI,25,A,359321405,10794927,42.383037,-83.102237,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-05-13
+2706616,Bloomington city,MN,25,A,89868907,9573528,44.829666,-93.315217,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-18
+2717288,Eagan city,MN,25,A,80754982,5901767,44.815217,-93.162816,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-03-31
+3719000,Durham city,NC,25,A,310655712,2152552,35.977928,-78.898109,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+3460900,Princeton,NJ,00,A,46479389,1205662,40.358244,-74.666728,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-24
+3624229,Elmira city,NY,25,A,18775359,845559,42.093388,-76.80961,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-25
+3948188,Mason city,OH,25,A,50460616,42168,39.360722,-84.295867,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-30
+4055000,Oklahoma City city,OK,25,A,1572117986,37030068,35.467079,-97.513657,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+4075000,Tulsa city,OK,25,A,512104983,10584373,36.127949,-95.902316,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-26
+4516000,Columbia city,SC,25,A,360928070,7709949,34.040519,-80.906099,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-29
+4752006,Nashville-Davidson metropolitan government (balance),TN,00,F,1231823295,55882420,36.1718,-86.785002,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+4816612,Coppell city,TX,25,A,37358836,804254,32.963306,-96.990556,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-19
+4824000,El Paso city,TX,25,A,670348703,1382695,31.84778,-106.431106,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+4861796,Richardson city,TX,25,A,73975569,234253,32.972291,-96.708069,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-30
+5103320,Ashburn CDP,VA,57,S,39614877,658435,39.027296,-77.471322,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+5156000,Newport News city,VA,25,A,178698605,131131002,37.076136,-76.52198,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-07-02
+5335415,Kent city,WA,25,A,86981912,1510527,47.390008,-122.213528,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,4,2026-06-24
+0473000,Tempe city,AZ,25,A,103522843,543723,33.388414,-111.931782,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-05-28
+0606000,Berkeley city,CA,25,A,27018306,18712737,37.865673,-122.298725,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-05-09
+0668378,San Ramon city,CA,25,A,51953228,88389,37.765258,-121.931987,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+0804000,Aurora city,CO,25,A,425073705,1498809,39.709537,-104.720509,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-05-28
+0812815,Centennial city,CO,25,A,78104507,379304,39.590856,-104.863754,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-01
+0918430,Danbury city,CT,25,A,108894404,5768007,41.398741,-73.478103,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-09
+1077580,Wilmington city,DE,25,A,28218287,16303526,39.735651,-75.532104,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-04
+1263000,St. Petersburg city,FL,25,A,160077709,190775475,27.762727,-82.644131,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+1912000,Cedar Rapids city,IA,25,A,193696522,3237801,41.96419,-91.67917,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-29
+1973335,Sioux City city,IA,25,A,153812876,3027444,42.49538,-96.389495,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-30
+1608830,Boise City city,ID,25,A,222999277,2537835,43.59805,-116.231596,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+1720591,Downers Grove village,IL,47,A,37948036,387115,41.79503,-88.021055,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-30
+1825000,Fort Wayne city,IN,25,A,289456551,863477,41.088193,-85.142791,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+2071000,Topeka city,KS,25,A,160311945,3406675,39.034673,-95.696191,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-24
+2127982,Florence city,KY,25,A,28968646,86945,38.993405,-84.648186,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-05-07
+2550285,Norwood CDP,MA,57,S,26882338,445372,42.187364,-71.195971,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-16
+2553960,Pittsfield city,MA,25,A,104812684,5165042,42.45184,-73.260685,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-04
+2582000,Worcester city,MA,25,A,96762675,2808413,42.269478,-71.807783,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+2400125,Aberdeen city,MD,25,A,18030709,24405,39.516403,-76.174518,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+2441250,Hyattsville city,MD,25,A,7006792,64952,38.961205,-76.954935,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-14
+2674900,Southfield city,MI,25,A,68025633,14814,42.47464,-83.259509,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-09
+2917272,Creve Coeur city,MO,25,A,26613293,0,38.662023,-90.443048,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-03
+2931276,Hazelwood city,MO,25,A,41538987,1531486,38.794706,-90.396002,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-02
+2938000,Kansas City city,MO,25,A,814591280,10547075,39.125155,-94.550313,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-19
+3314200,Concord city,NH,25,A,165602774,8420311,43.232493,-71.561252,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-11
+3986660,Wright-Patterson AFB CDP,OH,57,S,25571981,338568,39.822834,-84.048504,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-05-21
+4550875,North Charleston city,SC,25,A,201990596,9252718,32.917881,-80.065,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-17
+4748000,Memphis city,TN,25,A,750470803,23162572,35.109164,-89.968511,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-07-01
+4801924,Allen city,TX,25,A,68335676,210112,33.107224,-96.674676,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-17
+4804000,Arlington city,TX,25,A,248143787,9273642,32.700708,-97.124691,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-25
+5126496,Fairfax city,VA,25,A,16163923,84155,38.853183,-77.299025,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-30
+5176432,Suffolk city,VA,25,A,1033846634,77018053,36.697157,-76.634781,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-12
+5010675,Burlington city,VT,25,A,26684548,13079229,44.491927,-73.238882,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,3,2026-06-27
+0107000,Birmingham city,AL,25,A,380597720,6510286,33.527174,-86.797036,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-26
+0608954,Burbank city,CA,25,A,44849102,94723,34.190079,-118.326405,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-27
+0617568,Culver City city,CA,25,A,13239285,71360,34.00582,-118.396781,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-12
+0624638,Folsom city,CA,25,A,72210788,5879392,38.666597,-121.141635,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-28
+0636000,Huntington Beach city,CA,25,A,70672600,1243281,33.698007,-118.003834,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-04-24
+0670098,Santa Rosa city,CA,25,A,110349613,451569,38.445824,-122.706181,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-14
+0678582,Thousand Oaks city,CA,25,A,143115869,375961,34.19329,-118.874235,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-13
+0807850,Boulder city,CO,25,A,69737376,2723891,40.024431,-105.251251,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-05
+0845955,Lone Tree city,CO,25,A,25406488,0,39.530851,-104.870959,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-01
+0884440,Wheat Ridge city,CO,25,A,24287442,539957,39.772675,-105.104801,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-21
+0934180,Groton city,CT,25,A,7985936,9524722,41.325054,-72.066862,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+0937000,Hartford city,CT,25,A,45093709,1751553,41.765933,-72.681579,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+0954940,North Haven CDP,CT,57,S,53875575,714453,41.381465,-72.856371,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-04-27
+1050670,Newark city,DE,25,A,24536890,0,39.677649,-75.757479,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-17
+1212875,Clearwater city,FL,25,A,67830774,31408604,27.979419,-82.771256,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-02-20
+1238425,Lake Mary city,FL,25,A,23506967,2077257,28.759104,-81.332813,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-26
+1257425,Plantation city,FL,25,A,56334696,780752,26.125573,-80.261818,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-27
+1264175,Sarasota city,FL,25,A,38081772,24313382,27.338257,-82.543721,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-25
+1301696,Alpharetta city,GA,25,A,69670444,949161,34.070866,-84.27265,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-04-18
+1349756,Marietta city,GA,25,A,61595387,198309,33.953561,-84.542463,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-25
+1380508,Warner Robins city,GA,25,A,102294591,847608,32.597096,-83.653936,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+1933060,Grimes city,IA,25,A,35862427,45598,41.677649,-93.802099,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+1723256,Elk Grove Village village,IL,47,A,30512189,148517,42.005271,-87.992348,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-23
+1734722,Highland Park city,IL,25,A,31685038,84688,42.182372,-87.810845,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-23
+1753481,Northbrook village,IL,47,A,34313973,169102,42.128745,-87.835162,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-26
+1759000,Peoria city,IL,25,A,124808523,6690015,40.751641,-89.617198,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+1765000,Rockford city,IL,25,A,169366963,2628722,42.2593,-89.063478,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-02-27
+1777694,Vernon Hills village,IL,47,A,20043445,528221,42.234407,-87.961064,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-05
+1783245,Woodridge village,IL,47,A,24947216,414346,41.737392,-88.04413,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-24
+1810342,Carmel city,IN,25,A,127141988,2793553,39.965479,-86.148369,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-27
+1829520,Greenfield city,IN,25,A,36853086,377141,39.793283,-85.772548,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-24
+1836003,Indianapolis city (balance),IN,00,F,935023958,17914057,39.776664,-86.145935,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+1882862,West Lafayette city,IN,25,A,35365804,595887,40.443707,-86.923616,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-25
+2205000,Baton Rouge city,LA,25,B,223752984,5708637,30.442174,-91.130894,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-20
+2251410,Monroe city,LA,25,A,77475243,9363466,32.518986,-92.07718,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-26
+2509875,Burlington CDP,MA,57,S,30433101,293644,42.503227,-71.201713,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+2572600,Waltham city,MA,25,A,33008226,2634712,42.388921,-71.242268,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-26
+2407125,Bethesda CDP,MD,57,S,34361157,174622,38.987292,-77.118612,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-18
+2432025,Germantown CDP,MD,57,S,44115833,233249,39.174252,-77.263754,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-17
+2302100,Augusta city,ME,25,A,142820806,7492112,44.334904,-69.734199,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-02-27
+2634000,Grand Rapids city,MI,25,A,115973877,2212841,42.961156,-85.65557,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+2718116,Eden Prairie city,MN,25,A,84165459,7054324,44.849595,-93.458721,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+2758000,St. Paul city,MN,25,A,134628304,10681428,44.948901,-93.104063,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+2913600,Chesterfield city,MO,25,A,82389012,4670563,38.658126,-90.57595,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-03
+2915670,Columbia city,MO,25,A,175695765,708737,38.94729,-92.326387,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+2937000,Jefferson City city,MO,25,A,93400798,4133437,38.567461,-92.175254,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-30
+2940043,Lake St. Louis city,MO,25,A,22185741,2103295,38.77989,-90.785586,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-29
+3744520,Morrisville town,NC,43,A,23759656,156053,35.836356,-78.839001,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-26
+3807200,Bismarck city,ND,25,A,93123077,1288028,46.814572,-100.768568,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-29
+3446110,Midland Park borough,NJ,21,A,4068265,21022,40.995809,-74.141262,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-05
+3451000,Newark city,NJ,25,A,62531177,4509996,40.72422,-74.172574,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-01
+3474630,Union City city,NJ,25,A,3333339,0,40.767425,-74.032279,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-03
+3268400,Sparks city,NV,25,A,94546169,268109,39.574341,-119.715154,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-12
+3673000,Syracuse city,NY,25,A,64903077,1507055,43.040998,-76.143554,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-05
+3684000,Yonkers city,NY,25,A,46634440,5850607,40.945862,-73.867446,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-30
+3904720,Beavercreek city,OH,25,A,68879159,78055,39.733155,-84.059615,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-19
+3916000,Cleveland city,OH,25,A,201334005,12290109,41.478462,-81.679435,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-10
+3922694,Dublin city,OH,25,A,63927027,921871,40.113304,-83.145774,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-03-31
+3971892,Sharonville city,OH,25,A,25402821,135532,39.280586,-84.407514,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-16
+4224000,Erie city,PA,25,A,49550841,611717,42.116594,-80.073503,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+4232800,Harrisburg city,PA,25,A,21027715,9699744,40.275891,-76.88502,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+4241216,Lancaster city,PA,25,A,18718649,313264,40.042061,-76.30099,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-16
+4246792,Malvern borough,PA,21,A,3264500,15989,40.033147,-75.515363,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+4287048,York city,PA,25,A,13707336,126494,39.964798,-76.73184,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-24
+4459000,Providence city,RI,25,A,47670951,5643961,41.823056,-71.418784,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-16
+4530850,Greenville city,SC,25,A,79936926,614507,34.836902,-82.362997,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+4827000,Fort Worth city,TX,25,A,911703455,21192896,32.781954,-97.348573,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-05-26
+4827684,Frisco city,TX,25,A,177732392,1402982,33.155427,-96.822596,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-02-25
+4876000,Waco city,TX,25,A,235710221,32219133,31.557994,-97.18975,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-01
+4901310,American Fork city,UT,25,A,29598468,24864,40.377877,-111.795074,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-30
+4945860,Logan city,UT,25,A,46833851,1523881,41.740256,-111.841764,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-07-02
+5114744,Chantilly CDP,VA,57,S,31084301,318058,38.88918,-77.442088,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-26
+5135000,Hampton city,VA,25,A,133290524,219660054,37.047961,-76.297293,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-27
+5148952,Manassas city,VA,25,A,25493247,146287,38.746808,-77.482633,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-16
+5186160,Williamsburg city,VA,25,A,23149766,416905,37.269481,-76.708193,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-02
+5539225,Kenosha city,WI,25,A,76684475,236057,42.587526,-87.879996,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-24
+5559250,Oconomowoc city,WI,25,A,30611152,1756819,43.101015,-88.495115,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-04-17
+5567625,Richland Center city,WI,25,A,12350869,218772,43.339577,-90.38343,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-02-20
+5584675,Wauwatosa city,WI,25,A,34258849,9422,43.063165,-88.035583,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-06-18
+5455756,Morgantown city,WV,25,A,26369803,1158046,39.637487,-79.946856,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,2,2026-03-10
+0203000,Anchorage municipality,AK,37,A,4420596509,615656658,61.17425,-149.284329,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+0121184,Dothan city,AL,25,A,234155446,844856,31.233698,-85.406823,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-16
+0132560,Hackleburg town,AL,43,A,39560858,27325,34.269355,-87.830402,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+0151000,Montgomery city,AL,25,A,414019181,6257644,32.348503,-86.267307,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-18
+0521070,El Dorado city,AR,25,A,41960536,21567,33.218982,-92.664071,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-23
+0523290,Fayetteville city,AR,25,A,141824186,3559228,36.071455,-94.166564,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-30
+0524550,Fort Smith city,AR,25,A,166347251,10984587,35.349276,-94.370883,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+0555310,Pine Bluff city,AR,25,A,114431969,5692789,34.211591,-92.017555,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-18
+0560410,Rogers city,AR,25,A,99458064,431955,36.318085,-94.152287,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+0427400,Gilbert town,AZ,43,A,178154410,514494,33.310345,-111.743121,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-22
+0465000,Scottsdale city,AZ,25,A,476566047,1136911,33.684272,-111.861448,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-22
+0477000,Tucson city,AZ,25,A,629066268,819368,32.153036,-110.870773,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+0600562,Alameda city,CA,25,A,26934008,32581546,37.741911,-122.259914,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0602462,Arcadia city,CA,25,A,28300614,540015,34.132689,-118.036347,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+0603526,Bakersfield city,CA,25,A,389623310,3792005,35.353171,-119.037919,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-24
+0609780,California City city,CA,25,A,527395596,174458,35.14659,-117.869346,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0611194,Carlsbad city,CA,25,A,97932263,3378580,33.129284,-117.284183,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0618394,Delano city,CA,25,A,38114812,135325,35.76643,-119.264221,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-28
+0622804,Escondido city,CA,25,A,96742934,276445,33.133053,-117.074043,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-13
+0624680,Fontana city,CA,25,A,112107657,0,34.109686,-117.462888,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-29
+0636546,Inglewood city,CA,25,A,23484193,62572,33.956068,-118.344274,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+0644112,Los Gatos town,CA,43,A,29926283,206446,37.229944,-121.956874,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-16
+0651560,Norco city,CA,25,A,35893173,566646,33.925519,-117.551958,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+0652582,Novato city,CA,25,A,70884694,1595798,38.085087,-122.548272,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0654652,Oxnard city,CA,25,A,68750396,32677585,34.199436,-119.207515,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-03
+0655156,Palmdale city,CA,25,A,274705332,629569,34.591038,-118.105403,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-13
+0656000,Pasadena city,CA,25,A,59465592,366889,34.160602,-118.137954,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0665028,San Bruno city,CA,25,A,14215239,0,37.62556,-122.431397,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-01
+0668084,San Leandro city,CA,25,A,34507480,5587445,37.703368,-122.163036,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-11
+0669112,Santa Cruz city,CA,25,A,32998567,7998699,36.974385,-122.035268,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-11-23
+0670000,Santa Monica city,CA,25,A,21779156,22696935,34.010911,-118.498245,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+0809280,Broomfield city,CO,25,A,85384996,1502572,39.953877,-105.050898,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-21
+0813845,Cherry Hills Village city,CO,25,A,16072261,194414,39.637418,-104.94747,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-24
+0833035,Greenwood Village city,CO,25,A,21300812,32085,39.615934,-104.911688,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-27
+0845970,Longmont city,CO,25,A,75836110,5249752,40.168199,-105.100522,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-30
+0883835,Westminster city,CO,25,A,81934253,5990305,39.880122,-105.061513,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0908420,Bristol city,CT,25,A,68373842,1041015,41.681578,-72.940749,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-05
+0973000,Stamford city,CT,25,A,97458033,37296269,41.079611,-73.54608,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+0980000,Waterbury city,CT,25,A,73961203,1093581,41.5585,-73.036685,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+1207300,Boca Raton city,FL,25,A,75570162,6237076,26.37269,-80.103711,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-17
+1216525,Daytona Beach city,FL,25,A,175775107,6995015,29.19071,-81.097083,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+1224300,Fort Pierce city,FL,25,A,63995391,15536704,27.426112,-80.342488,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-26
+1254700,Panama City city,FL,25,A,91945273,335121,30.239496,-85.530292,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+1270600,Tallahassee city,FL,25,A,265676223,7544005,30.453529,-84.252272,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-30
+1276600,West Palm Beach city,FL,25,A,139526891,10789187,26.745114,-80.127038,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-23
+1278275,Winter Haven city,FL,25,A,86417739,22597477,28.045836,-81.732743,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+1301052,Albany city,GA,25,A,142615792,1975619,31.578117,-84.176224,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-17
+1343192,Kennesaw city,GA,25,A,25298707,255766,34.027202,-84.61709,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-18
+1374936,Suwanee city,GA,25,A,28887566,199452,34.051119,-84.06591,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+1500550,Aiea CDP,HI,57,S,4301904,276211,21.385262,-157.92475,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+1652120,Meridian city,ID,25,A,97429729,150641,43.61149,-116.400662,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-28
+1654550,Moscow city,ID,25,A,17894797,7334,46.730609,-116.998909,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-13
+1708576,Brookfield village,IL,47,A,7934878,17368,41.825059,-87.847546,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-17
+1722736,Effingham city,IL,25,A,28203531,180940,39.120662,-88.550859,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-01
+1750647,Morton Grove village,IL,47,A,13178267,0,42.042321,-87.789012,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+1752220,New Boston city,IL,25,A,2437346,1198082,41.17036,-90.9998,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+1766703,St. Charles city,IL,25,A,37457565,1542736,41.919447,-88.310743,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-13
+1777005,Urbana city,IL,25,A,30673358,186870,40.110126,-88.197323,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-29
+1779293,Waukegan city,IL,25,A,62836391,660652,42.369447,-87.870898,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+1780242,Western Springs village,IL,47,A,7211828,0,41.802278,-87.900556,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+1781087,Wheeling village,IL,47,A,22460744,150683,42.129614,-87.921503,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+1804114,Bedford city,IN,25,A,31623690,0,38.860167,-86.489503,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+1814716,Columbia City city,IN,25,A,14557620,48844,41.163051,-85.478751,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-23
+1840392,Kokomo city,IN,25,A,97121796,287971,40.465267,-86.127348,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+1871000,South Bend city,IN,25,A,108508376,1111610,41.676643,-86.268809,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+1875428,Terre Haute city,IN,25,A,90061110,1010104,39.464152,-87.376036,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-27
+2016775,Cunningham city,KS,25,A,1184987,0,37.644623,-98.43113,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+2032575,Holcomb city,KS,25,A,3202718,0,37.985983,-100.993619,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-16
+2033875,Independence city,KS,25,A,19425007,13181,37.233458,-95.716005,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+2036000,Kansas City city,KS,25,A,323068571,9237731,39.122539,-94.741781,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+2039350,Lenexa city,KS,25,A,88271910,812435,38.965268,-94.803937,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-26
+2053775,Overland Park city,KS,25,A,194973959,1210393,38.889042,-94.690584,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+2079000,Wichita city,KS,25,A,427540703,11586453,37.690638,-97.345836,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+2163912,Radcliff city,KY,25,A,34893778,70272,37.820058,-85.936371,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+2240735,Lafayette city,LA,25,B,146198558,194313,30.2056,-92.028058,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-25
+2255000,New Orleans city,LA,25,A,439205384,466898940,30.05342,-89.934502,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-13
+2501430,Andover CDP,MA,57,S,9551028,208637,42.655672,-71.142244,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-09
+2516530,Dedham CDP,MA,57,S,26600180,1072471,42.246872,-71.179462,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+2524960,Framingham city,MA,25,A,64863268,3784599,42.307905,-71.436196,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+2539660,Maynard CDP,MA,57,S,13494780,403514,42.425955,-71.456256,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-11-19
+2575050,Westborough CDP,MA,57,S,4890154,43118,42.267441,-71.617492,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-24
+2419125,Columbia CDP,MD,57,S,82707406,663954,39.201146,-76.85905,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-13
+2426600,Essex CDP,MD,57,S,23982253,7203329,39.301359,-76.444426,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-01
+2431025,Fulton CDP,MD,57,S,9805595,19824,39.15311,-76.911629,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-11-19
+2445900,Laurel city,MD,25,A,12324966,193301,39.095075,-76.861245,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-03
+2456337,North Bethesda CDP,MD,57,S,22998846,58661,39.036753,-77.120336,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-24
+2472450,Silver Spring CDP,MD,57,S,20411074,75601,39.002441,-77.020791,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-13
+2302795,Bangor city,ME,25,A,88731359,868257,44.829625,-68.788767,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-09
+2360545,Portland city,ME,25,A,55787949,124063743,43.633157,-70.185305,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-12
+2605920,Battle Creek city,MI,25,A,110369363,2911133,42.299176,-85.229267,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+2621000,Dearborn city,MI,25,A,62798405,694039,42.313057,-83.211488,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-30
+2624120,East Lansing city,MI,25,A,34787202,211485,42.748913,-84.482442,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+2638640,Holland city,MI,25,A,43837070,1985683,42.767049,-86.098572,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-01
+2653760,Middleville village,MI,47,A,6328555,314545,42.715319,-85.468617,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-18
+2665560,Portage city,MI,25,A,83455128,7624388,42.19705,-85.591395,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+2669020,Rochester city,MI,25,A,9921955,0,42.686639,-83.119721,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+2679000,Taylor city,MI,25,A,61165859,46613,42.225283,-83.267691,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-22
+2680340,Traverse City city,MI,25,A,21434656,866380,44.754309,-85.603011,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-27
+2717000,Duluth city,MN,25,A,185592511,22041182,46.774458,-92.134135,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-04
+2723714,Gilbert city,MN,25,A,30245757,1917731,47.490784,-92.458312,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+2768818,Wayzata city,MN,25,A,8005817,4140109,44.969981,-93.518214,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+2771032,Winona city,MN,25,A,49187536,13699641,44.051271,-91.668076,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-10
+2771428,Woodbury city,MN,25,A,90376975,2142391,44.906283,-92.923703,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-05
+2914572,Clayton city,MO,25,A,6497620,0,38.644403,-90.330212,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-01
+2937592,Joplin city,MO,25,A,98627453,327700,37.075218,-94.501259,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+2964082,St. Charles city,MO,25,A,65372549,1291210,38.795702,-90.515364,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-10
+2855760,Pearl city,MS,25,A,66015322,314502,32.272456,-90.091827,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-11
+3701520,Apex town,NC,43,A,70481941,246717,35.725577,-78.879919,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-13
+3712860,Clayton town,NC,43,A,44612119,59474,35.658139,-78.446007,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+3722920,Fayetteville city,NC,25,A,384006273,4708471,35.082766,-78.973515,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-17
+3726880,Goldsboro city,NC,25,A,74855273,398119,35.378226,-77.971869,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+3734200,Jacksonville city,NC,25,A,129240235,19741288,34.72973,-77.393661,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+3756900,Roanoke Rapids city,NC,25,A,25674557,92162,36.446049,-77.648586,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+3770540,Wake Forest town,NC,43,A,51672279,400816,35.963685,-78.51174,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+3825700,Fargo city,ND,25,A,134389246,1316,46.8647,-96.82908,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+3137000,Omaha city,NE,25,A,370325901,9351839,41.262705,-96.053475,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+3350260,Nashua city,NH,25,A,79860094,2330535,42.749074,-71.490544,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-11-18
+3407300,Branchville borough,NJ,21,A,1535449,16165,41.147238,-74.749042,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+3473140,Totowa borough,NJ,21,A,10360527,198085,40.903415,-74.219779,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-04
+3479040,Westfield town,NJ,43,A,17415403,48798,40.651644,-74.343447,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+3512150,Carlsbad city,NM,25,A,81988151,709034,32.40079,-104.241012,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-29
+3532520,Hobbs city,NM,25,A,68427051,85026,32.729089,-103.160588,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-25
+3222500,Elko city,NV,25,A,46219679,0,40.838111,-115.767809,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-08
+3251800,North Las Vegas city,NV,25,A,272857515,112001,36.289865,-115.089181,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-24
+3601000,Albany city,NY,25,A,55435359,1377120,42.665745,-73.798353,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-22
+3606607,Binghamton city,NY,25,A,27141215,1675760,42.101331,-75.909369,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-09
+3611000,Buffalo city,NY,25,A,104572761,31342098,42.892492,-78.859686,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+3630543,Greenlawn CDP,NY,57,S,9908547,6667,40.863515,-73.365754,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-12-16
+3640530,Lake Grove village,NY,47,A,7631042,2832,40.857817,-73.116844,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-17
+3645524,Marcy CDP,NY,57,S,4449981,289159,43.131447,-75.255714,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+3658574,Plattsburgh city,NY,25,A,13906011,4070683,44.692025,-73.458276,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+3665508,Schenectady city,NY,25,A,27991725,439193,42.802641,-73.9272,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-01-22
+3667070,Shirley CDP,NY,57,S,29302739,2213739,40.793602,-72.875911,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-25
+3678168,Wappingers Falls village,NY,47,A,2903230,204891,41.598156,-73.916945,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+3681677,White Plains city,NY,25,A,25218000,318753,41.0238,-73.751048,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-14
+3909246,Brooklyn city,OH,25,A,11010533,80687,41.43474,-81.74918,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-20
+3925256,Elyria city,OH,25,A,53072998,673110,41.378235,-82.104505,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-26
+3932592,Grove City city,OH,25,A,49040349,477957,39.866366,-83.066971,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+3949056,Mentor city,OH,25,A,71992880,507207,41.690159,-81.33588,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-25
+3953970,New Albany city,OH,25,A,56327298,489485,40.09,-82.776349,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+3962148,Perrysburg city,OH,25,A,31332592,111383,41.538986,-83.644132,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+3972928,Solon city,OH,25,A,52612254,295429,41.38599,-81.440835,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-26
+3979492,Vandalia city,OH,25,A,31928142,113033,39.878977,-84.192224,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-25
+4023200,Edmond city,OK,25,A,218629498,8042803,35.673807,-97.413076,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+4027200,Fort Gibson town,OK,43,A,34596408,1690713,35.782175,-95.260139,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+4052500,Norman city,OK,25,A,462708886,27292399,35.240569,-97.345299,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+4077550,Vinita city,OK,25,A,31914401,37750,36.644152,-95.062183,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+4124250,Fairview city,OR,25,A,8002294,1170238,45.547585,-122.436823,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-16
+4202000,Allentown city,PA,25,A,45491364,1149978,40.593648,-75.478393,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-01-07
+4202264,Ambler borough,PA,21,A,2207277,0,40.156385,-75.221532,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-24
+4215848,Conshohocken borough,PA,21,A,2600958,91958,40.077219,-75.3041,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-01
+4224440,Exton CDP,PA,57,S,8098767,68859,40.029916,-75.633061,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+4281328,Washington city,PA,25,A,7586157,0,40.17416,-80.246794,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-20
+4501360,Anderson city,SC,25,A,42730473,106114,34.521487,-82.643517,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+4550695,North Augusta city,SC,25,A,55671003,1425226,33.523303,-81.956566,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-27
+4727740,Franklin city,TN,25,A,115379584,553819,35.914025,-86.852161,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-22
+4737640,Jackson city,TN,25,A,153327278,29674,35.658451,-88.837399,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-03
+4740000,Knoxville city,TN,25,A,255718529,14307945,35.97068,-83.94927,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-11-19
+4746380,Maryville city,TN,25,A,46202173,0,35.74781,-83.980234,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-03
+4744940,McKenzie city,TN,25,A,16492743,3385,36.136643,-88.507107,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-17
+4807000,Beaumont city,TX,25,A,212741387,7240811,30.084912,-94.14533,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-04
+4810768,Brownsville city,TX,25,A,316009842,16617848,25.989404,-97.480625,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-21
+4817000,Corpus Christi city,TX,25,A,434520332,842090949,27.754252,-97.173385,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-01
+4825452,Farmers Branch city,TX,25,A,30771559,410716,32.927789,-96.878539,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-13
+4826604,Forney city,TX,25,A,41514768,44195,32.742601,-96.452883,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-23
+4840984,Lakeway city,TX,25,A,33338699,2245934,30.354982,-97.986269,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+4842508,Lewisville city,TX,25,A,105298387,16157901,33.050725,-96.974623,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+4845744,McKinney city,TX,25,A,177907455,1897877,33.201125,-96.664161,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-04-06
+4861196,Red Oak city,TX,25,A,42051376,15198,32.509552,-96.78398,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+4869032,Southlake city,TX,25,A,56553687,1535328,32.954493,-97.148867,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-30
+4869596,Spring CDP,TX,57,S,58249359,883677,30.062169,-95.383966,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+4869980,Stamford city,TX,25,A,15438443,18013270,33.046193,-99.597021,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-23
+4872656,The Woodlands CDP,TX,57,S,112259957,1349207,30.172562,-95.509813,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+4876948,Webster city,TX,25,A,16441912,578519,29.532072,-95.116478,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-11
+4920120,Draper city,UT,25,A,73416601,38827,40.49715,-111.864636,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-07
+4943660,Layton city,UT,25,A,58540399,399442,41.077423,-111.960727,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-29
+4958510,Parowan city,UT,25,A,18143447,0,37.832697,-112.830382,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-19
+4965330,St. George city,UT,25,A,200473143,7614,37.077006,-113.576534,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-01-27
+5107784,Blacksburg town,VA,43,A,51274225,71645,37.231264,-80.426745,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-22
+5109816,Bristol city,VA,25,A,33342735,315904,36.616954,-82.157564,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-01
+5116000,Chesapeake city,VA,25,A,876598059,32349710,36.679376,-76.301788,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-16
+5121008,Dahlgren CDP,VA,57,S,6927606,254291,38.341976,-77.064267,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-26
+5129744,Fredericksburg city,VA,25,A,27066499,178344,38.299272,-77.486658,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-09
+5130176,Gainesville CDP,VA,57,S,26193151,1466175,38.793191,-77.642243,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-29
+5147672,Lynchburg city,VA,25,A,126695080,1427120,37.399016,-79.195458,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-28
+5157000,Norfolk city,VA,25,A,137981433,111701531,36.923015,-76.244641,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-18
+5165120,Quantico town,VA,43,A,180375,0,38.522437,-77.290146,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-04
+5168000,Roanoke city,VA,25,A,110129887,855753,37.278458,-79.958174,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-31
+5174592,Springfield CDP,VA,57,S,20319202,161881,38.781571,-77.183921,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-24
+5307380,Bothell city,WA,25,A,35314956,0,47.773531,-122.204376,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-01-28
+5323515,Federal Way city,WA,25,A,57794907,3636747,47.311596,-122.337757,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-03
+5335940,Kirkland city,WA,25,A,46117516,12575357,47.696658,-122.20417,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-19
+5367000,Spokane city,WA,25,A,178087526,1906609,47.666935,-117.433322,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2025-12-03
+5370000,Tacoma city,WA,25,A,128946156,32899545,47.252199,-122.459832,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-25
+5502375,Appleton city,WI,25,A,65843088,1290304,44.278873,-88.388284,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19
+5510025,Brookfield city,WI,25,A,70840610,950025,43.06432,-88.117794,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-02
+5510375,Brown Deer village,WI,47,A,11383915,0,43.174327,-87.974959,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-05-28
+5522300,Eau Claire city,WI,25,A,89181271,5423174,44.818343,-91.494769,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-16
+5526275,Fond du Lac city,WI,25,A,49822377,3393280,43.772182,-88.440264,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-04
+5531000,Green Bay city,WI,25,A,117789781,26620486,44.521542,-87.986568,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-07-04
+5531125,Greendale village,WI,47,A,14414515,22101,42.939993,-88.000857,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-02-25
+5551575,Middleton city,WI,25,A,24649558,352072,43.106959,-89.50634,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-09
+5560500,Oshkosh city,WI,25,A,72079342,2689498,44.023168,-88.56226,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-05
+5563525,Plover village,WI,47,A,27747654,1236596,44.46202,-89.537971,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-01
+5405332,Beckley city,WV,25,A,24600821,28022,37.773148,-81.16155,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-03-02
+5414600,Charleston city,WV,25,A,81317437,2948452,38.348692,-81.632324,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-26
+5415628,Clarksburg city,WV,25,A,26856118,3888,39.270296,-80.361787,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-09
+5613900,Cheyenne city,WY,25,A,103129030,384299,41.128275,-104.799155,2025,https://www2.census.gov/geo/docs/maps-data/data/gazetteer/2025_Gazetteer/2025_Gaz_place_national.zip,1,2026-06-19

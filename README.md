@@ -113,6 +113,23 @@ uvicorn apps.api.main:app --reload
 
 ## Run the frontend
 
+The new mobile-first React shell:
+
+```bash
+cd apps/web
+npm install
+npm run dev
+```
+
+React checks:
+
+```bash
+npm --prefix apps/web run build
+npm --prefix apps/web test
+```
+
+The existing Streamlit prototype remains available during migration:
+
 ```bash
 streamlit run apps/streamlit/Home.py
 ```
@@ -122,6 +139,33 @@ streamlit run apps/streamlit/Home.py
 The frontend prefers the FastAPI backend when available and falls back to the local shared service when the backend is offline.
 
 ## Build and validate the dataset
+
+Refresh live GitHub city/state geography, Census ACS, BLS county unemployment,
+and GitHub new-grad job inputs:
+
+```bash
+python3 -m wsis.data.refresh
+```
+
+Optional environment variables: `CENSUS_API_KEY`, `BLS_API_KEY`, `GITHUB_TOKEN`,
+`WSIS_CENSUS_ACS_YEAR`, `WSIS_GITHUB_GEOGRAPHY_REPOSITORY`,
+`WSIS_GITHUB_GEOGRAPHY_PATH`, `WSIS_GITHUB_JOBS_REPOSITORY`, `WSIS_GITHUB_JOBS_PATH`, and
+`WSIS_INGEST_TIMEOUT_SECONDS`. `CENSUS_API_KEY` is required for the Census refresh;
+the BLS and GitHub feeds can run without user-supplied tokens at current scale.
+
+The `Refresh WSIS data` GitHub Actions workflow runs daily and can also be
+started manually. Configure `CENSUS_API_KEY` and optionally `BLS_API_KEY` as
+repository secrets; the workflow-provided `GITHUB_TOKEN` is used for GitHub feeds.
+
+Audit the nationwide 2025 Census place universe against the current active
+GitHub job feed without promoting incomplete cities into ranked profiles:
+
+```bash
+python3 scripts/audit_national_job_coverage.py
+```
+
+This produces the official place snapshot, matched-place coverage table, and an
+unresolved-location report under `data/raw/census` and `data/processed`.
 
 Build the canonical dataset and validation report:
 

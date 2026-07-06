@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: wsis-explorer
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /health
+    envVars:
+      - key: WSIS_FRONTEND_ORIGINS
+        value: https://wsis-explorer.onrender.com

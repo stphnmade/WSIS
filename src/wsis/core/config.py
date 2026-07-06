@@ -26,7 +26,9 @@ class Settings:
 
 @lru_cache(maxsize=1)
 def get_settings() -> Settings:
-    project_root = Path(__file__).resolve().parents[3]
+    project_root = Path(
+        os.getenv("WSIS_PROJECT_ROOT", str(Path(__file__).resolve().parents[3]))
+    ).resolve()
     mock_path = Path(os.getenv("WSIS_MOCK_CITY_DATA_PATH", "data/mock/cities.csv"))
     raw_dir = Path(os.getenv("WSIS_RAW_DATA_DIR", "data/raw"))
     source_samples_dir = Path(os.getenv("WSIS_SOURCE_SAMPLE_DIR", "data/source_samples"))

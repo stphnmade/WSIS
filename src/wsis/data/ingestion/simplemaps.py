@@ -14,7 +14,9 @@ from wsis.data.ingestion.common import (
 
 
 def load_simplemaps_cities(raw_root: Path) -> pd.DataFrame:
-    frame = load_raw_csv(raw_root / "simplemaps" / "us_cities.csv", dtype={"county_fips": str})
+    github_path = raw_root / "github" / "us_cities.csv"
+    source_path = github_path if github_path.exists() else raw_root / "simplemaps" / "us_cities.csv"
+    frame = load_raw_csv(source_path, dtype={"county_fips": str})
     if frame.empty:
         raise FileNotFoundError("SimpleMaps raw file is required to define the city dimension.")
 
@@ -55,4 +57,3 @@ def load_simplemaps_cities(raw_root: Path) -> pd.DataFrame:
         "has_simplemaps_data",
     ]
     return standardized[columns].drop_duplicates(subset=["city_state_key"])
-
