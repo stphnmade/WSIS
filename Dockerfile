@@ -10,6 +10,7 @@ FROM python:3.11-slim AS runtime
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
+    WSIS_PROJECT_ROOT=/workspace \
     PORT=10000
 
 WORKDIR /workspace

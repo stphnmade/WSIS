@@ -57,7 +57,10 @@ app.add_middleware(
 )
 
 
-WEB_DIST = Path(__file__).resolve().parents[3] / "apps" / "web" / "dist"
+PROJECT_ROOT = Path(
+    os.getenv("WSIS_PROJECT_ROOT", str(Path(__file__).resolve().parents[3]))
+).resolve()
+WEB_DIST = PROJECT_ROOT / "apps" / "web" / "dist"
 
 
 @app.get("/api/status")
