@@ -46,13 +46,16 @@ describe("WSIS responsive product flow", () => {
     fireEvent.click(screen.getByRole("button", { name: "Explore without a plan" }));
 
     expect(await screen.findByRole("heading", { name: "Explore beyond your first five." })).toBeVisible();
-    expect(screen.getAllByRole("button", { name: /San Jose, CA/ })).toHaveLength(2);
+    fireEvent.click(await screen.findByRole("button", { name: "Zoom in" }));
+    await waitFor(() => expect(screen.getAllByRole("button", { name: /San Jose, CA/ })).toHaveLength(2));
+    expect(screen.getByText("135%")).toBeVisible();
   });
 
   it("opens secure sign-in choices without blocking exploration", async () => {
     render(<App />);
     fireEvent.click(screen.getByRole("button", { name: "Explore without a plan" }));
-    expect(await screen.findAllByRole("button", { name: /San Jose, CA/ })).toHaveLength(2);
+    await screen.findByRole("button", { name: "Zoom in" });
+    await waitFor(() => expect(screen.getAllByRole("button", { name: /San Jose, CA/ })).toHaveLength(2));
     fireEvent.click(screen.getByRole("button", { name: "Sign in to save" }));
 
     expect(screen.getByRole("dialog", { name: "Save your shortlist." })).toBeVisible();

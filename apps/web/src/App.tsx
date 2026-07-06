@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState, type ComponentType } from "react";
+import { lazy, Suspense, useEffect, useMemo, useState, type ComponentType } from "react";
 import {
   ArrowLeft, ArrowRight, Bell, BriefcaseBusiness, Building2, Check, ChevronRight,
   CircleDollarSign, Compass, GitCompareArrows, Heart, Home, Map as MapIcon, MapPin,
@@ -7,6 +7,7 @@ import {
 import { fetchCity, fetchExplore, fetchJobs, fetchProfiles } from "./api";
 import { AuthDialog } from "./AuthDialog";
 import { currentUser, signOut, subscribeToAuth } from "./auth";
+const InteractiveMap = lazy(() => import("./InteractiveMap").then(module => ({ default: module.InteractiveMap })));
 import type { CityDetail, CitySummary, ExploreCity, IntentId, JobListing, UserProfile } from "./types";
 
 type View = "intent" | "questions" | "results" | "explore" | "detail" | "tradeoffs" | "saved";
@@ -129,19 +130,12 @@ function ResultsScreen({ profile, cities, profiles, onOpen, onExplore, saved, to
   </main>;
 }
 
-function GeoPlot({ cities, onOpen }: { cities:ExploreCity[]; onOpen:(city:ExploreCity)=>void }) {
-  return <div className="geo-plot" aria-label="Geographic view of job-covered places">{cities.slice(0,80).map(city => {
-    const left=Math.max(3,Math.min(97,((city.longitude+125)/59)*100)); const top=Math.max(4,Math.min(94,((49-city.latitude)/25)*100));
-    return <button key={city.place_geoid} style={{left:`${left}%`,top:`${top}%`,width:`${Math.max(8,Math.min(22,7+Math.sqrt(city.active_listing_count)))}px`,height:`${Math.max(8,Math.min(22,7+Math.sqrt(city.active_listing_count)))}px`}} title={`${city.name}, ${city.state_code}: ${city.active_listing_count} roles`} onClick={()=>onOpen(city)}><span className="sr-only">{city.name}, {city.state_code}</span></button>;
-  })}<span className="map-west">West</span><span className="map-east">East</span></div>;
-}
-
 function ExploreScreen({ cities, profiles, onOpen }: { cities:ExploreCity[]; profiles:CitySummary[]; onOpen:(city:ExploreCity)=>void }) {
   const [query,setQuery]=useState(""); const [state,setState]=useState("ALL");
   const states=useMemo(()=>[...new Set(cities.map(city=>city.state_code))].sort(),[cities]);
   const visible=useMemo(()=>cities.filter(city=>(state==="ALL"||city.state_code===state)&&`${city.name} ${city.state_code}`.toLowerCase().includes(query.toLowerCase())).slice(0,60),[cities,query,state]);
   const profileMap=new Map(profiles.map(item=>[item.slug,item]));
-  return <main className="content-page page-width"><section className="explore-heading"><div><p>449 job-covered Census places</p><h1>Explore beyond your first five.</h1><span>Major job centers appear first. Search or filter to reveal more places without hiding coverage gaps.</span></div><div className="search-controls"><label><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search city or state"/></label><select aria-label="Filter by state" value={state} onChange={e=>setState(e.target.value)}><option value="ALL">All states + DC</option>{states.map(value=><option key={value}>{value}</option>)}</select></div></section><GeoPlot cities={visible} onOpen={onOpen}/><div className="explore-list">{visible.map(city=>{const p=profileMap.get(city.slug);return <button key={city.place_geoid} onClick={()=>onOpen(city)}><span><strong>{city.name}, {city.state_code}</strong><small>{confidence(city,p)} · Updated {city.latest_listing_date}</small></span><span className="role-count">{city.active_listing_count}<small>roles</small></span><ChevronRight size={19}/></button>})}</div></main>;
+  return <main className="content-page page-width"><section className="explore-heading"><div><p>449 job-covered Census places</p><h1>Explore beyond your first five.</h1><span>Major job centers appear first. Search or filter to reveal more places without hiding coverage gaps.</span></div><div className="search-controls"><label><Search size={18}/><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search city or state"/></label><select aria-label="Filter by state" value={state} onChange={e=>setState(e.target.value)}><option value="ALL">All states + DC</option>{states.map(value=><option key={value}>{value}</option>)}</select></div></section><Suspense fallback={<div className="map-loading" role="status">Loading interactive map…</div>}><InteractiveMap cities={visible} onOpen={onOpen}/></Suspense><div className="explore-list">{visible.map(city=>{const p=profileMap.get(city.slug);return <button key={city.place_geoid} onClick={()=>onOpen(city)}><span><strong>{city.name}, {city.state_code}</strong><small>{confidence(city,p)} · Updated {city.latest_listing_date}</small></span><span className="role-count">{city.active_listing_count}<small>roles</small></span><ChevronRight size={19}/></button>})}</div></main>;
 }
 
 function DetailScreen({ city, detail, jobs, loading, onBack, saved, onSave, onTradeoffs }: { city:ExploreCity; detail:CityDetail|null; jobs:JobListing[]; loading:boolean; onBack:()=>void; saved:boolean; onSave:()=>void; onTradeoffs:()=>void }) {
